@@ -1,292 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Goa Social · premium community</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Goa Social</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-}
-
 body{
-background-color:#000000;
-color:#eaeaea;
-height:100vh;
-display:flex;
-flex-direction:column;
-overflow:hidden;
-line-height:1.4;
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
 }
 
-.app-header{
-background-color:#0a0a0a;
-border-bottom:1px solid rgba(255,255,255,0.05);
-padding:12px 18px;
+header{
+background:#0a0a0a;
+padding:15px;
 display:flex;
-align-items:center;
 justify-content:space-between;
-flex-shrink:0;
-box-shadow:0 4px 12px rgba(0,0,0,0.6);
-z-index:10;
-}
-
-.logo-area{
-display:flex;
 align-items:center;
-gap:8px;
 }
 
-.logo-icon{
-background:linear-gradient(145deg,#ff8c42,#ff5e3a);
-width:32px;
-height:32px;
-border-radius:12px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:18px;
-color:#000;
+.main{
+padding:16px;
+padding-bottom:90px;
 }
 
-.app-header h1{
-font-size:1.6rem;
-font-weight:600;
-}
-
-.header-actions{
-display:flex;
-gap:18px;
-color:#b0b0b0;
-}
-
-.main-content{
-flex:1;
-overflow-y:auto;
--webkit-overflow-scrolling:touch;
-background:#000;
-padding:8px 0 90px 0; /* extra space so nav never overlaps content */
-}
-
-.content-pane{
-padding:12px 16px 20px 16px;
-max-width:600px;
-margin:0 auto;
-width:100%;
-}
-
-.bottom-nav{
-background:#0f0f0f;
-border-top:1px solid rgba(255,255,255,0.05);
-display:flex;
-justify-content:space-around;
-align-items:center;
-padding:8px 10px calc(14px + env(safe-area-inset-bottom));
-flex-shrink:0;
+.bottom{
 position:fixed;
 bottom:0;
 left:0;
 right:0;
-z-index:100;
-box-shadow:0 -4px 20px rgba(0,0,0,0.8);
-}
-
-.nav-item{
+background:#111;
 display:flex;
-flex-direction:column;
-align-items:center;
-color:#7a7a7a;
-font-size:0.7rem;
-font-weight:500;
-cursor:pointer;
-padding:4px 12px;
-border-radius:30px;
+justify-content:space-around;
+padding:10px;
+}
+
+.bottom button{
+background:none;
 border:none;
-background:transparent;
+color:white;
+font-size:14px;
 }
 
-.nav-item i{
-font-size:1.7rem;
-margin-bottom:2px;
-}
-
-.nav-item.active{
-color:#ff7b42;
-background:rgba(255,123,66,0.08);
-}
-
-.loader{
-display:none;
-text-align:center;
-padding:40px 0;
-color:#ff7b42;
-font-size:1.2rem;
-}
-
-.loader i{
-font-size:2rem;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
+.content-pane img{
+width:100%;
+border-radius:18px;
 }
 
 .card{
-background:#151515;
-border-radius:28px;
-padding:20px 18px;
-margin-bottom:16px;
-box-shadow:0 10px 22px -8px rgba(0,0,0,0.8);
-}
-
-.main-content::-webkit-scrollbar{
-width:4px;
-}
-
-.main-content::-webkit-scrollbar-thumb{
-background:#3a3a3a;
-border-radius:20px;
+margin-bottom:20px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<header class="app-header">
+<header>
 
-<div class="logo-area">
-<div class="logo-icon">
-<i class="fas fa-umbrella-beach"></i>
-</div>
-<h1>Goa Social</h1>
-</div>
-
-<div class="header-actions">
-<i class="fas fa-search"></i>
-<i class="fas fa-bell"></i>
-</div>
+<h2>🏖 Goa Social</h2>
 
 </header>
 
+<div class="main" id="content"></div>
 
-<main class="main-content" id="content">
+<div class="bottom">
 
-<div class="loader" id="loader">
-<i class="fas fa-circle-notch"></i><br>loading...
+<button onclick="loadPage('home')">Home</button>
+<button onclick="loadPage('dating')">Dating</button>
+<button onclick="loadPage('business')">Business</button>
+<button onclick="loadPage('chats')">Chats</button>
+<button onclick="loadPage('profile')">Profile</button>
+
 </div>
-
-</main>
-
-
-<nav class="bottom-nav">
-
-<button class="nav-item" data-page="home">
-<i class="fas fa-home"></i>
-<span>Home</span>
-</button>
-
-<button class="nav-item" data-page="dating">
-<i class="fas fa-heart"></i>
-<span>Dating</span>
-</button>
-
-<button class="nav-item" data-page="business">
-<i class="fas fa-store"></i>
-<span>Business</span>
-</button>
-
-<button class="nav-item" data-page="chats">
-<i class="fas fa-comment-dots"></i>
-<span>Chats</span>
-</button>
-
-<button class="nav-item" data-page="profile">
-<i class="fas fa-user"></i>
-<span>Profile</span>
-</button>
-
-</nav>
-
 
 <script>
 
-(function(){
+async function loadPage(page){
 
-const contentDiv=document.getElementById("content");
-const loader=document.getElementById("loader");
-const navItems=document.querySelectorAll(".nav-item");
+let res = await fetch("pages/"+page+".html")
 
-const DEFAULT_PAGE="home";
+let html = await res.text()
 
-function setActiveNav(pageName){
+document.getElementById("content").innerHTML = html
 
-navItems.forEach(item=>{
-
-const page=item.getAttribute("data-page");
-
-if(page===pageName){
-item.classList.add("active");
-}else{
-item.classList.remove("active");
-}
-
-});
-
-}
-
-async function loadPage(pageName){
-
-contentDiv.innerHTML="";
-loader.style.display="block";
-
-setActiveNav(pageName);
-
-const pagePath=`pages/${pageName}.html`;
-
-try{
-
-const response=await fetch(pagePath);
-
-if(!response.ok) throw new Error("fetch failed");
-
-const html=await response.text();
-
-loader.style.display="none";
-contentDiv.innerHTML=html;
-
-}catch(error){
-
-loader.style.display="none";
-contentDiv.innerHTML="<div style='padding:40px;text-align:center;color:#aaa'>Page could not load.</div>";
-
+if(page==="home"){
+loadVideos()
 }
 
 }
 
-navItems.forEach(item=>{
+function loadVideos(){
 
-item.addEventListener("click",()=>{
+let container = document.getElementById("videoFeed")
 
-const page=item.getAttribute("data-page");
-loadPage(page);
+if(!container) return
 
-});
+const videos = [
 
-});
+"aqz-KE-bpKQ",
+"dQw4w9WgXcQ",
+"ScMzIvxBSi4"
 
-loadPage(DEFAULT_PAGE);
+]
 
-})();
+videos.forEach(id=>{
+
+container.innerHTML += `
+
+<div class="card">
+
+<div onclick="playVideo('${id}',this)">
+
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg">
+
+</div>
+
+</div>
+
+`
+
+})
+
+}
+
+function playVideo(id,el){
+
+el.innerHTML = `
+
+<iframe
+width="100%"
+height="220"
+src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1"
+frameborder="0"
+allowfullscreen>
+
+</iframe>
+
+`
+
+}
+
+loadPage("home")
 
 </script>
 
