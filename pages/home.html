@@ -8,48 +8,20 @@
 
 <script>
 
-/* CHANNEL RSS FEEDS */
+/* TEST VIDEO LIST */
 
-const channels = [
+const videos = [
 
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCZFMm1mMw0F81Z37aaEzTUA",  // NDTV India
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCYPvAwZP8pZhSMW8qs7cVCw", // India Today
-"https://www.youtube.com/feeds/videos.xml?channel_id=UC9CYT9gSNLevX5ey2_6CK0Q", // Goa365
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCiQnJkCz0r4iCq9Q3rQ0T6g"  // Goa News Hub
+"5qap5aO4i9A", 
+"aqz-KE-bpKQ",
+"ScMzIvxBSi4",
+"dQw4w9WgXcQ"
 
 ]
 
-async function loadVideos(){
-
 let container = document.getElementById("videoFeed")
 
-for (const channel of channels){
-
-try{
-
-let api = "https://api.allorigins.win/raw?url=" + encodeURIComponent(channel)
-
-let res = await fetch(api)
-
-let text = await res.text()
-
-let parser = new DOMParser()
-
-let xml = parser.parseFromString(text,"text/xml")
-
-let entries = xml.querySelectorAll("entry")
-
-entries.forEach((video,i)=>{
-
-if(i>2) return
-
-let link = video.querySelector("link").getAttribute("href")
-
-let id = link.split("v=")[1].split("&")[0]
-
-let title = video.querySelector("title").textContent
-
-let date = new Date(video.querySelector("published").textContent)
+videos.forEach(id => {
 
 container.innerHTML += `
 
@@ -58,7 +30,8 @@ container.innerHTML += `
 <div style="position:relative;cursor:pointer"
 onclick="playVideo('${id}', this)">
 
-<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" style="width:100%">
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
+style="width:100%">
 
 <div style="
 position:absolute;
@@ -69,15 +42,10 @@ font-size:40px;
 background:rgba(0,0,0,0.6);
 padding:12px 18px;
 border-radius:50%;
-">▶</div>
-
+color:white;
+">
+▶
 </div>
-
-<div style="padding:16px">
-
-<h3 style="font-size:1rem;margin-bottom:6px">${title}</h3>
-
-<p style="font-size:0.75rem;color:#888">${date.toLocaleDateString()}</p>
 
 </div>
 
@@ -86,18 +54,6 @@ border-radius:50%;
 `
 
 })
-
-}catch(e){
-
-console.log("Feed failed",channel)
-
-}
-
-}
-
-}
-
-/* PLAY VIDEO */
 
 function playVideo(id, element){
 
@@ -113,7 +69,5 @@ allowfullscreen>
 `
 
 }
-
-loadVideos()
 
 </script>
