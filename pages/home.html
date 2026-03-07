@@ -1,6 +1,6 @@
 <div class="content-pane">
 
-<h2 style="margin-bottom:20px;">Goa News Live</h2>
+<h2 style="margin-bottom:20px;">Goa News</h2>
 
 <div id="videoFeed"></div>
 
@@ -8,27 +8,37 @@
 
 <script>
 
-const videos = [
+const channels = [
 
-"SFnrq5z5ox8",  // Goa live news test
-"aqz-KE-bpKQ",
-"dQw4w9WgXcQ"
+"https://www.youtube.com/feeds/videos.xml?channel_id=UC7GxZQYbXcWv0ZK0s8AjtKQ", // Prudent Media Goa
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCiQnJkCz0r4iCq9Q3rQ0T6g"  // Goa News Hub
 
 ]
 
+async function loadVideos(){
+
 let container = document.getElementById("videoFeed")
 
-videos.forEach(id=>{
+channels.forEach(async channel=>{
+
+let api = "https://api.rss2json.com/v1/api.json?rss_url="+channel
+
+let res = await fetch(api)
+
+let data = await res.json()
+
+data.items.slice(0,3).forEach(video=>{
+
+let id = video.link.split("v=")[1].split("&")[0]
 
 container.innerHTML += `
 
 <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
 
 <div style="position:relative;cursor:pointer"
-onclick="playVideo('${id}', this)">
+onclick="playVideo('${id}',this)">
 
-<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
-style="width:100%">
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" style="width:100%">
 
 <div style="
 position:absolute;
@@ -39,9 +49,20 @@ font-size:40px;
 background:rgba(0,0,0,0.6);
 padding:12px 18px;
 border-radius:50%;
-color:white;">
-▶
+color:white;
+">▶</div>
+
 </div>
+
+<div style="padding:16px">
+
+<h3 style="font-size:1rem;margin-bottom:6px">
+${video.title}
+</h3>
+
+<p style="font-size:0.75rem;color:#888">
+${new Date(video.pubDate).toLocaleDateString()}
+</p>
 
 </div>
 
@@ -51,7 +72,11 @@ color:white;">
 
 })
 
-function playVideo(id, element){
+})
+
+}
+
+function playVideo(id,element){
 
 element.outerHTML = `
 <iframe
@@ -64,5 +89,7 @@ allowfullscreen>
 `
 
 }
+
+loadVideos()
 
 </script>
