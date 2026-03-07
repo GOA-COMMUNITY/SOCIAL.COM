@@ -2,23 +2,22 @@
 
 <h2 style="margin-bottom:20px;">🔥 Verse Edits Videos</h2>
 
-<div id="videoFeed"></div>
+<div id="videoFeed">Loading videos...</div>
 
 </div>
 
 <script>
 
-/* VerseEdits channel RSS */
-
-const channel = "https://www.youtube.com/feeds/videos.xml?channel_id=UC8QqG6Jd9v7E3lR9Qh4QkFg"
+/* RSS feed from VerseEdits channel */
+const rss = "https://www.youtube.com/feeds/videos.xml?channel_id=UCfKQyFZ0E4rU0QqY9xFvK9A"
 
 async function loadVideos(){
 
 let container = document.getElementById("videoFeed")
 
-container.innerHTML = "Loading videos..."
+let api = "https://api.rss2json.com/v1/api.json?rss_url=" + rss
 
-let api = "https://api.rss2json.com/v1/api.json?rss_url=" + channel
+try{
 
 let res = await fetch(api)
 
@@ -28,14 +27,15 @@ container.innerHTML = ""
 
 data.items.slice(0,8).forEach(video=>{
 
-let id = video.link.split("v=")[1].split("&")[0]
+/* extract video id safely */
+let id = video.link.split("v=")[1]
 
 container.innerHTML += `
 
 <div class="card" style="padding:0;overflow:hidden">
 
 <div style="position:relative;cursor:pointer"
-onclick="playVideo('${id}', this)">
+onclick="playVideo('${id}',this)">
 
 <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
 style="width:100%">
@@ -72,6 +72,12 @@ ${new Date(video.pubDate).toLocaleDateString()}
 `
 
 })
+
+}catch(e){
+
+container.innerHTML="Failed to load videos"
+
+}
 
 }
 
