@@ -1,362 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Goa Social · premium community</title>
-    <!-- Font Awesome 6 (free) for clean, modern icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ----- RESET & GLOBAL ----- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Goa Social · premium community</title>
 
-        body {
-            background-color: #000000;  /* pure black background – premium dark base */
-            color: #eaeaea;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;           /* prevent body scroll, handle inside main */
-            line-height: 1.4;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        /* ----- FIXED HEADER (premium feel) ----- */
-        .app-header {
-            background-color: #0a0a0a;   /* slightly lighter than pure black for depth */
-            backdrop-filter: blur(10px); /* subtle glass effect on modern devices */
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-            z-index: 10;
-        }
+<style>
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
 
-        .logo-icon {
-            background: linear-gradient(145deg, #ff8c42, #ff5e3a);  /* warm goa sunset gradient */
-            width: 32px;
-            height: 32px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #000;
-            box-shadow: 0 6px 12px rgba(255, 94, 58, 0.2);
-        }
+body{
+background-color:#000000;
+color:#eaeaea;
+height:100vh;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+line-height:1.4;
+}
 
-        .app-header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            background: linear-gradient(120deg, #ffffff, #dddddd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.app-header{
+background-color:#0a0a0a;
+border-bottom:1px solid rgba(255,255,255,0.05);
+padding:12px 18px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-shrink:0;
+box-shadow:0 4px 12px rgba(0,0,0,0.6);
+z-index:10;
+}
 
-        .header-actions {
-            display: flex;
-            gap: 18px;
-            color: #b0b0b0;
-        }
+.logo-area{
+display:flex;
+align-items:center;
+gap:8px;
+}
 
-        .header-actions i {
-            font-size: 1.3rem;
-            transition: color 0.2s;
-        }
+.logo-icon{
+background:linear-gradient(145deg,#ff8c42,#ff5e3a);
+width:32px;
+height:32px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+color:#000;
+}
 
-        .header-actions i:hover {
-            color: #ff7b42;
-        }
+.app-header h1{
+font-size:1.6rem;
+font-weight:600;
+}
 
-        /* ----- MAIN CONTENT AREA (dynamic pages load here) ----- */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            background-color: #000000;  /* consistent base */
-            padding: 8px 0;             /* small vertical rhythm, pages add inner padding */
-        }
+.header-actions{
+display:flex;
+gap:18px;
+color:#b0b0b0;
+}
 
-        /* inner container for page uniformity – pages will use this class */
-        .content-pane {
-            padding: 12px 16px 20px 16px;
-            max-width: 600px;            /* keeps cards comfortable on wide screens */
-            margin: 0 auto;
-            width: 100%;
-        }
+.main-content{
+flex:1;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+background:#000;
+padding:8px 0 90px 0; /* extra space so nav never overlaps content */
+}
 
-        /* ----- BOTTOM NAVIGATION (premium glass) ----- */
-        .bottom-nav {
-            background-color: rgba(15, 15, 15, 0.92);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 10px 12px 10px;
-            flex-shrink: 0;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.8);
-            z-index: 10;
-        }
+.content-pane{
+padding:12px 16px 20px 16px;
+max-width:600px;
+margin:0 auto;
+width:100%;
+}
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #7a7a7a;
-            font-size: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 30px;
-            background: transparent;
-            border: none;
-            width: auto;
-        }
+.bottom-nav{
+background:#0f0f0f;
+border-top:1px solid rgba(255,255,255,0.05);
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:8px 10px calc(14px + env(safe-area-inset-bottom));
+flex-shrink:0;
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+z-index:100;
+box-shadow:0 -4px 20px rgba(0,0,0,0.8);
+}
 
-        .nav-item i {
-            font-size: 1.7rem;
-            margin-bottom: 2px;
-            transition: transform 0.2s;
-        }
+.nav-item{
+display:flex;
+flex-direction:column;
+align-items:center;
+color:#7a7a7a;
+font-size:0.7rem;
+font-weight:500;
+cursor:pointer;
+padding:4px 12px;
+border-radius:30px;
+border:none;
+background:transparent;
+}
 
-        .nav-item span {
-            font-size: 0.7rem;
-            opacity: 0.8;
-        }
+.nav-item i{
+font-size:1.7rem;
+margin-bottom:2px;
+}
 
-        .nav-item.active {
-            color: #ff7b42;
-            background: rgba(255, 123, 66, 0.08);
-        }
+.nav-item.active{
+color:#ff7b42;
+background:rgba(255,123,66,0.08);
+}
 
-        .nav-item.active i {
-            transform: translateY(-2px);
-            text-shadow: 0 4px 8px rgba(255, 123, 66, 0.4);
-        }
+.loader{
+display:none;
+text-align:center;
+padding:40px 0;
+color:#ff7b42;
+font-size:1.2rem;
+}
 
-        /* subtle tap feedback */
-        .nav-item:active {
-            background: rgba(255,255,255,0.05);
-        }
+.loader i{
+font-size:2rem;
+animation:spin 1s linear infinite;
+}
 
-        /* loading indicator (hidden by default) */
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 40px 0;
-            color: #ff7b42;
-            font-size: 1.2rem;
-        }
-        .loader i {
-            font-size: 2rem;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
 
-        /* global utility for cards (pages will reuse) */
-        .card {
-            background: #151515;
-            border-radius: 28px;
-            padding: 20px 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 10px 22px -8px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.02) inset;
-            backdrop-filter: blur(2px);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+.card{
+background:#151515;
+border-radius:28px;
+padding:20px 18px;
+margin-bottom:16px;
+box-shadow:0 10px 22px -8px rgba(0,0,0,0.8);
+}
 
-        /* smooth scrollbar (modern) */
-        .main-content::-webkit-scrollbar {
-            width: 4px;
-        }
-        .main-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .main-content::-webkit-scrollbar-thumb {
-            background: #3a3a3a;
-            border-radius: 20px;
-        }
+.main-content::-webkit-scrollbar{
+width:4px;
+}
 
-        /* responsive micro adjustments */
-        @media (max-width: 380px) {
-            .app-header h1 { font-size: 1.4rem; }
-            .nav-item i { font-size: 1.5rem; }
-        }
-    </style>
+.main-content::-webkit-scrollbar-thumb{
+background:#3a3a3a;
+border-radius:20px;
+}
+
+</style>
 </head>
+
 <body>
-    <!-- fixed header (premium) -->
-    <header class="app-header">
-        <div class="logo-area">
-            <div class="logo-icon"><i class="fas fa-umbrella-beach"></i></div>
-            <h1>Goa Social</h1>
-        </div>
-        <div class="header-actions">
-            <i class="fas fa-search"></i>
-            <i class="fas fa-bell"></i>
-        </div>
-    </header>
 
-    <!-- main container where pages are dynamically injected -->
-    <main class="main-content" id="content">
-        <!-- loader indicator (hidden by default) -->
-        <div class="loader" id="loader"><i class="fas fa-circle-notch"></i><br>loading...</div>
-        <!-- pages will be inserted here, replacing any placeholder -->
-    </main>
+<header class="app-header">
 
-    <!-- bottom navigation (mobile-first) -->
-    <nav class="bottom-nav" id="bottomNav">
-        <button class="nav-item" data-page="home" id="nav-home">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </button>
-        <button class="nav-item" data-page="dating" id="nav-dating">
-            <i class="fas fa-heart"></i>
-            <span>Dating</span>
-        </button>
-        <button class="nav-item" data-page="business" id="nav-business">
-            <i class="fas fa-store"></i>
-            <span>Business</span>
-        </button>
-        <button class="nav-item" data-page="chats" id="nav-chats">
-            <i class="fas fa-comment-dots"></i>
-            <span>Chats</span>
-        </button>
-        <button class="nav-item" data-page="profile" id="nav-profile">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </button>
-    </nav>
+<div class="logo-area">
+<div class="logo-icon">
+<i class="fas fa-umbrella-beach"></i>
+</div>
+<h1>Goa Social</h1>
+</div>
 
-    <script>
-        (function() {
-            'use strict';
+<div class="header-actions">
+<i class="fas fa-search"></i>
+<i class="fas fa-bell"></i>
+</div>
 
-            // ----- DOM elements -----
-            const contentDiv = document.getElementById('content');
-            const loader = document.getElementById('loader');
-            const navItems = document.querySelectorAll('.nav-item');
-            
-            // default page to load
-            const DEFAULT_PAGE = 'home';
+</header>
 
-            // ----- helper: show/hide loader -----
-            function setLoading(active) {
-                if (active) {
-                    loader.style.display = 'block';
-                    // hide any previous content by wrapping? we just show loader above content, but content remains.
-                    // better to clear content while loading? we'll keep it simple: loader overlay-ish.
-                    // but we want to show loader and remove old content after fetch starts.
-                } else {
-                    loader.style.display = 'none';
-                }
-            }
 
-            // ----- update active nav item -----
-            function setActiveNav(pageName) {
-                navItems.forEach(item => {
-                    const page = item.getAttribute('data-page');
-                    if (page === pageName) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-            }
+<main class="main-content" id="content">
 
-            // ----- core function: load page HTML into content -----
-            async function loadPage(pageName) {
-                // show loader, clear previous content (optional but clean)
-                contentDiv.innerHTML = '';               // remove previous page
-                loader.style.display = 'block';          // show loader
+<div class="loader" id="loader">
+<i class="fas fa-circle-notch"></i><br>loading...
+</div>
 
-                // update active navigation
-                setActiveNav(pageName);
+</main>
 
-                // build path to page file
-                const pagePath = `pages/${pageName}.html`;
 
-                try {
-                    const response = await fetch(pagePath);
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-                    }
-                    let html = await response.text();
+<nav class="bottom-nav">
 
-                    // optional: wrap content in a consistent padded container for uniformity
-                    // but pages might want full-width? they can override. we'll wrap only if not already containing content-pane class?
-                    // better: let page decide, but we'll inject as is. pages can use .content-pane inside.
-                    
-                    // hide loader, insert html
-                    loader.style.display = 'none';
-                    contentDiv.innerHTML = html;
+<button class="nav-item" data-page="home">
+<i class="fas fa-home"></i>
+<span>Home</span>
+</button>
 
-                    // after insertion, run any page specific scripts? not needed for now, but we could dispatch event.
-                    // we'll rely on static html. For future interactivity, we can add a custom event.
-                } catch (error) {
-                    console.error('Failed to load page:', error);
-                    loader.style.display = 'none';
-                    // show user-friendly error inside content
-                    contentDiv.innerHTML = `
-                        <div class="content-pane" style="text-align: center; padding-top: 60px; color: #aaa;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff5e3a;"></i>
-                            <p style="margin-top: 20px;">couldn't load ${pageName} page.</p>
-                            <p style="font-size: 0.9rem;">check network or try again later.</p>
-                            <button onclick="location.reload()" style="background:#ff7b42; border:none; color:white; padding:12px 30px; border-radius:40px; margin-top:20px;">reload</button>
-                        </div>
-                    `;
-                }
-            }
+<button class="nav-item" data-page="dating">
+<i class="fas fa-heart"></i>
+<span>Dating</span>
+</button>
 
-            // ----- event listeners for bottom nav -----
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const page = item.getAttribute('data-page');
-                    if (page) {
-                        loadPage(page);
-                    }
-                });
-            });
+<button class="nav-item" data-page="business">
+<i class="fas fa-store"></i>
+<span>Business</span>
+</button>
 
-            // ----- initial load (home page) -----
-            // ensure home nav is active and content loaded
-            loadPage(DEFAULT_PAGE);
+<button class="nav-item" data-page="chats">
+<i class="fas fa-comment-dots"></i>
+<span>Chats</span>
+</button>
 
-            // (optional) handle browser back/forward? we can ignore for mvp, but pushState could be added later.
-            // we'll keep it simple, one-page shell with internal navigation.
-        })();
-    </script>
+<button class="nav-item" data-page="profile">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</button>
 
-    <!-- tiny inline style to make error card match dark aesthetic (reuse .card if needed) -->
-    <style>
-        /* ensures that any dynamically inserted card from pages uses premium style */
-        .content-pane .card:last-child {
-            margin-bottom: 0;
-        }
-        /* additional polish for potential images */
-        img {
-            border-radius: 24px;
-        }
-    </style>
+</nav>
+
+
+<script>
+
+(function(){
+
+const contentDiv=document.getElementById("content");
+const loader=document.getElementById("loader");
+const navItems=document.querySelectorAll(".nav-item");
+
+const DEFAULT_PAGE="home";
+
+function setActiveNav(pageName){
+
+navItems.forEach(item=>{
+
+const page=item.getAttribute("data-page");
+
+if(page===pageName){
+item.classList.add("active");
+}else{
+item.classList.remove("active");
+}
+
+});
+
+}
+
+async function loadPage(pageName){
+
+contentDiv.innerHTML="";
+loader.style.display="block";
+
+setActiveNav(pageName);
+
+const pagePath=`pages/${pageName}.html`;
+
+try{
+
+const response=await fetch(pagePath);
+
+if(!response.ok) throw new Error("fetch failed");
+
+const html=await response.text();
+
+loader.style.display="none";
+contentDiv.innerHTML=html;
+
+}catch(error){
+
+loader.style.display="none";
+contentDiv.innerHTML="<div style='padding:40px;text-align:center;color:#aaa'>Page could not load.</div>";
+
+}
+
+}
+
+navItems.forEach(item=>{
+
+item.addEventListener("click",()=>{
+
+const page=item.getAttribute("data-page");
+loadPage(page);
+
+});
+
+});
+
+loadPage(DEFAULT_PAGE);
+
+})();
+
+</script>
+
 </body>
 </html>
