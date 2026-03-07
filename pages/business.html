@@ -1,0 +1,165 @@
+<div class="content-pane">
+
+    <!-- header with filter and search hint -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-store-alt" style="color: #ff8c42; font-size: 1.5rem;"></i>
+            <h2 style="font-size: 1.5rem; font-weight: 600; letter-spacing: -0.5px; background: linear-gradient(145deg, #ff8c42, #ff5e3a); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">goa business</h2>
+        </div>
+        <div style="background: #202020; border-radius: 30px; padding: 8px 14px; color: #aaa; font-size: 0.8rem;">
+            <i class="fas fa-sliders-h" style="margin-right: 6px;"></i> filter
+        </div>
+    </div>
+
+    <!-- featured / category chips (optional) -->
+    <div style="display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none;">
+        <span style="background: #ff8c42; color: black; padding: 8px 18px; border-radius: 40px; font-size: 0.8rem; font-weight: 600;">All</span>
+        <span style="background: #252525; color: #ccc; padding: 8px 18px; border-radius: 40px; font-size: 0.8rem;">🍽️ Restaurants</span>
+        <span style="background: #252525; color: #ccc; padding: 8px 18px; border-radius: 40px; font-size: 0.8rem;">🛏️ Stays</span>
+        <span style="background: #252525; color: #ccc; padding: 8px 18px; border-radius: 40px; font-size: 0.8rem;">🏄 Activities</span>
+        <span style="background: #252525; color: #ccc; padding: 8px 18px; border-radius: 40px; font-size: 0.8rem;">🛵 Rentals</span>
+    </div>
+
+    <!-- BUSINESS CARD 1 - Restaurant -->
+    <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="height: 160px; background: linear-gradient(145deg, #8b5a2b, #4a2c1a); position: relative;">
+            <!-- decorative image icon -->
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0.2;">
+                <i class="fas fa-utensils" style="font-size: 4rem; color: white;"></i>
+            </div>
+            <!-- business name overlay -->
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px 18px 16px;">
+                <h3 style="color: white; font-size: 1.6rem; font-weight: 600;">Fisherman's Wharf</h3>
+            </div>
+            <!-- badge (open now) -->
+            <span style="position: absolute; top: 16px; right: 16px; background: #1f9a5e; color: white; padding: 5px 14px; border-radius: 30px; font-size: 0.7rem; font-weight: bold;"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 5px;"></i> open now</span>
+        </div>
+        <div style="padding: 18px;">
+            <!-- rating and category row -->
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 4px; color: #ffb83b;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span style="color: #ccc; margin-left: 4px;">4.7 (1.2k reviews)</span>
+                </div>
+                <span style="background: #2a2a2a; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; color: #ff8c42;">Goan · Seafood</span>
+            </div>
+            <p style="color: #bbb; font-size: 0.9rem; margin-bottom: 16px;">Famous for crab xec xec and live music. Perfect riverside setting in Panjim.</p>
+            <!-- tags and action -->
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; gap: 6px;">
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;"><i class="fas fa-map-pin"></i> 1.2km</span>
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;"><i class="fas fa-clock"></i> 11:00–23:00</span>
+                </div>
+                <button style="background: linear-gradient(145deg, #ff8c42, #ff5e3a); border: none; color: black; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; box-shadow: 0 6px 0 #b33d1f; cursor: pointer;">Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSINESS CARD 2 - Guesthouse -->
+    <div class="card" style="padding: 0; overflow: hidden; margin-top: 18px;">
+        <div style="height: 150px; background: linear-gradient(145deg, #1b4d5e, #0b2a35); position: relative;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0.2;">
+                <i class="fas fa-bed" style="font-size: 4rem;"></i>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px 18px 16px;">
+                <h3 style="color: white; font-size: 1.5rem; font-weight: 600;">Shubham Guesthouse</h3>
+            </div>
+            <span style="position: absolute; top: 16px; right: 16px; background: #2a2a2a; color: #ffb83b; padding: 5px 14px; border-radius: 30px; font-size: 0.7rem;"><i class="fas fa-crown"></i> popular</span>
+        </div>
+        <div style="padding: 18px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 4px; color: #ffb83b;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span style="color: #ccc; margin-left: 4px;">5.0 (340 reviews)</span>
+                </div>
+                <span style="background: #2a2a2a; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; color: #4facfe;">Guesthouse</span>
+            </div>
+            <p style="color: #bbb; font-size: 0.9rem; margin-bottom: 16px;">Cozy rooms with garden view, 5min walk to Candolim beach. Friendly host and breakfast included.</p>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; gap: 6px;">
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;"><i class="fas fa-map-pin"></i> 800m</span>
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;"><i class="fas fa-wifi"></i> free wifi</span>
+                </div>
+                <button style="background: linear-gradient(145deg, #ff8c42, #ff5e3a); border: none; color: black; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; box-shadow: 0 6px 0 #b33d1f; cursor: pointer;">Book</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSINESS CARD 3 - Surf School -->
+    <div class="card" style="padding: 0; overflow: hidden; margin-top: 18px;">
+        <div style="height: 150px; background: linear-gradient(145deg, #3a6b4b, #1e402c); position: relative;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0.2;">
+                <i class="fas fa-water" style="font-size: 4rem;"></i>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px 18px 16px;">
+                <h3 style="color: white; font-size: 1.5rem; font-weight: 600;">Goa Surf School</h3>
+            </div>
+        </div>
+        <div style="padding: 18px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 4px; color: #ffb83b;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span style="color: #ccc; margin-left: 4px;">4.9 (876 reviews)</span>
+                </div>
+                <span style="background: #2a2a2a; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; color: #ff8c42;">Surfing</span>
+            </div>
+            <p style="color: #bbb; font-size: 0.9rem; margin-bottom: 16px;">Learn to surf with certified instructors. Equipment provided. Group & private lessons at Morjim beach.</p>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; gap: 6px;">
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;"><i class="fas fa-map-pin"></i> 3.5km</span>
+                    <span style="background: #252525; padding: 5px 12px; border-radius: 30px; font-size: 0.6rem; color: #aaa;">🏄 beginner friendly</span>
+                </div>
+                <button style="background: linear-gradient(145deg, #ff8c42, #ff5e3a); border: none; color: black; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; box-shadow: 0 6px 0 #b33d1f; cursor: pointer;">Inquire</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSINESS CARD 4 - Flea Market (shopping) -->
+    <div class="card" style="padding: 0; overflow: hidden; margin-top: 18px;">
+        <div style="height: 140px; background: linear-gradient(145deg, #7d5e3a, #4d3e2b); position: relative;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0.2;">
+                <i class="fas fa-shopping-bag" style="font-size: 4rem;"></i>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px 18px 16px;">
+                <h3 style="color: white; font-size: 1.4rem; font-weight: 600;">Anjuna Flea Market</h3>
+            </div>
+        </div>
+        <div style="padding: 18px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <span style="background: #2a2a2a; padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; color: #ffb83b;"><i class="fas fa-star"></i> 4.3 (2.1k)</span>
+                <span style="background: #2a2a2a; padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; color: #ccc;">🛍️ market</span>
+                <span style="background: #2a2a2a; padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; color: #ccc;">🎨 souvenirs</span>
+            </div>
+            <p style="color: #bbb; font-size: 0.85rem; margin-bottom: 14px;">Every Wednesday. Clothing, jewelry, spices, and live music. Don't miss the food stalls.</p>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="color: #aaa; font-size: 0.7rem;"><i class="far fa-clock"></i> opens 9am Wed</span>
+                <button style="background: #252525; border: none; color: #ff8c42; padding: 8px 20px; border-radius: 40px; font-weight: 500; font-size: 0.8rem; cursor: pointer;">Directions</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSINESS CARD 5 - Scooty Rental (compact) -->
+    <div class="card" style="display: flex; align-items: center; gap: 18px; padding: 16px; margin-top: 18px;">
+        <div style="width: 70px; height: 70px; border-radius: 30px; background: linear-gradient(145deg, #2b5876, #1e3a5f); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ffb347;">
+            <i class="fas fa-motorcycle"></i>
+        </div>
+        <div style="flex: 1;">
+            <h4 style="font-weight: 600; font-size: 1.2rem;">Pedro's Scooty Rentals</h4>
+            <div style="display: flex; align-items: center; gap: 8px; margin: 5px 0;">
+                <span style="color: #ffb83b;"><i class="fas fa-star"></i> 4.6</span>
+                <span style="background: #252525; padding: 3px 10px; border-radius: 30px; font-size: 0.6rem;">⚡ 300/day</span>
+                <span style="background: #252525; padding: 3px 10px; border-radius: 30px; font-size: 0.6rem;">📍 Candolim</span>
+            </div>
+            <p style="color: #aaa; font-size: 0.8rem;">Activa, Access, and e-scooters. Helmet & insurance included.</p>
+        </div>
+        <button style="background: #ff8c42; border: none; color: black; width: 46px; height: 46px; border-radius: 50%; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #b3541c; cursor: pointer;">
+            <i class="fas fa-phone-alt"></i>
+        </button>
+    </div>
+
+    <!-- end of feed spacer -->
+    <div style="text-align: center; color: #444; font-size: 0.7rem; margin: 30px 0 20px;">
+        <i class="fas fa-store"></i> support local goa <i class="fas fa-store"></i>
+    </div>
+
+                                                                                                                                                                      </div>
