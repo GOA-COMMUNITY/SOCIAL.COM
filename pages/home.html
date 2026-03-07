@@ -1,14 +1,4 @@
-<div class="content-pane">
-
-<h2 style="margin-bottom:20px;">Goa Video Feed</h2>
-
-<div id="videoFeed"></div>
-
-</div>
-
-<script>
-
-setTimeout(function(){
+function loadHomeVideos(){
 
 const videos = [
 "dQw4w9WgXcQ",
@@ -18,7 +8,9 @@ const videos = [
 
 let container = document.getElementById("videoFeed")
 
-videos.forEach(function(id){
+if(!container) return
+
+videos.forEach(id=>{
 
 container.innerHTML += `
 <div style="margin-bottom:20px">
@@ -32,8 +24,7 @@ onclick="playVideo('${id}',this)">
 
 })
 
-},100)
-
+}
 
 function playVideo(id, element){
 
@@ -48,5 +39,3 @@ allowfullscreen>
 `
 
 }
-
-</script>
