@@ -1,116 +1,94 @@
 <div class="content-pane">
 
-<!-- FILTER SLIDER -->
-<div style="overflow-x:auto; white-space:nowrap; margin-bottom:16px;">
-<div style="display:flex; gap:10px;">
-<button class="card" style="padding:8px 18px;">All</button>
-<button class="card" style="padding:8px 18px;">Videos</button>
-<button class="card" style="padding:8px 18px;">News</button>
-<button class="card" style="padding:8px 18px;">Posts</button>
-<button class="card" style="padding:8px 18px;">Events</button>
-</div>
-</div>
+<h2 style="margin-bottom:20px;">Goa Videos</h2>
 
-<!-- TRENDING IN GOA -->
-<div class="card">
-<h3 style="margin-bottom:10px;">🔥 Trending in Goa</h3>
-
-<div style="display:flex; flex-direction:column; gap:8px;">
-<div>Casino strike escalates</div>
-<div>New beach club opens in Baga</div>
-<div>Viral Goa sunset reel</div>
-</div>
+<div id="videoFeed"></div>
 
 </div>
 
-<!-- VIDEO CARD -->
-<div class="card">
+<script>
 
-<div style="height:200px; background:#222; display:flex; align-items:center; justify-content:center;">
-<iframe width="100%" height="200"
-src="https://www.youtube.com/embed/Scxs7L0vhZ4"
-frameborder="0" allowfullscreen></iframe>
-</div>
+/* YOUR CHANNEL RSS */
 
-<h3 style="margin-top:10px;">Hidden Beaches of Goa</h3>
-<p style="color:#aaa;">Explore secret beaches locals love.</p>
+const channels = [
 
-</div>
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCYPvAwZP8pZhSMW8qs7cVCw",
+"https://www.youtube.com/feeds/videos.xml?channel_id=UC9CYT9gSNLevX5ey2_6CK0Q"
 
-<!-- COMMUNITY POST -->
-<div class="card">
+]
 
-<div style="display:flex; align-items:center; gap:10px;">
-<div style="width:40px;height:40px;border-radius:50%;background:#ff7b42;"></div>
-<div>
-<b>Rahul</b><br>
-<span style="color:#888;font-size:12px;">Vagator</span>
-</div>
-</div>
+async function loadVideos(){
 
-<p style="margin-top:10px;">
-Best sunset today at Vagator beach 🌅
-</p>
+let container = document.getElementById("videoFeed")
 
-<div style="height:200px; background:#333; margin-top:10px;"></div>
+channels.forEach(async channel=>{
 
-<div style="display:flex; gap:20px; margin-top:10px;">
-<span>❤️ 120</span>
-<span>💬 18</span>
-</div>
+let api = "https://api.rss2json.com/v1/api.json?rss_url="+channel
 
-</div>
+let res = await fetch(api)
 
-<!-- NEWS CARD -->
-<div class="card">
+let data = await res.json()
 
-<div style="height:180px; background:#333;"></div>
+/* choose non-live video */
 
-<h3 style="margin-top:10px;">Goa tourism breaks records</h3>
+let video = data.items.find(v => !v.title.includes("LIVE"))
 
-<p style="color:#aaa;">
-International arrivals surge this season as beaches fill up.
-</p>
+if(!video) return
 
-</div>
+let id = video.link.split("v=")[1]
 
-<!-- EVENTS CARD -->
-<div class="card">
+container.innerHTML += `
 
-<h3>🎉 Goa Events</h3>
+<div class="card" style="padding:0;overflow:hidden">
 
-<div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+<div style="position:relative;cursor:pointer"
+onclick="playVideo('${id}', this)">
 
-<div>
-<b>Sunburn Festival</b><br>
-<span style="color:#aaa;">Candolim</span>
-</div>
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
+style="width:100%">
 
-<div>
-<b>Anjuna Flea Market</b><br>
-<span style="color:#aaa;">Sunday</span>
-</div>
-
-<div>
-<b>Beach Party Palolem</b><br>
-<span style="color:#aaa;">Friday</span>
+<div style="
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:42px;
+background:rgba(0,0,0,0.6);
+padding:12px 20px;
+border-radius:50%;
+">
+▶
 </div>
 
 </div>
 
-</div>
-
-<!-- ANOTHER VIDEO -->
-<div class="card">
-
-<div style="height:200px;">
-<iframe width="100%" height="200"
-src="https://www.youtube.com/embed/kJQP7kiw5Fk"
-frameborder="0" allowfullscreen></iframe>
-</div>
-
-<h3 style="margin-top:10px;">Nightlife in Goa</h3>
-
+<div style="padding:16px">
+<h3 style="font-size:1rem">${video.title}</h3>
 </div>
 
 </div>
+
+`
+
+})
+
+}
+
+function playVideo(id, element){
+
+element.outerHTML = `
+<iframe
+width="100%"
+height="220"
+src="https://www.youtube-nocookie.com/embed/${id}"
+frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
+`
+
+}
+
+loadVideos()
+
+</script>
