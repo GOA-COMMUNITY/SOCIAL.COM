@@ -1,56 +1,36 @@
 <div class="content-pane">
 
-<h2 style="margin-bottom:20px;">Goa Social Feed</h2>
+<h2 style="margin-bottom:20px;">Goa Video Feed</h2>
 
-<!-- LIVE VIDEOS -->
-<div class="card">
-<h3>🔴 Live Now</h3>
-<div id="liveFeed">Checking live streams...</div>
-</div>
-
-<!-- VIDEO FEED -->
-<div class="card">
-<h3>🎥 Latest Videos</h3>
 <div id="videoFeed"></div>
-</div>
-
-<!-- NEWS FEED -->
-<div class="card">
-<h3>📰 Goa News</h3>
-<div id="newsFeed">Loading news...</div>
-</div>
 
 </div>
 
 <script>
 
-/* =========================
-   YOUTUBE CHANNEL RSS
-========================= */
+/* YOUTUBE CHANNEL RSS FEEDS */
 
 const channels = [
 
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCs6n1V7sW1sK4Ck6uE4Fv9Q", // NDTV India
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCYPvAwZP8pZhSMW8qs7cVCw", // India Today
-"https://www.youtube.com/feeds/videos.xml?channel_id=UC9CYT9gSNLevX5ey2_6CK0Q", // Goa365
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCiQnJkCz0r4iCq9Q3rQ0T6g"  // Goa News Hub
+/* NDTV India */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCZFMm1mMw0F81Z37aaEzTUA",
+
+/* India Today */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCYPvAwZP8pZhSMW8qs7cVCw",
+
+/* RDX Goa */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UC0YH6QJk8C5o0T6g8Y6l6kQ",
+
+/* Goa365 TV */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UC9CYT9gSNLevX5ey2_6CK0Q",
+
+/* Goa News Hub */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCiQnJkCz0r4iCq9Q3rQ0T6g",
+
+/* Travel With Sonia */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCn5fW8G9Rz0P3X6mX6v8WkQ"
 
 ]
-
-/* =========================
-   GOA NEWS RSS
-========================= */
-
-const newsFeeds = [
-
-"https://timesofindia.indiatimes.com/rssfeeds/3012535.cms",
-"https://www.heraldgoa.in/rss"
-
-]
-
-/* =========================
-   LOAD VIDEOS
-========================= */
 
 async function loadVideos(){
 
@@ -64,9 +44,11 @@ let res = await fetch(api)
 
 let data = await res.json()
 
+/* show 3 videos from each channel */
+
 data.items.slice(0,3).forEach(video=>{
 
-let id = video.link.split("v=")[1]
+let id = video.link.split("v=")[1].split("&")[0]
 
 container.innerHTML += `
 
@@ -115,9 +97,7 @@ ${new Date(video.pubDate).toLocaleDateString()}
 
 }
 
-/* =========================
-   PLAY VIDEO INLINE
-========================= */
+/* PLAY VIDEO */
 
 function playVideo(id, element){
 
@@ -134,90 +114,6 @@ allowfullscreen>
 
 }
 
-/* =========================
-   LOAD NEWS
-========================= */
-
-async function loadNews(){
-
-let container = document.getElementById("newsFeed")
-
-container.innerHTML = ""
-
-newsFeeds.forEach(async feed=>{
-
-let api = "https://api.rss2json.com/v1/api.json?rss_url="+feed
-
-let res = await fetch(api)
-
-let data = await res.json()
-
-data.items.slice(0,3).forEach(article=>{
-
-let img = ""
-
-let match = article.description.match(/src="(.*?)"/)
-
-if(match){
-img = match[1]
-}
-
-container.innerHTML += `
-
-<div class="card" style="padding:0;margin-bottom:20px">
-
-${img ? `<img src="${img}" style="width:100%">` : ""}
-
-<div style="padding:16px">
-
-<h3 style="font-size:1rem;margin-bottom:8px">
-${article.title}
-</h3>
-
-<p style="font-size:0.85rem;color:#aaa">
-${article.description.replace(/<[^>]+>/g,'').substring(0,120)}...
-</p>
-
-<button
-onclick="openArticle('${article.link}')"
-style="
-margin-top:10px;
-background:#ff7b42;
-border:none;
-padding:8px 14px;
-border-radius:6px;
-cursor:pointer;
-">
-Read Article
-</button>
-
-</div>
-
-</div>
-
-`
-
-})
-
-})
-
-}
-
-/* =========================
-   ARTICLE READER
-========================= */
-
-function openArticle(url){
-
-window.open(url, "_blank")
-
-}
-
-/* =========================
-   START
-========================= */
-
 loadVideos()
-loadNews()
 
 </script>
