@@ -1,7 +1,68 @@
 <div class="content-pane">
 
-<h2 style="margin-bottom:20px;">Goa Video Feed</h2>
+<h2 style="margin-bottom:20px;">Goa News Live</h2>
 
 <div id="videoFeed"></div>
 
 </div>
+
+<script>
+
+const videos = [
+
+"SFnrq5z5ox8",  // Goa live news test
+"aqz-KE-bpKQ",
+"dQw4w9WgXcQ"
+
+]
+
+let container = document.getElementById("videoFeed")
+
+videos.forEach(id=>{
+
+container.innerHTML += `
+
+<div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+
+<div style="position:relative;cursor:pointer"
+onclick="playVideo('${id}', this)">
+
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
+style="width:100%">
+
+<div style="
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:40px;
+background:rgba(0,0,0,0.6);
+padding:12px 18px;
+border-radius:50%;
+color:white;">
+▶
+</div>
+
+</div>
+
+</div>
+
+`
+
+})
+
+function playVideo(id, element){
+
+element.outerHTML = `
+<iframe
+width="100%"
+height="220"
+src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1"
+frameborder="0"
+allowfullscreen>
+</iframe>
+`
+
+}
+
+</script>
