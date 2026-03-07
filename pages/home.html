@@ -1,55 +1,108 @@
 <div class="content-pane">
 
-<h2 style="margin-bottom:20px;">🔥 Trending in Goa</h2>
-
-<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:10px">
-
-<div class="card" style="min-width:220px;padding:16px">
-<h3>Casino News</h3>
-<p style="font-size:0.8rem;color:#aaa">Debate around offshore casinos heating up.</p>
-</div>
-
-<div class="card" style="min-width:220px;padding:16px">
-<h3>Baga Beach Party</h3>
-<p style="font-size:0.8rem;color:#aaa">Weekend nightlife crowd increases.</p>
-</div>
-
-<div class="card" style="min-width:220px;padding:16px">
-<h3>Tourism Boom</h3>
-<p style="font-size:0.8rem;color:#aaa">Hotels fully booked this season.</p>
-</div>
-
-</div>
-
-
-<h2 style="margin:30px 0 20px 0;">📺 Goa News Videos</h2>
+<h2 style="margin-bottom:20px;">📺 Goa News Videos</h2>
 
 <div id="videoFeed"></div>
 
-
-<h2 style="margin:30px 0 20px 0;">💬 Community Posts</h2>
-
-<div class="card" style="padding:16px">
-<h3>Sunset at Anjuna</h3>
-<p style="color:#aaa;font-size:0.9rem">Anyone going to the drum circle tonight?</p>
 </div>
 
-<div class="card" style="padding:16px">
-<h3>Best Goan Food?</h3>
-<p style="color:#aaa;font-size:0.9rem">Where can I get the best prawn curry in Panjim?</p>
+<script>
+
+/* YOUTUBE CHANNEL RSS FEEDS */
+
+const channels = [
+
+/* Prudent Media Goa TV */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UC7GxZQYbXcWv0ZK0s8AjtKQ",
+
+/* NDTV Profit */
+"https://www.youtube.com/feeds/videos.xml?channel_id=UCmK8T3E0C7R6KqJH9nS3FoA"
+
+]
+
+async function loadVideos(){
+
+let container = document.getElementById("videoFeed")
+
+container.innerHTML = "Loading videos..."
+
+channels.forEach(async channel=>{
+
+let api = "https://api.rss2json.com/v1/api.json?rss_url="+channel
+
+let res = await fetch(api)
+
+let data = await res.json()
+
+let limit = 8
+
+data.items.slice(0,limit).forEach(video=>{
+
+let id = video.link.split("v=")[1].split("&")[0]
+
+container.innerHTML += `
+
+<div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+
+<div style="position:relative;cursor:pointer"
+onclick="playVideo('${id}', this)">
+
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg"
+style="width:100%">
+
+<div style="
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:40px;
+background:rgba(0,0,0,0.6);
+padding:12px 18px;
+border-radius:50%;
+color:white;">
+▶
 </div>
 
-
-<h2 style="margin:30px 0 20px 0;">🎉 Events</h2>
-
-<div class="card" style="padding:16px">
-<h3>Saturday Beach Festival</h3>
-<p style="color:#aaa;font-size:0.9rem">Live music and food stalls at Vagator.</p>
 </div>
 
-<div class="card" style="padding:16px">
-<h3>Startup Meetup</h3>
-<p style="color:#aaa;font-size:0.9rem">Networking event for Goa entrepreneurs.</p>
+<div style="padding:16px">
+
+<h3 style="font-size:1rem;margin-bottom:6px">
+${video.title}
+</h3>
+
+<p style="font-size:0.75rem;color:#888">
+${new Date(video.pubDate).toLocaleDateString()}
+</p>
+
 </div>
 
 </div>
+
+`
+
+})
+
+})
+
+}
+
+/* PLAY VIDEO */
+
+function playVideo(id, element){
+
+element.outerHTML = `
+<iframe
+width="100%"
+height="220"
+src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1"
+frameborder="0"
+allowfullscreen>
+</iframe>
+`
+
+}
+
+loadVideos()
+
+</script>
