@@ -1,6 +1,6 @@
 <div class="content-pane">
 
-<h2 style="margin-bottom:20px;">📺 Goa News Videos</h2>
+<h2 style="margin-bottom:20px;">🔥 Verse Edits Videos</h2>
 
 <div id="videoFeed"></div>
 
@@ -8,17 +8,9 @@
 
 <script>
 
-/* YOUTUBE CHANNEL RSS FEEDS */
+/* VerseEdits channel RSS */
 
-const channels = [
-
-/* Prudent Media Goa TV */
-"https://www.youtube.com/feeds/videos.xml?channel_id=UC7GxZQYbXcWv0ZK0s8AjtKQ",
-
-/* NDTV Profit */
-"https://www.youtube.com/feeds/videos.xml?channel_id=UCmK8T3E0C7R6KqJH9nS3FoA"
-
-]
+const channel = "https://www.youtube.com/feeds/videos.xml?channel_id=UC8QqG6Jd9v7E3lR9Qh4QkFg"
 
 async function loadVideos(){
 
@@ -26,23 +18,21 @@ let container = document.getElementById("videoFeed")
 
 container.innerHTML = "Loading videos..."
 
-channels.forEach(async channel=>{
-
-let api = "https://api.rss2json.com/v1/api.json?rss_url="+channel
+let api = "https://api.rss2json.com/v1/api.json?rss_url=" + channel
 
 let res = await fetch(api)
 
 let data = await res.json()
 
-let limit = 8
+container.innerHTML = ""
 
-data.items.slice(0,limit).forEach(video=>{
+data.items.slice(0,8).forEach(video=>{
 
 let id = video.link.split("v=")[1].split("&")[0]
 
 container.innerHTML += `
 
-<div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+<div class="card" style="padding:0;overflow:hidden">
 
 <div style="position:relative;cursor:pointer"
 onclick="playVideo('${id}', this)">
@@ -83,11 +73,7 @@ ${new Date(video.pubDate).toLocaleDateString()}
 
 })
 
-})
-
 }
-
-/* PLAY VIDEO */
 
 function playVideo(id, element){
 
