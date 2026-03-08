@@ -1,71 +1,448 @@
-<div class="content-pane">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Goa Social · Video feed</title>
+    <!-- Font Awesome 6 (free) for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-<h2 style="margin-bottom:20px;">📰 Prudent Media Goa</h2>
+        body {
+            background-color: #000000;
+            color: #eaeaea;
+            line-height: 1.4;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/SFnrq5z5ox8" frameborder="0" allowfullscreen></iframe>
-</div>
+        /* main scroll container – matches app shell */
+        .home-feed {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 12px 16px 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/x3hV3lWf0Gk" frameborder="0" allowfullscreen></iframe>
-</div>
+        /* channel section */
+        .channel-section {
+            width: 100%;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/aqz-KE-bpKQ" frameborder="0" allowfullscreen></iframe>
-</div>
+        .channel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allowfullscreen></iframe>
-</div>
+        .channel-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #ff8c42;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.6);
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-</div>
+        .channel-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            background: linear-gradient(120deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
+        /* video cards grid (vertical) */
+        .videos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
 
-<h2 style="margin:30px 0 20px;">🎥 RDX Goa</h2>
+        /* video card – premium card with rounded corners, dark surface */
+        .video-card {
+            background: #151515;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.02) inset;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/3fumBcKC6RE" frameborder="0" allowfullscreen></iframe>
-</div>
+        .video-card:active {
+            transform: scale(0.99);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.8);
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/J---aiyznGQ" frameborder="0" allowfullscreen></iframe>
-</div>
+        /* thumbnail container with play overlay */
+        .thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #2a2a2a;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/2vjPBrBU-TM" frameborder="0" allowfullscreen></iframe>
-</div>
+        .thumbnail-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/OPf0YbXqDm0" frameborder="0" allowfullscreen></iframe>
-</div>
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            backdrop-filter: blur(2px);
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/60ItHLz5WEA" frameborder="0" allowfullscreen></iframe>
-</div>
+        .video-card:hover .play-overlay,
+        .video-card:active .play-overlay {
+            opacity: 1;
+        }
 
+        /* for touch devices we show a subtle hint, but we keep it minimal */
+        .play-overlay i {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 4px 12px black;
+            background: rgba(0,0,0,0.3);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
 
-<h2 style="margin:30px 0 20px;">🎬 VoxLily</h2>
+        /* video info */
+        .video-info {
+            padding: 16px 18px 18px;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/kJQP7kiw5Fk" frameborder="0" allowfullscreen></iframe>
-</div>
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/fLexgOxsZu0" frameborder="0" allowfullscreen></iframe>
-</div>
+        .publish-date {
+            font-size: 0.8rem;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allowfullscreen></iframe>
-</div>
+        .publish-date i {
+            color: #ff8c42;
+            font-size: 0.7rem;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/L_jWHffIx5E" frameborder="0" allowfullscreen></iframe>
-</div>
+        /* embedded player container (hidden until click) */
+        .video-player-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #0a0a0a;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            display: none; /* hidden by default */
+            box-shadow: 0 12px 30px -8px black;
+        }
 
-<div class="card">
-<iframe width="100%" height="220" src="https://www.youtube.com/embed/e-ORhEE9VVg" frameborder="0" allowfullscreen></iframe>
-</div>
+        .video-player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-</div>
+        /* active player show */
+        .video-card.playing .video-player-container {
+            display: block;
+        }
+
+        .video-card.playing .thumbnail-wrapper {
+            display: none;
+        }
+
+        /* loading & error states */
+        .loading-indicator, .error-message {
+            text-align: center;
+            padding: 40px 0;
+            color: #aaa;
+        }
+        .loading-indicator i {
+            font-size: 2.5rem;
+            color: #ff8c42;
+            animation: spin 1.2s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .error-message {
+            background: #1e1e1e;
+            border-radius: 40px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .error-message i {
+            font-size: 2rem;
+            color: #ff5e3a;
+            margin-bottom: 12px;
+        }
+
+        /* utility */
+        .small-note {
+            color: #444;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-feed" id="feedContainer">
+        <!-- dynamic content will be injected by javascript -->
+        <div class="loading-indicator" id="loading">
+            <i class="fas fa-circle-notch"></i>
+            <p style="margin-top: 12px;">loading fresh goa videos...</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- CONFIGURATION ----------
+            const API_KEY = 'AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4'; // provided key
+
+            // Direct channel IDs (hardcoded for reliability)
+            const CHANNELS = [
+                { name: 'Prudent Media Goa', channelId: 'UCn2pEPYpDGeK7CvO3dH0WkA' },
+                { name: 'RDX Goa', channelId: 'UCAX1AR_JYH8T6uFJ-D44PlA' },
+                { name: 'VoxLily', channelId: 'UCvoxlilyE8Zexample' }  // provided placeholder – if invalid, will show error gracefully
+            ];
+
+            const feedDiv = document.getElementById('feedContainer');
+            const loadingEl = document.getElementById('loading');
+
+            // helper to format relative time (same as before)
+            function timeAgo(dateString) {
+                const now = new Date();
+                const published = new Date(dateString);
+                const diffMs = now - published;
+                const diffSec = Math.floor(diffMs / 1000);
+                const diffMin = Math.floor(diffSec / 60);
+                const diffHr = Math.floor(diffMin / 60);
+                const diffDays = Math.floor(diffHr / 24);
+
+                if (diffDays > 30) {
+                    const months = Math.floor(diffDays / 30);
+                    return months + ' month' + (months > 1 ? 's' : '') + ' ago';
+                } else if (diffDays > 0) {
+                    return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+                } else if (diffHr > 0) {
+                    return diffHr + ' hour' + (diffHr > 1 ? 's' : '') + ' ago';
+                } else if (diffMin > 0) {
+                    return diffMin + ' minute' + (diffMin > 1 ? 's' : '') + ' ago';
+                } else {
+                    return 'just now';
+                }
+            }
+
+            // Step 1: get uploads playlist ID from channel ID
+            async function getUploadsPlaylistId(channelId) {
+                const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${API_KEY}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+                if (!data.items || data.items.length === 0) {
+                    throw new Error('Channel not found');
+                }
+                
+                const uploadsId = data.items[0].contentDetails.relatedPlaylists.uploads;
+                if (!uploadsId) {
+                    throw new Error('No uploads playlist');
+                }
+                return uploadsId;
+            }
+
+            // Step 2: fetch latest videos from uploads playlist (max 7)
+            async function fetchVideosFromPlaylist(playlistId, maxResults = 7) {
+                const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=${maxResults}&key=${API_KEY}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+                
+                return data.items.map(item => {
+                    const snippet = item.snippet;
+                    return {
+                        videoId: snippet.resourceId.videoId,
+                        title: snippet.title,
+                        publishedAt: snippet.publishedAt,
+                        thumbnail: snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url || snippet.thumbnails.default?.url,
+                    };
+                });
+            }
+
+            // main function to load all channels and render
+            async function loadAllFeeds() {
+                try {
+                    loadingEl.style.display = 'block';
+                    feedDiv.innerHTML = ''; 
+                    feedDiv.appendChild(loadingEl); // keep loader inside while loading
+
+                    const channelPromises = CHANNELS.map(async (ch) => {
+                        try {
+                            const uploadsPlaylistId = await getUploadsPlaylistId(ch.channelId);
+                            const videos = await fetchVideosFromPlaylist(uploadsPlaylistId, 7);
+                            return { ...ch, videos, error: null };
+                        } catch (err) {
+                            console.warn(`Failed for ${ch.name} (${ch.channelId})`, err);
+                            return { ...ch, videos: [], error: err.message };
+                        }
+                    });
+
+                    const channelsData = await Promise.all(channelPromises);
+
+                    // remove loader
+                    feedDiv.innerHTML = '';
+
+                    let anyVideo = false;
+                    // Render each channel section
+                    channelsData.forEach(channel => {
+                        if (channel.videos && channel.videos.length > 0) {
+                            anyVideo = true;
+                            const section = document.createElement('div');
+                            section.className = 'channel-section';
+
+                            // header
+                            const headerDiv = document.createElement('div');
+                            headerDiv.className = 'channel-header';
+                            headerDiv.innerHTML = `
+                                <div class="channel-icon"><i class="fab fa-youtube"></i></div>
+                                <h2>${channel.name}</h2>
+                            `;
+                            section.appendChild(headerDiv);
+
+                            // videos list container
+                            const videosList = document.createElement('div');
+                            videosList.className = 'videos-list';
+
+                            // create cards
+                            channel.videos.forEach(v => {
+                                const card = document.createElement('div');
+                                card.className = 'video-card';
+                                card.setAttribute('data-video-id', v.videoId);
+
+                                // format date
+                                const dateStr = timeAgo(v.publishedAt);
+
+                                card.innerHTML = `
+                                    <div class="thumbnail-wrapper">
+                                        <img src="${v.thumbnail}" alt="${v.title.replace(/"/g, '&quot;')}" loading="lazy">
+                                        <div class="play-overlay"><i class="fas fa-play"></i></div>
+                                    </div>
+                                    <div class="video-player-container"></div>
+                                    <div class="video-info">
+                                        <div class="video-title">${v.title}</div>
+                                        <div class="publish-date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                                    </div>
+                                `;
+
+                                // click handler: play video inside card (same as before)
+                                card.addEventListener('click', function(e) {
+                                    const playerContainer = this.querySelector('.video-player-container');
+                                    const thumbnailWrap = this.querySelector('.thumbnail-wrapper');
+                                    
+                                    // if iframe not yet created, create it.
+                                    if (!playerContainer.querySelector('iframe')) {
+                                        const iframe = document.createElement('iframe');
+                                        iframe.src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1&rel=0&modestbranding=1`;
+                                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                                        iframe.allowFullscreen = true;
+                                        playerContainer.appendChild(iframe);
+                                    }
+
+                                    // hide thumbnail, show player
+                                    thumbnailWrap.style.display = 'none';
+                                    playerContainer.style.display = 'block';
+                                    this.classList.add('playing');
+                                });
+
+                                videosList.appendChild(card);
+                            });
+
+                            section.appendChild(videosList);
+                            feedDiv.appendChild(section);
+                        } else if (channel.error) {
+                            // show minimal error inside a small section
+                            const errDiv = document.createElement('div');
+                            errDiv.style.padding = '20px';
+                            errDiv.style.background = '#1a1a1a';
+                            errDiv.style.borderRadius = '30px';
+                            errDiv.style.margin = '12px 0';
+                            errDiv.style.color = '#aaa';
+                            errDiv.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff5e3a; margin-right:8px;"></i> ${channel.name} unavailable (${channel.error})`;
+                            feedDiv.appendChild(errDiv);
+                        }
+                    });
+
+                    if (!anyVideo) {
+                        // no videos from any channel
+                        feedDiv.innerHTML = `<div class="error-message"><i class="fas fa-sad-tear"></i><br />could not load videos. check channel IDs or API key.</div>`;
+                    }
+
+                    // small footer (same style)
+                    const footer = document.createElement('div');
+                    footer.className = 'small-note';
+                    footer.innerHTML = '<i class="fas fa-circle" style="font-size: 0.3rem;"></i> latest from goa youtube <i class="fas fa-circle" style="font-size: 0.3rem;"></i>';
+                    feedDiv.appendChild(footer);
+
+                } catch (globalErr) {
+                    console.error(globalErr);
+                    feedDiv.innerHTML = `<div class="error-message"><i class="fas fa-wifi-slash"></i><br />failed to load feed. ${globalErr.message}</div>`;
+                } finally {
+                    loadingEl.style.display = 'none';
+                }
+            }
+
+            // start loading as soon as page opens
+            loadAllFeeds();
+        })();
+    </script>
+</body>
+</html>
