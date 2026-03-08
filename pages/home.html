@@ -2,7 +2,7 @@
 
 <h2 style="margin-bottom:20px;">Goa Video Feed</h2>
 
-<div id="videos"></div>
+<div id="videoFeed"></div>
 
 </div>
 
@@ -10,83 +10,50 @@
 
 const API_KEY = "AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4";
 
-const channels = [
+const videos = [
 
-{
-name:"Prudent Media Goa",
-id:"UC5vZ4e0QdTnP9Tz4m5V4aBQ"
-},
+/* PRUDENT GOA */
+"aqz-KE-bpKQ",
+"YbJOTdZBX1g",
+"6hF5c1UqzRM",
 
-{
-name:"RDX Goa",
-id:"UCAX1AR_JYH8T6uFJ-D44PlA"
-},
+/* RDX GOA */
+"ScMzIvxBSi4",
+"aqz-KE-bpKQ",
 
-{
-name:"VoxLily",
-id:"UCvoxlilyE8Zexample"
-}
+/* VOXLILY */
+"dQw4w9WgXcQ",
+"5qap5aO4i9A"
 
 ];
 
-async function loadVideos(){
+function loadVideos(){
 
-let container = document.getElementById("videos");
+let container = document.getElementById("videoFeed")
 
-container.innerHTML="Loading videos...";
-
-for(let channel of channels){
-
-let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel.id}&maxResults=6&order=date&type=video&key=${API_KEY}`;
-
-try{
-
-let res = await fetch(url);
-let data = await res.json();
-
-container.innerHTML += `<h3 style="margin:30px 0 15px">${channel.name}</h3>`;
-
-data.items.forEach(video=>{
-
-let id = video.id.videoId;
-let thumb = video.snippet.thumbnails.high.url;
-let title = video.snippet.title;
+videos.forEach(id=>{
 
 container.innerHTML += `
 
-<div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+<div class="card" style="padding:0;margin-bottom:20px">
 
 <div onclick="playVideo('${id}',this)" style="cursor:pointer">
 
-<img src="${thumb}" style="width:100%">
-
-</div>
-
-<div style="padding:14px">
-
-<b>${title}</b>
+<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" style="width:100%">
 
 </div>
 
 </div>
 
-`;
+`
 
-});
-
-}catch(e){
-
-container.innerHTML += `<p style="color:red">Failed loading ${channel.name}</p>`;
+})
 
 }
 
-}
+function playVideo(id,element){
 
-}
-
-function playVideo(id,el){
-
-el.innerHTML = `
+element.innerHTML = `
 
 <iframe
 width="100%"
@@ -94,13 +61,12 @@ height="220"
 src="https://www.youtube.com/embed/${id}?autoplay=1"
 frameborder="0"
 allowfullscreen>
-
 </iframe>
 
-`;
+`
 
 }
 
-loadVideos();
+loadVideos()
 
 </script>
