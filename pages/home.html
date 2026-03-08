@@ -1,458 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Goa Social · Video feed</title>
-    <!-- Font Awesome 6 (free) for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+<div class="content-pane">
 
-        body {
-            background-color: #000000;
-            color: #eaeaea;
-            line-height: 1.4;
-        }
+<h2 style="margin-bottom:20px;">Goa Video Feed</h2>
 
-        /* main scroll container – matches app shell */
-        .home-feed {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 12px 16px 24px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+<div id="videos"></div>
 
-        /* channel section */
-        .channel-section {
-            width: 100%;
-        }
+</div>
 
-        .channel-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+<script>
 
-        .channel-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 18px;
-            background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: #ff8c42;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.6);
-        }
+const API_KEY = "AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4";
 
-        .channel-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            background: linear-gradient(120deg, #ffffff, #cccccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+const channels = [
 
-        /* video cards grid (vertical) */
-        .videos-list {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
+{
+name:"Prudent Media Goa",
+id:"UC5vZ4e0QdTnP9Tz4m5V4aBQ"
+},
 
-        /* video card – premium card with rounded corners, dark surface */
-        .video-card {
-            background: #151515;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 12px 24px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.02) inset;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
+{
+name:"RDX Goa",
+id:"UCAX1AR_JYH8T6uFJ-D44PlA"
+},
 
-        .video-card:active {
-            transform: scale(0.99);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.8);
-        }
+{
+name:"VoxLily",
+id:"UCvoxlilyE8Zexample"
+}
 
-        /* thumbnail container with play overlay */
-        .thumbnail-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #2a2a2a;
-        }
+];
 
-        .thumbnail-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+async function loadVideos(){
 
-        .play-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-            backdrop-filter: blur(2px);
-        }
+let container = document.getElementById("videos");
 
-        .video-card:hover .play-overlay,
-        .video-card:active .play-overlay {
-            opacity: 1;
-        }
+container.innerHTML="Loading videos...";
 
-        /* for touch devices we show a subtle hint, but we keep it minimal */
-        .play-overlay i {
-            font-size: 4rem;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 4px 12px black;
-            background: rgba(0,0,0,0.3);
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
+for(let channel of channels){
 
-        /* video info */
-        .video-info {
-            padding: 16px 18px 18px;
-        }
+let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel.id}&maxResults=6&order=date&type=video&key=${API_KEY}`;
 
-        .video-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #fff;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.4;
-        }
+try{
 
-        .publish-date {
-            font-size: 0.8rem;
-            color: #aaa;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+let res = await fetch(url);
+let data = await res.json();
 
-        .publish-date i {
-            color: #ff8c42;
-            font-size: 0.7rem;
-        }
+container.innerHTML += `<h3 style="margin:30px 0 15px">${channel.name}</h3>`;
 
-        /* embedded player container (hidden until click) */
-        .video-player-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #0a0a0a;
-            border-radius: 24px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            display: none; /* hidden by default */
-            box-shadow: 0 12px 30px -8px black;
-        }
+data.items.forEach(video=>{
 
-        .video-player-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+let id = video.id.videoId;
+let thumb = video.snippet.thumbnails.high.url;
+let title = video.snippet.title;
 
-        /* active player show */
-        .video-card.playing .video-player-container {
-            display: block;
-        }
+container.innerHTML += `
 
-        .video-card.playing .thumbnail-wrapper {
-            display: none;
-        }
+<div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
 
-        /* loading & error states */
-        .loading-indicator, .error-message {
-            text-align: center;
-            padding: 40px 0;
-            color: #aaa;
-        }
-        .loading-indicator i {
-            font-size: 2.5rem;
-            color: #ff8c42;
-            animation: spin 1.2s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+<div onclick="playVideo('${id}',this)" style="cursor:pointer">
 
-        .error-message {
-            background: #1e1e1e;
-            border-radius: 40px;
-            padding: 24px;
-            margin: 20px 0;
-        }
-        .error-message i {
-            font-size: 2rem;
-            color: #ff5e3a;
-            margin-bottom: 12px;
-        }
+<img src="${thumb}" style="width:100%">
 
-        /* utility */
-        .small-note {
-            color: #444;
-            font-size: 0.7rem;
-            text-align: center;
-            margin-top: 30px;
-        }
-    </style>
-</head>
-<body>
-    <div class="home-feed" id="feedContainer">
-        <!-- dynamic content will be injected by javascript -->
-        <div class="loading-indicator" id="loading">
-            <i class="fas fa-circle-notch"></i>
-            <p style="margin-top: 12px;">loading fresh goa videos...</p>
-        </div>
-    </div>
+</div>
 
-    <script>
-        (function() {
-            // ---------- CONFIGURATION ----------
-            const API_KEY = 'AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4'; // provided key
+<div style="padding:14px">
 
-            // channel handles / ids (we need channelId for search endpoint)
-            // We'll resolve via handles using internal mapping or direct IDs.
-            // For simplicity, we manually retrieve the channel IDs once.
-            // We can also use the search endpoint with 'forHandle' but that's not directly in v3 search.
-            // So we use the following channel IDs (looked up via https://youtube.com/@... -> channel id)
-            // But to make it robust, we embed the known IDs:
-            // 1. @prudentmediagoatv → UC_...  we need to extract.
-            // I'll use a reliable method: we call the channels endpoint to resolve, but to keep it 100% static and avoid extra quota,
-            // we'll use pre‑resolved IDs (since they rarely change). Verified via external tools:
-            // prudentmediagoatv → UCn2pEPYpDGeK7CvO3dH0WkA  (I've double checked)
-            // rdxgoa → UC_rdxgoa? actually from handle: @rdxgoa → UC6...   after look up: UCAX1AR_JYH8T6uFJ-D44PlA (example)
-            // voxlily-e8z → @voxlily-e8z → UClily...  I'll insert actual working IDs.
-            //
-            // For accuracy, I'll fetch via handles using a helper function that queries the API with the "forHandle" parameter (channels endpoint).
-            // That uses the same API key and works without hardcoding IDs.
-            // We'll do that to guarantee correctness.
-            // 
-            // Steps:
-            // 1. Define channel handles (with @)
-            // 2. Call youtube.v3.channels.list?part=id&forHandle=@handle&key=...
-            // 3. Then fetch videos per channelId.
+<b>${title}</b>
 
-            const CHANNEL_HANDLES = [
-                { name: 'Prudent Media Goa', handle: '@prudentmediagoatv' },
-                { name: 'RDX Goa', handle: '@rdxgoa' },
-                { name: 'VoxLily', handle: '@voxlily-e8z' }
-            ];
+</div>
 
-            const feedDiv = document.getElementById('feedContainer');
-            const loadingEl = document.getElementById('loading');
+</div>
 
-            // helper to format relative time (simple)
-            function timeAgo(dateString) {
-                const now = new Date();
-                const published = new Date(dateString);
-                const diffMs = now - published;
-                const diffSec = Math.floor(diffMs / 1000);
-                const diffMin = Math.floor(diffSec / 60);
-                const diffHr = Math.floor(diffMin / 60);
-                const diffDays = Math.floor(diffHr / 24);
+`;
 
-                if (diffDays > 30) {
-                    const months = Math.floor(diffDays / 30);
-                    return months + ' month' + (months > 1 ? 's' : '') + ' ago';
-                } else if (diffDays > 0) {
-                    return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
-                } else if (diffHr > 0) {
-                    return diffHr + ' hour' + (diffHr > 1 ? 's' : '') + ' ago';
-                } else if (diffMin > 0) {
-                    return diffMin + ' minute' + (diffMin > 1 ? 's' : '') + ' ago';
-                } else {
-                    return 'just now';
-                }
-            }
+});
 
-            // fetch channel ID by handle
-            async function getChannelId(handle) {
-                const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${handle}&key=${API_KEY}`;
-                const resp = await fetch(url);
-                const data = await resp.json();
-                if (data.items && data.items.length > 0) {
-                    return data.items[0].id;
-                }
-                throw new Error(`channel not found for ${handle}`);
-            }
+}catch(e){
 
-            // fetch latest videos for a channelId
-            async function fetchLatestVideos(channelId, maxResults = 7) {
-                const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&order=date&type=video&maxResults=${maxResults}`;
-                const resp = await fetch(url);
-                const data = await resp.json();
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-                return data.items.map(item => ({
-                    videoId: item.id.videoId,
-                    title: item.snippet.title,
-                    publishedAt: item.snippet.publishedAt,
-                    thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
-                }));
-            }
+container.innerHTML += `<p style="color:red">Failed loading ${channel.name}</p>`;
 
-            // main function to load all channels and render
-            async function loadAllFeeds() {
-                try {
-                    loadingEl.style.display = 'block';
-                    feedDiv.innerHTML = ''; // clear, but keep loader? we replace after loading.
-                    feedDiv.appendChild(loadingEl); // keep loader inside
+}
 
-                    const channelPromises = CHANNEL_HANDLES.map(async (ch) => {
-                        try {
-                            const channelId = await getChannelId(ch.handle);
-                            const videos = await fetchLatestVideos(channelId, 7); // up to 7 per channel
-                            return { ...ch, channelId, videos };
-                        } catch (err) {
-                            console.warn(`Failed for ${ch.handle}`, err);
-                            return { ...ch, error: err.message, videos: [] };
-                        }
-                    });
+}
 
-                    const channelsData = await Promise.all(channelPromises);
+}
 
-                    // remove loader
-                    feedDiv.innerHTML = '';
+function playVideo(id,el){
 
-                    let anyVideo = false;
-                    // Render each channel section
-                    channelsData.forEach(channel => {
-                        if (channel.videos && channel.videos.length > 0) {
-                            anyVideo = true;
-                            const section = document.createElement('div');
-                            section.className = 'channel-section';
+el.innerHTML = `
 
-                            // header
-                            const headerDiv = document.createElement('div');
-                            headerDiv.className = 'channel-header';
-                            headerDiv.innerHTML = `
-                                <div class="channel-icon"><i class="fab fa-youtube"></i></div>
-                                <h2>${channel.name}</h2>
-                            `;
-                            section.appendChild(headerDiv);
+<iframe
+width="100%"
+height="220"
+src="https://www.youtube.com/embed/${id}?autoplay=1"
+frameborder="0"
+allowfullscreen>
 
-                            // videos list container
-                            const videosList = document.createElement('div');
-                            videosList.className = 'videos-list';
+</iframe>
 
-                            // create cards
-                            channel.videos.forEach(v => {
-                                const card = document.createElement('div');
-                                card.className = 'video-card';
-                                card.setAttribute('data-video-id', v.videoId);
+`;
 
-                                // format date
-                                const dateStr = timeAgo(v.publishedAt);
+}
 
-                                card.innerHTML = `
-                                    <div class="thumbnail-wrapper">
-                                        <img src="${v.thumbnail}" alt="${v.title.replace(/"/g, '&quot;')}" loading="lazy">
-                                        <div class="play-overlay"><i class="fas fa-play"></i></div>
-                                    </div>
-                                    <div class="video-player-container"></div>
-                                    <div class="video-info">
-                                        <div class="video-title">${v.title}</div>
-                                        <div class="publish-date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
-                                    </div>
-                                `;
+loadVideos();
 
-                                // click handler: play video inside card
-                                card.addEventListener('click', function(e) {
-                                    // if already playing, we could collapse, but better: always open embed.
-                                    // we'll replace thumbnail with iframe
-                                    const playerContainer = this.querySelector('.video-player-container');
-                                    const thumbnailWrap = this.querySelector('.thumbnail-wrapper');
-                                    
-                                    // if already playing (iframe present), do nothing? or we can keep toggling but simple:
-                                    // if iframe not yet created, create it.
-                                    if (!playerContainer.querySelector('iframe')) {
-                                        const iframe = document.createElement('iframe');
-                                        iframe.src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1&rel=0&modestbranding=1`;
-                                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                                        iframe.allowFullscreen = true;
-                                        playerContainer.appendChild(iframe);
-                                    }
-
-                                    // hide thumbnail, show player
-                                    thumbnailWrap.style.display = 'none';
-                                    playerContainer.style.display = 'block';
-                                    // optional: add class
-                                    this.classList.add('playing');
-                                });
-
-                                videosList.appendChild(card);
-                            });
-
-                            section.appendChild(videosList);
-                            feedDiv.appendChild(section);
-                        } else if (channel.error) {
-                            // show minimal error inside a small section
-                            const errDiv = document.createElement('div');
-                            errDiv.style.padding = '20px';
-                            errDiv.style.background = '#1a1a1a';
-                            errDiv.style.borderRadius = '30px';
-                            errDiv.style.margin = '12px 0';
-                            errDiv.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff5e3a;"></i> ${channel.name} unavailable (${channel.error})`;
-                            feedDiv.appendChild(errDiv);
-                        }
-                    });
-
-                    if (!anyVideo) {
-                        // no videos from any channel
-                        feedDiv.innerHTML = `<div class="error-message"><i class="fas fa-sad-tear"></i><br />could not load videos. check api key or channel IDs.</div>`;
-                    }
-
-                    // small footer
-                    const footer = document.createElement('div');
-                    footer.className = 'small-note';
-                    footer.innerHTML = '<i class="fas fa-circle" style="font-size: 0.3rem;"></i> latest from goa youtube <i class="fas fa-circle" style="font-size: 0.3rem;"></i>';
-                    feedDiv.appendChild(footer);
-
-                } catch (globalErr) {
-                    console.error(globalErr);
-                    feedDiv.innerHTML = `<div class="error-message"><i class="fas fa-wifi-slash"></i><br />failed to load feed. ${globalErr.message}</div>`;
-                } finally {
-                    loadingEl.style.display = 'none';
-                }
-            }
-
-            // start loading as soon as page opens
-            loadAllFeeds();
-        })();
-    </script>
-</body>
-</html>
+</script>
