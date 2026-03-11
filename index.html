@@ -2,58 +2,270 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Goa Social</title>
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1877f2">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/u5kGI2s.jpeg">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
+        * {
             margin: 0;
-            height: 100vh;
-            background: linear-gradient(145deg, #1877f2, #0a5cff);
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5, #e4e6eb);
+            color: #1c1e21;
+            line-height: 1.4;
+            padding-bottom: 70px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Coconut decorations */
+        .coconut-left {
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            font-size: 4rem;
+            opacity: 0.15;
+            transform: rotate(-10deg);
+            z-index: 0;
+            pointer-events: none;
+            animation: swayLeft 6s ease-in-out infinite;
+        }
+
+        .coconut-right {
+            position: fixed;
+            bottom: 80px;
+            right: 10px;
+            font-size: 4rem;
+            opacity: 0.15;
+            transform: rotate(10deg) scaleX(-1);
+            z-index: 0;
+            pointer-events: none;
+            animation: swayRight 6s ease-in-out infinite;
+        }
+
+        @keyframes swayLeft {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(-5deg); }
+        }
+
+        @keyframes swayRight {
+            0%, 100% { transform: rotate(10deg) scaleX(-1); }
+            50% { transform: rotate(5deg) scaleX(-1); }
+        }
+
+        /* Header */
+        .app-header {
+            background: white;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 18px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: white;
+            justify-content: space-between;
+            border-bottom: 1px solid #e4e6eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 25px;
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-crop {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             overflow: hidden;
-            margin: 0 auto 20px;
-            border: 3px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #1877f2;
+            flex-shrink: 0;
+            border: 1px solid #e4e6eb;
         }
-        .logo img {
+
+        .logo-crop img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
         }
-        .message {
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #1877f2;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            color: #65676b;
+        }
+
+        .header-actions i {
+            font-size: 1.3rem;
+        }
+
+        /* Content area where pages load */
+        #content {
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e4e6eb;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 10px 12px 10px;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #65676b;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active {
+            color: #1877f2;
+        }
+
+        /* Loading indicator */
+        .loader {
             text-align: center;
+            padding: 50px;
+            color: #1877f2;
         }
-        h1 {
+        .loader i {
             font-size: 2rem;
-            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
         }
-        p {
-            opacity: 0.9;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
-    <script>
-        // Redirect to home.html after 1 second
-        setTimeout(() => {
-            window.location.replace("pages/home.html");
-        }, 1000);
-    </script>
 </head>
 <body>
-    <div class="message">
-        <div class="logo">
-            <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+    <div class="coconut-left">🌴</div>
+    <div class="coconut-right">🌴</div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo-container" id="logoContainer">
+            <div class="logo-crop">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+            </div>
+            <span class="logo-text">Goa Social</span>
         </div>
-        <h1>Goa Social</h1>
-        <p>Loading your experience...</p>
+        <div class="header-actions">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-bell"></i>
+        </div>
+    </header>
+
+    <!-- Main Content Area - Pages Load Here -->
+    <div id="content">
+        <div class="loader">
+            <i class="fas fa-circle-notch"></i>
+            <p>Loading...</p>
+        </div>
     </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="loadPage('home')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('dating')">
+            <i class="fas fa-heart"></i>
+            <span>Dating</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('business')">
+            <i class="fas fa-store"></i>
+            <span>Business</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('chats')">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chats</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('profile')">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <script>
+        // Function to load pages dynamically
+        async function loadPage(pageName) {
+            const contentDiv = document.getElementById('content');
+            
+            // Show loader
+            contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            try {
+                // Fetch the page HTML from pages folder
+                const response = await fetch(`pages/${pageName}.html`);
+                if (!response.ok) throw new Error('Page not found');
+                const html = await response.text();
+                contentDiv.innerHTML = html;
+            } catch (error) {
+                contentDiv.innerHTML = '<div style="text-align:center; padding:50px; color:#666;">Page not found. Please try again.</div>';
+            }
+        }
+
+        // Load home page by default
+        window.addEventListener('load', () => {
+            loadPage('home');
+        });
+
+        // Service worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
