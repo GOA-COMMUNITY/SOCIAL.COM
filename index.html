@@ -172,6 +172,12 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Install Popup Animation */
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -224,6 +230,23 @@
         </button>
     </nav>
 
+    <!-- Install PWA Popup - Appears after 10 seconds -->
+    <div id="installPopup" style="display: none; position: fixed; bottom: 80px; left: 16px; right: 16px; background: white; border-radius: 24px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10001; max-width: 400px; margin: 0 auto; border: 1px solid #e4e6eb; animation: slideUp 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+            <div style="width: 60px; height: 60px; border-radius: 16px; overflow: hidden; background: #1877f2; flex-shrink: 0;">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="Goa Social">
+            </div>
+            <div style="flex: 1;">
+                <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; color: #1c1e21;">Install Goa Social</h3>
+                <p style="font-size: 0.9rem; color: #65676b;">Add to home screen for faster access</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button id="installNowBtn" style="flex: 2; background: #1877f2; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(24,119,242,0.3);">Install Now</button>
+            <button id="laterBtn" style="flex: 1; background: #f0f2f5; color: #65676b; border: none; padding: 14px; border-radius: 40px; font-weight: 500; font-size: 1rem; cursor: pointer;">Later</button>
+        </div>
+    </div>
+
     <script>
         // Function to load pages dynamically
         async function loadPage(pageName) {
@@ -266,6 +289,64 @@
                     });
             });
         }
+
+        // ===== PWA Install Popup Logic =====
+        let deferredPrompt;
+        const installPopup = document.getElementById('installPopup');
+        const installBtn = document.getElementById('installNowBtn');
+        const laterBtn = document.getElementById('laterBtn');
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show popup after 10 seconds
+            setTimeout(() => {
+                // Check if app is not already installed
+                if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+                    installPopup.style.display = 'block';
+                }
+            }, 10000); // 10 seconds
+        });
+
+        // Install button click
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            
+            // We've used the prompt, can't use it again
+            deferredPrompt = null;
+            
+            // Hide popup
+            installPopup.style.display = 'none';
+        });
+
+        // Later button click
+        laterBtn.addEventListener('click', () => {
+            installPopup.style.display = 'none';
+        });
+
+        // Hide popup if app is already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            // App is installed, don't show popup
+            installPopup.style.display = 'none';
+        }
+
+        // Also hide if user clicks outside (optional)
+        window.addEventListener('click', (e) => {
+            if (e.target === installPopup) {
+                installPopup.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
