@@ -1,38 +1,68 @@
 <div style="padding: 20px; font-family: sans-serif;">
-    <h2>🔍 Testing videos.json</h2>
-    <div id="result">Waiting for response...</div>
+    <h2>🔍 Testing videos.json (with timeout)</h2>
+    <div id="result">Starting...</div>
+    <ul id="details" style="margin-top:20px; list-style-type: none; padding:0;"></ul>
 </div>
 
 <script>
-    async function testFetch() {
+    (async function() {
         const resultDiv = document.getElementById('result');
-        const timeout = 5000; // 5 seconds
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
+        const detailsUl = document.getElementById('details');
 
-        try {
-            // Use absolute URL based on current location
-            const base = window.location.origin + '/SOCIAL.COM/';
-            const url = base + 'videos.json';
-            resultDiv.innerHTML = `Trying: ${url}`;
-            
-            const response = await fetch(url, { signal: controller.signal });
-            clearTimeout(id);
-            
-            if (response.ok) {
-                const data = await response.json();
-                resultDiv.innerHTML = `✅ Success! Found ${data.length} videos.<br>First video ID: ${data[0]?.videoId}`;
-            } else {
-                resultDiv.innerHTML = `❌ HTTP error: ${response.status} ${response.statusText}`;
-            }
-        } catch (error) {
-            clearTimeout(id);
-            if (error.name === 'AbortError') {
-                resultDiv.innerHTML = '❌ Request timed out after 5 seconds. Check network or file existence.';
-            } else {
-                resultDiv.innerHTML = '❌ Error: ' + error.message;
+        function log(msg) {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            detailsUl.appendChild(li);
+            console.log(msg);
+        }
+
+        // List of possible paths to try
+        const paths = [
+            '../videos.json',
+            'videos.json',
+            '/SOCIAL.COM/videos.json',
+            './videos.json',
+            'https://goa-community.github.io/SOCIAL.COM/videos.json'
+        ];
+
+        for (let path of paths) {
+            log(`Trying: ${path}`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+            try {
+                const response = await fetch(path, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (response.ok) {
+                    const text = await response.text();
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (e) {
+                        log(`❌ Invalid JSON at ${path}: ${e.message}`);
+                        continue;
+                    }
+                    resultDiv.innerHTML = `✅ SUCCESS! Found videos.json at ${path}`;
+                    log(`File contains ${data.length} videos.`);
+                    if (data.length > 0) {
+                        log(`First video ID: ${data[0].videoId}`);
+                    }
+                    // Stop testing, we found it
+                    return;
+                } else {
+                    log(`❌ HTTP ${response.status} at ${path}`);
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    log(`⏱️ Timeout after 5s for ${path}`);
+                } else {
+                    log(`❌ Error: ${error.message} for ${path}`);
+                }
             }
         }
-    }
-    testFetch();
+
+        resultDiv.innerHTML = '❌ Could not load videos.json from any path.';
+        log('All attempts failed.');
+    })();
 </script>
