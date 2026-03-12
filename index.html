@@ -17,7 +17,6 @@
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-
         body {
             background: linear-gradient(145deg, #f0f2f5, #e4e6eb);
             color: #1c1e21;
@@ -26,45 +25,29 @@
             min-height: 100vh;
             position: relative;
         }
-
-        .coconut-left {
+        .coconut-left, .coconut-right {
             position: fixed;
             bottom: 80px;
-            left: 10px;
             font-size: 4rem;
             opacity: 0.15;
-            transform: rotate(-10deg);
             z-index: 0;
             pointer-events: none;
-            animation: swayLeft 6s ease-in-out infinite;
+            animation: sway 6s ease-in-out infinite;
         }
-
-        .coconut-right {
-            position: fixed;
-            bottom: 80px;
-            right: 10px;
-            font-size: 4rem;
-            opacity: 0.15;
-            transform: rotate(10deg) scaleX(-1);
-            z-index: 0;
-            pointer-events: none;
-            animation: swayRight 6s ease-in-out infinite;
-        }
-
-        @keyframes swayLeft {
-            0%, 100% { transform: rotate(-10deg); }
+        .coconut-left { left: 10px; transform: rotate(-10deg); }
+        .coconut-right { right: 10px; transform: rotate(10deg) scaleX(-1); }
+        @keyframes sway {
+            0%,100% { transform: rotate(-10deg); }
             50% { transform: rotate(-5deg); }
         }
-
+        .coconut-right { animation-name: swayRight; }
         @keyframes swayRight {
-            0%, 100% { transform: rotate(10deg) scaleX(-1); }
+            0%,100% { transform: rotate(10deg) scaleX(-1); }
             50% { transform: rotate(5deg) scaleX(-1); }
         }
-
         .app-header {
             background: white;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             padding: 12px 18px;
             display: flex;
             align-items: center;
@@ -75,52 +58,38 @@
             z-index: 100;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: pointer;
         }
-
         .logo-crop {
             width: 48px;
             height: 48px;
             border-radius: 14px;
             overflow: hidden;
             background: #1877f2;
-            flex-shrink: 0;
             border: 1px solid #e4e6eb;
         }
-
         .logo-crop img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-
         .logo-text {
             font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
             color: #1877f2;
         }
-
         .header-actions {
             display: flex;
             gap: 20px;
             color: #65676b;
         }
-
-        .header-actions i {
-            font-size: 1.3rem;
-        }
-
-        #content {
-            min-height: calc(100vh - 140px);
-        }
-
+        .header-actions i { font-size: 1.3rem; }
+        #content { min-height: calc(100vh - 140px); }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -134,7 +103,6 @@
             padding: 8px 10px 12px 10px;
             z-index: 1000;
         }
-
         .nav-item {
             display: flex;
             flex-direction: column;
@@ -147,16 +115,8 @@
             border: none;
             cursor: pointer;
         }
-
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 2px;
-        }
-
-        .nav-item.active {
-            color: #1877f2;
-        }
-
+        .nav-item i { font-size: 1.5rem; margin-bottom: 2px; }
+        .nav-item.active { color: #1877f2; }
         .loader {
             text-align: center;
             padding: 50px;
@@ -166,8 +126,7 @@
             font-size: 2rem;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes slideUp {
             from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
@@ -192,61 +151,46 @@
     </header>
 
     <div id="content">
-        <!-- Loader will be replaced immediately -->
+        <!-- Loader shown until page loads -->
+        <div class="loader">
+            <i class="fas fa-circle-notch"></i>
+            <p>Loading...</p>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item" onclick="loadPage('home')">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </button>
-        <button class="nav-item" onclick="loadPage('explore')">
-            <i class="fas fa-compass"></i>
-            <span>Explore</span>
-        </button>
-        <button class="nav-item" onclick="loadPage('business')">
-            <i class="fas fa-store"></i>
-            <span>Business</span>
-        </button>
-        <button class="nav-item" onclick="loadPage('chats')">
-            <i class="fas fa-comment-dots"></i>
-            <span>Chats</span>
-        </button>
-        <button class="nav-item" onclick="loadPage('profile')">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </button>
+        <button class="nav-item" onclick="loadPage('home')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="loadPage('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
+        <button class="nav-item" onclick="loadPage('business')"><i class="fas fa-store"></i><span>Business</span></button>
+        <button class="nav-item" onclick="loadPage('chats')"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
+        <button class="nav-item" onclick="loadPage('profile')"><i class="fas fa-user"></i><span>Profile</span></button>
     </nav>
 
+    <!-- Install Popup -->
     <div id="installPopup" style="display: none; position: fixed; bottom: 80px; left: 16px; right: 16px; background: white; border-radius: 24px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10001; max-width: 400px; margin: 0 auto; border: 1px solid #e4e6eb; animation: slideUp 0.3s ease;">
         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-            <div style="width: 60px; height: 60px; border-radius: 16px; overflow: hidden; background: #1877f2; flex-shrink: 0;">
-                <img src="https://i.imgur.com/u5kGI2s.jpeg" style="width: 100%; height: 100%; object-fit: cover;" alt="Goa Social">
+            <div style="width: 60px; height: 60px; border-radius: 16px; overflow: hidden; background: #1877f2;">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" style="width:100%; height:100%; object-fit:cover;" alt="Goa Social">
             </div>
-            <div style="flex: 1;">
-                <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; color: #1c1e21;">Install Goa Social</h3>
-                <p style="font-size: 0.9rem; color: #65676b;">Add to home screen for faster access</p>
+            <div style="flex:1;">
+                <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:4px;">Install Goa Social</h3>
+                <p style="font-size:0.9rem; color:#65676b;">Add to home screen for faster access</p>
             </div>
         </div>
         <div style="display: flex; gap: 12px;">
-            <button id="installNowBtn" style="flex: 2; background: #1877f2; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(24,119,242,0.3);">Install Now</button>
-            <button id="laterBtn" style="flex: 1; background: #f0f2f5; color: #65676b; border: none; padding: 14px; border-radius: 40px; font-weight: 500; font-size: 1rem; cursor: pointer;">Later</button>
+            <button id="installNowBtn" style="flex:2; background:#1877f2; color:white; border:none; padding:14px; border-radius:40px; font-weight:600; font-size:1rem; cursor:pointer; box-shadow:0 4px 10px rgba(24,119,242,0.3);">Install Now</button>
+            <button id="laterBtn" style="flex:1; background:#f0f2f5; color:#65676b; border:none; padding:14px; border-radius:40px; font-weight:500; font-size:1rem; cursor:pointer;">Later</button>
         </div>
     </div>
 
     <script>
-        // Function to load pages dynamically with TIMEOUT
+        // Page loader with timeout fallback
         async function loadPage(pageName) {
             const contentDiv = document.getElementById('content');
-            
-            // Show loader with timeout
             contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
             
             // Update active nav
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             const buttons = document.querySelectorAll('.nav-item');
             for (let btn of buttons) {
                 if (btn.querySelector('span').innerText.toLowerCase() === pageName.toLowerCase()) {
@@ -255,65 +199,51 @@
                 }
             }
             
-            // Set a timeout to show fallback if page takes too long
+            // Timeout fallback – if page doesn't load in 3 seconds, show a simple message
             const timeoutId = setTimeout(() => {
                 contentDiv.innerHTML = `
                     <div style="text-align:center; padding:50px; max-width:600px; margin:0 auto;">
-                        <div style="background:white; border-radius:24px; padding:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="background:white; border-radius:24px; padding:30px;">
                             <i class="fas fa-smile" style="font-size:4rem; color:#1877f2; margin-bottom:20px;"></i>
                             <h2 style="margin-bottom:16px;">Welcome to Goa Social!</h2>
-                            <p style="color:#65676b; margin-bottom:24px;">The ${pageName} page is being set up. Please use the navigation below.</p>
-                            <button onclick="window.location.reload()" style="background:#1877f2; color:white; border:none; padding:12px 30px; border-radius:40px; font-size:1rem; cursor:pointer;">Refresh</button>
+                            <p style="color:#65676b; margin-bottom:24px;">The ${pageName} page is loading. Tap a navigation button to try again.</p>
                         </div>
                     </div>
                 `;
-            }, 3000); // 3 second timeout
+            }, 3000);
             
             try {
                 const response = await fetch(`pages/${pageName}.html`);
-                clearTimeout(timeoutId); // Clear timeout if fetch succeeds
-                
+                clearTimeout(timeoutId);
                 if (!response.ok) throw new Error('Page not found');
                 const html = await response.text();
                 contentDiv.innerHTML = html;
             } catch (error) {
                 clearTimeout(timeoutId);
                 contentDiv.innerHTML = `
-                    <div style="text-align:center; padding:50px; max-width:600px; margin:0 auto;">
-                        <div style="background:white; border-radius:24px; padding:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                            <i class="fas fa-compass" style="font-size:4rem; color:#1877f2; margin-bottom:20px;"></i>
-                            <h2 style="margin-bottom:16px;">Explore Goa</h2>
-                            <p style="color:#65676b; margin-bottom:24px;">Welcome to Goa Social! The ${pageName} page will be available soon.</p>
-                            <div style="display:flex; gap:12px; justify-content:center;">
-                                <button onclick="loadPage('home')" style="background:#1877f2; color:white; border:none; padding:10px 20px; border-radius:40px; cursor:pointer;">Go Home</button>
-                                <button onclick="window.location.reload()" style="background:#f0f2f5; color:#1c1e21; border:none; padding:10px 20px; border-radius:40px; cursor:pointer;">Refresh</button>
-                            </div>
-                        </div>
+                    <div style="text-align:center; padding:50px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#f23b5c;"></i>
+                        <p style="margin-top:20px;">Could not load ${pageName}. Please try again.</p>
+                        <button onclick="loadPage('home')" style="margin-top:20px; background:#1877f2; color:white; border:none; padding:10px 30px; border-radius:40px;">Go Home</button>
                     </div>
                 `;
             }
         }
 
-        // Load home page immediately
+        // Load home by default
         window.addEventListener('load', () => {
             document.querySelectorAll('.nav-item')[0].classList.add('active');
             loadPage('home');
         });
 
-        // Service worker
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
             });
         }
 
-        // PWA install
+        // PWA install prompt
         let deferredPrompt;
         const installPopup = document.getElementById('installPopup');
         const installBtn = document.getElementById('installNowBtn');
@@ -322,7 +252,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
             setTimeout(() => {
                 if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
                     installPopup.style.display = 'block';
@@ -333,8 +262,7 @@
         installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response: ${outcome}`);
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
             installPopup.style.display = 'none';
         });
@@ -348,4 +276,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
