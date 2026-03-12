@@ -36,7 +36,7 @@
 </div>
 
 <style>
-    /* All your styles here - keep them exactly as before */
+    /* ===== STORIES & CATEGORIES ===== */
     .stories-section {
         padding: 16px 16px 12px 16px;
         background: white;
@@ -118,6 +118,7 @@
         font-weight: 600;
         border: none;
     }
+    /* ===== FEED ===== */
     .feed-container { max-width: 600px; margin: 0 auto; padding: 8px 0 20px 0; }
     .feed-card {
         background: white;
@@ -186,6 +187,7 @@
     .footer-item i.fa-heart { color: #f23b5c; }
     .footer-item i.fa-comment { color: #1877f2; }
     .footer-item i.fa-share { color: #42b72a; }
+    /* ===== SHARE POPUP ===== */
     .share-popup {
         position: fixed;
         bottom: 0; left: 0; right: 0;
@@ -246,14 +248,7 @@
         display: none;
     }
     .share-overlay.visible { display: block; }
-    .event-details {
-        padding: 0 14px 14px 14px;
-        display: flex;
-        gap: 20px;
-        color: #1877f2;
-        font-size: 0.9rem;
-    }
-    .event-details span i { margin-right: 6px; color: #65676b; }
+    /* ===== VIDEO OVERLAYS ===== */
     .video-info-overlay {
         position: absolute;
         bottom: 0; left: 0; right: 0;
@@ -329,7 +324,16 @@
     const BUFFER_PREV = 2;
     const BUFFER_NEXT = 6;
 
-    // Helper Functions
+    // ========== FALLBACK DEMO VIDEOS (will be used if videos.json fails) ==========
+    const FALLBACK_VIDEOS = [
+        { videoId: "dDv06j8Orok", channelName: "Goa Shorts", channelIcon: "📺" },
+        { videoId: "c7svj3bef50", channelName: "Goa Shorts", channelIcon: "📺" },
+        { videoId: "olF6FdcJmi8", channelName: "Goa Shorts", channelIcon: "📺" },
+        { videoId: "D8sdGeF0d1c", channelName: "Goa Shorts", channelIcon: "📺" },
+        { videoId: "YP-FCgPPFZw", channelName: "Goa Shorts", channelIcon: "📺" }
+    ];
+
+    // === Helper Functions ===
     function getVisibleIndex() {
         for (let i = 0; i < videoContainers.length; i++) {
             const rect = videoContainers[i].getBoundingClientRect();
@@ -371,31 +375,25 @@
         if (!videoContainers.length) return;
         const start = Math.max(0, visibleIdx - BUFFER_PREV);
         const end = Math.min(videoContainers.length - 1, visibleIdx + BUFFER_NEXT);
-        
         for (let i = start; i <= end; i++) {
             const container = videoContainers[i];
-            if (container?.dataset.videoId) {
-                loadVideo(container, container.dataset.videoId);
-            }
+            if (container?.dataset.videoId) loadVideo(container, container.dataset.videoId);
         }
-        
         for (let i = 0; i < start; i++) pauseVideo(videoContainers[i]);
         for (let i = end + 1; i < videoContainers.length; i++) pauseVideo(videoContainers[i]);
     }
 
-    // Share functions
+    // === Share functions ===
     function showSharePopup(videoId) {
         currentShareVideoId = videoId;
         shareOverlay.classList.add('visible');
         sharePopup.classList.add('visible');
     }
-    
     function hideSharePopup() {
         shareOverlay.classList.remove('visible');
         sharePopup.classList.remove('visible');
         currentShareVideoId = null;
     }
-
     document.querySelectorAll('.share-option').forEach(option => {
         option.addEventListener('click', (e) => {
             if (!currentShareVideoId) return;
@@ -408,11 +406,10 @@
             hideSharePopup();
         });
     });
-    
     closeShare.addEventListener('click', hideSharePopup);
     shareOverlay.addEventListener('click', hideSharePopup);
 
-    // Handle shared video links
+    // === Handle shared video links ===
     function loadVideoFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         const videoId = urlParams.get('v');
@@ -421,110 +418,107 @@
             youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
         }
     }
-    
     closePlayerBtn.addEventListener('click', () => {
         youtubePlayerContainer.classList.remove('active');
         youtubePlayer.src = '';
     });
-    
     loadVideoFromUrl();
 
-    // Load feed from JSON - FIXED PATH
+    // === Build feed from video data ===
+    function buildFeed(videoData) {
+        feedContainer.innerHTML = '';
+        videoContainers = [];
+
+        if (!videoData || videoData.length === 0) {
+            feedContainer.innerHTML = '<div style="text-align:center; padding:50px; color:#666;">No shorts available.</div>';
+            loadingEl.style.display = 'none';
+            return;
+        }
+
+        videoData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'feed-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="channel-icon">${item.channelIcon || '📺'}</div>
+                    <div class="channel-info"><div class="channel-name">${item.channelName || 'Goa Shorts'}</div><div class="post-time">Shorts</div></div>
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+                <div class="video-container" data-video-id="${item.videoId}">
+                    <iframe allow="autoplay; fullscreen"></iframe>
+                    <div class="video-info-overlay"><div class="video-title-small">Goa Short</div><div class="video-meta"><span>#Shorts</span></div></div>
+                </div>
+                <div class="card-footer">
+                    <span class="footer-item like-btn"><i class="fas fa-heart"></i> 1.2k</span>
+                    <span class="footer-item comment-btn"><i class="fas fa-comment"></i> 89</span>
+                    <span class="footer-item share-btn" data-video-id="${item.videoId}"><i class="fas fa-share"></i> Share</span>
+                </div>
+            `;
+
+            const shareBtn = card.querySelector('.share-btn');
+            shareBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showSharePopup(item.videoId);
+            });
+
+            const videoContainer = card.querySelector('.video-container');
+            if (videoContainer) videoContainers.push(videoContainer);
+            feedContainer.appendChild(card);
+        });
+
+        loadingEl.style.display = 'none';
+
+        // Preload first 8 videos
+        if (videoContainers.length > 0) {
+            for (let i = 0; i < Math.min(8, videoContainers.length); i++) {
+                const container = videoContainers[i];
+                if (container?.dataset.videoId) loadVideo(container, container.dataset.videoId);
+            }
+        }
+
+        setupVideoObserver();
+        setTimeout(() => {
+            const visibleIdx = getVisibleIndex();
+            currentVisibleIndex = visibleIdx;
+            previousVisibleIndex = visibleIdx;
+            updateBufferWindow(visibleIdx);
+        }, 500);
+    }
+
+    // === Load feed from JSON with fallback ===
     async function loadFeed() {
         loadingEl.style.display = 'block';
         feedContainer.innerHTML = '';
         feedContainer.appendChild(loadingEl);
 
-        try {
-            // Try multiple paths to find videos.json
-            let response;
-            
-            // Try 1: Go up one level (from pages/ to root)
+        // Try to fetch videos.json from multiple locations
+        let videoData = null;
+        const possiblePaths = [
+            '../videos.json',
+            'videos.json',
+            '/SOCIAL.COM/videos.json',
+            './videos.json'
+        ];
+
+        for (const path of possiblePaths) {
             try {
-                response = await fetch('../videos.json');
-                if (response.ok) console.log('Found videos.json at ../videos.json');
-            } catch {
-                // Try 2: Absolute path with your repo name
-                try {
-                    response = await fetch('/SOCIAL.COM/videos.json');
-                    if (response.ok) console.log('Found videos.json at /SOCIAL.COM/videos.json');
-                } catch {
-                    // Try 3: Root path
-                    response = await fetch('videos.json');
-                    if (response.ok) console.log('Found videos.json at videos.json');
+                const response = await fetch(path);
+                if (response.ok) {
+                    videoData = await response.json();
+                    console.log(`✅ Loaded videos from ${path}`);
+                    break;
                 }
+            } catch (e) {
+                // ignore, try next path
             }
-            
-            if (!response || !response.ok) {
-                throw new Error('Could not find videos.json in any location');
-            }
-            
-            const videoData = await response.json();
-            console.log('Loaded videos:', videoData.length);
+        }
 
-            feedContainer.innerHTML = '';
-
-            if (!videoData || videoData.length === 0) {
-                feedContainer.innerHTML = '<div style="text-align:center; padding:50px; color:#666;">No shorts available right now.</div>';
-                loadingEl.style.display = 'none';
-                return;
-            }
-
-            videoData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'feed-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="channel-icon">📺</div>
-                        <div class="channel-info"><div class="channel-name">Goa Shorts</div><div class="post-time">Shorts</div></div>
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                    <div class="video-container" data-video-id="${item.videoId}">
-                        <iframe allow="autoplay; fullscreen"></iframe>
-                        <div class="video-info-overlay"><div class="video-title-small">Goa Short</div><div class="video-meta"><span>#Shorts</span></div></div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="footer-item like-btn"><i class="fas fa-heart"></i> 1.2k</span>
-                        <span class="footer-item comment-btn"><i class="fas fa-comment"></i> 89</span>
-                        <span class="footer-item share-btn" data-video-id="${item.videoId}"><i class="fas fa-share"></i> Share</span>
-                    </div>
-                `;
-
-                const shareBtn = card.querySelector('.share-btn');
-                shareBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showSharePopup(item.videoId);
-                });
-
-                const videoContainer = card.querySelector('.video-container');
-                if (videoContainer) videoContainers.push(videoContainer);
-                feedContainer.appendChild(card);
-            });
-
-            loadingEl.style.display = 'none';
-
-            // Preload first 8 videos
-            if (videoContainers.length > 0) {
-                for (let i = 0; i < Math.min(8, videoContainers.length); i++) {
-                    const container = videoContainers[i];
-                    if (container?.dataset.videoId) {
-                        loadVideo(container, container.dataset.videoId);
-                    }
-                }
-            }
-
-            setupVideoObserver();
-            
-            setTimeout(() => {
-                const visibleIdx = getVisibleIndex();
-                currentVisibleIndex = visibleIdx;
-                previousVisibleIndex = visibleIdx;
-                updateBufferWindow(visibleIdx);
-            }, 500);
-
-        } catch (error) {
-            console.error('Error loading feed:', error);
-            loadingEl.innerHTML = '<p style="color:red; text-align:center; padding:30px;">Unable to load videos. Please check console.</p>';
+        if (videoData && videoData.length > 0) {
+            buildFeed(videoData);
+        } else {
+            console.warn('⚠️ No videos.json found, using fallback demo videos.');
+            // Use fallback demo videos
+            buildFeed(FALLBACK_VIDEOS);
         }
     }
 
@@ -535,12 +529,9 @@
                     entries.forEach(entry => {
                         const container = entry.target;
                         const idx = videoContainers.indexOf(container);
-                        
                         if (entry.isIntersecting && idx !== -1) {
                             if (idx !== previousVisibleIndex) {
-                                if (previousVisibleIndex !== -1) {
-                                    pauseVideo(videoContainers[previousVisibleIndex]);
-                                }
+                                if (previousVisibleIndex !== -1) pauseVideo(videoContainers[previousVisibleIndex]);
                                 playVideo(container);
                                 if (userInteracted) unmuteVideo(container);
                                 updateBufferWindow(idx);
@@ -573,7 +564,7 @@
         });
     }
 
-    // Initialize
+    // === Initialize ===
     loadLiveStories();
     loadFeed();
 
