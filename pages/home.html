@@ -1,34 +1,37 @@
 <div style="padding: 20px; font-family: sans-serif;">
-    <h2>Testing videos.json</h2>
-    <div id="result">Loading...</div>
+    <h2>🔍 Testing videos.json</h2>
+    <div id="result">Waiting for response...</div>
 </div>
 
 <script>
     async function testFetch() {
         const resultDiv = document.getElementById('result');
+        const timeout = 5000; // 5 seconds
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+
         try {
-            // Try multiple paths
-            let response;
-            const paths = [
-                '../videos.json',
-                'videos.json',
-                '/SOCIAL.COM/videos.json',
-                './videos.json'
-            ];
-            for (let path of paths) {
-                try {
-                    response = await fetch(path);
-                    if (response.ok) {
-                        resultDiv.innerHTML = `✅ Found videos.json at ${path}`;
-                        const data = await response.json();
-                        resultDiv.innerHTML += `<br>📁 Contains ${data.length} videos. First video ID: ${data[0]?.videoId}`;
-                        return;
-                    }
-                } catch (e) {}
+            // Use absolute URL based on current location
+            const base = window.location.origin + '/SOCIAL.COM/';
+            const url = base + 'videos.json';
+            resultDiv.innerHTML = `Trying: ${url}`;
+            
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(id);
+            
+            if (response.ok) {
+                const data = await response.json();
+                resultDiv.innerHTML = `✅ Success! Found ${data.length} videos.<br>First video ID: ${data[0]?.videoId}`;
+            } else {
+                resultDiv.innerHTML = `❌ HTTP error: ${response.status} ${response.statusText}`;
             }
-            resultDiv.innerHTML = '❌ Could not find videos.json in any location. Check the path.';
-        } catch (e) {
-            resultDiv.innerHTML = '❌ Error: ' + e.message;
+        } catch (error) {
+            clearTimeout(id);
+            if (error.name === 'AbortError') {
+                resultDiv.innerHTML = '❌ Request timed out after 5 seconds. Check network or file existence.';
+            } else {
+                resultDiv.innerHTML = '❌ Error: ' + error.message;
+            }
         }
     }
     testFetch();
