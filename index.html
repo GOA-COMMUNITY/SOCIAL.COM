@@ -192,10 +192,7 @@
     </header>
 
     <div id="content">
-        <div class="loader">
-            <i class="fas fa-circle-notch"></i>
-            <p>Loading...</p>
-        </div>
+        <!-- Loader will be replaced immediately -->
     </div>
 
     <nav class="bottom-nav">
@@ -238,10 +235,14 @@
     </div>
 
     <script>
+        // Function to load pages dynamically with TIMEOUT
         async function loadPage(pageName) {
             const contentDiv = document.getElementById('content');
+            
+            // Show loader with timeout
             contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
             
+            // Update active nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -254,21 +255,52 @@
                 }
             }
             
+            // Set a timeout to show fallback if page takes too long
+            const timeoutId = setTimeout(() => {
+                contentDiv.innerHTML = `
+                    <div style="text-align:center; padding:50px; max-width:600px; margin:0 auto;">
+                        <div style="background:white; border-radius:24px; padding:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                            <i class="fas fa-smile" style="font-size:4rem; color:#1877f2; margin-bottom:20px;"></i>
+                            <h2 style="margin-bottom:16px;">Welcome to Goa Social!</h2>
+                            <p style="color:#65676b; margin-bottom:24px;">The ${pageName} page is being set up. Please use the navigation below.</p>
+                            <button onclick="window.location.reload()" style="background:#1877f2; color:white; border:none; padding:12px 30px; border-radius:40px; font-size:1rem; cursor:pointer;">Refresh</button>
+                        </div>
+                    </div>
+                `;
+            }, 3000); // 3 second timeout
+            
             try {
                 const response = await fetch(`pages/${pageName}.html`);
+                clearTimeout(timeoutId); // Clear timeout if fetch succeeds
+                
                 if (!response.ok) throw new Error('Page not found');
                 const html = await response.text();
                 contentDiv.innerHTML = html;
             } catch (error) {
-                contentDiv.innerHTML = '<div style="text-align:center; padding:50px; color:#666;">Page not found. Please try again.</div>';
+                clearTimeout(timeoutId);
+                contentDiv.innerHTML = `
+                    <div style="text-align:center; padding:50px; max-width:600px; margin:0 auto;">
+                        <div style="background:white; border-radius:24px; padding:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                            <i class="fas fa-compass" style="font-size:4rem; color:#1877f2; margin-bottom:20px;"></i>
+                            <h2 style="margin-bottom:16px;">Explore Goa</h2>
+                            <p style="color:#65676b; margin-bottom:24px;">Welcome to Goa Social! The ${pageName} page will be available soon.</p>
+                            <div style="display:flex; gap:12px; justify-content:center;">
+                                <button onclick="loadPage('home')" style="background:#1877f2; color:white; border:none; padding:10px 20px; border-radius:40px; cursor:pointer;">Go Home</button>
+                                <button onclick="window.location.reload()" style="background:#f0f2f5; color:#1c1e21; border:none; padding:10px 20px; border-radius:40px; cursor:pointer;">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         }
 
+        // Load home page immediately
         window.addEventListener('load', () => {
             document.querySelectorAll('.nav-item')[0].classList.add('active');
             loadPage('home');
         });
 
+        // Service worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -281,6 +313,7 @@
             });
         }
 
+        // PWA install
         let deferredPrompt;
         const installPopup = document.getElementById('installPopup');
         const installBtn = document.getElementById('installNowBtn');
@@ -315,4 +348,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
