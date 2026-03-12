@@ -1,4 +1,4 @@
-<!-- Splash Screen -->
+<!-- Splash Screen – covers the feed until first video is ready -->
 <div class="splash-overlay" id="splashOverlay">
     <div class="splash-stage stage1" id="stage1">
         <div class="splash-logo"><img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social"></div>
@@ -51,19 +51,16 @@
     </div>
 </div>
 
-<!-- Main Feed -->
+<!-- Main Feed Container -->
 <div class="feed-container" id="feedContainer">
     <div class="loading-indicator" id="loading"><i class="fas fa-circle-notch"></i><p>loading goa shorts...</p></div>
 </div>
 
 <style>
-    /* All your existing styles (keep them exactly as they are) */
+    /* ===== SPLASH SCREEN STYLES ===== */
     .splash-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: 0; left: 0; right: 0; bottom: 0;
         background: linear-gradient(145deg, #1877f2, #0a5cff);
         z-index: 10000;
         display: flex;
@@ -74,7 +71,13 @@
     }
     .splash-overlay.tappable { pointer-events: auto; }
     .splash-overlay.hidden { opacity: 0; pointer-events: none; }
-    .splash-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .splash-stage {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .stage1 { animation: logoZoom 2s forwards; }
     @keyframes logoZoom {
         0% { transform: scale(0.5); opacity: 0; }
@@ -83,8 +86,7 @@
         100% { transform: scale(1.5); opacity: 0; }
     }
     .splash-logo {
-        width: 140px;
-        height: 140px;
+        width: 140px; height: 140px;
         border-radius: 35px;
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -100,8 +102,7 @@
     @keyframes fadeIn { to { opacity: 1; } }
     .loading-content { text-align: center; color: white; }
     .loading-spinner {
-        width: 60px;
-        height: 60px;
+        width: 60px; height: 60px;
         border: 5px solid rgba(255,255,255,0.3);
         border-top-color: white;
         border-radius: 50%;
@@ -119,10 +120,12 @@
         display: none;
     }
     .tap-content { text-align: center; animation: gentlePulse 2s infinite; }
-    @keyframes gentlePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes gentlePulse {
+        0%,100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
     .tap-logo {
-        width: 100px;
-        height: 100px;
+        width: 100px; height: 100px;
         border-radius: 25px;
         overflow: hidden;
         margin: 0 auto 20px;
@@ -130,14 +133,14 @@
         border: 3px solid #1877f2;
     }
     .tap-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .tap-message { font-size: 1.5rem; color: #1877f2; margin-bottom: 10px; font-weight: 600; }
+    .tap-message { font-size: 1.5rem; color: #1877f2; font-weight: 600; margin-bottom: 10px; }
     .tap-hint { color: #65676b; font-size: 1.1rem; }
     .tap-hint i { color: #1877f2; margin-right: 8px; }
+
+    /* ===== YOUTUBE PLAYER ===== */
     .youtube-player-container {
         position: fixed;
-        top: 60px;
-        left: 0;
-        right: 0;
+        top: 60px; left: 0; right: 0;
         z-index: 1000;
         background: white;
         display: none;
@@ -155,13 +158,11 @@
     .player-wrapper iframe { width: 100%; height: 100%; border: none; }
     .close-player {
         position: absolute;
-        top: -40px;
-        right: 10px;
+        top: -40px; right: 10px;
         background: #1877f2;
         color: white;
         border: none;
-        width: 40px;
-        height: 40px;
+        width: 40px; height: 40px;
         border-radius: 50%;
         font-size: 1.2rem;
         cursor: pointer;
@@ -171,6 +172,8 @@
         font-weight: bold;
         z-index: 1001;
     }
+
+    /* ===== STORIES & CATEGORIES ===== */
     .stories-section {
         padding: 16px 16px 12px 16px;
         background: white;
@@ -195,8 +198,7 @@
     .stories-scroll::-webkit-scrollbar { display: none; }
     .story-item { min-width: 90px; text-align: center; }
     .story-avatar {
-        width: 80px;
-        height: 80px;
+        width: 80px; height: 80px;
         border-radius: 50%;
         background: linear-gradient(145deg, #e4e6eb, #d8dade);
         position: relative;
@@ -207,8 +209,7 @@
     .story-avatar.live::after {
         content: 'LIVE';
         position: absolute;
-        bottom: 4px;
-        right: 4px;
+        bottom: 4px; right: 4px;
         background: #ff0000;
         color: white;
         font-size: 0.55rem;
@@ -217,8 +218,7 @@
         font-weight: 600;
     }
     .story-avatar-inner {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -227,6 +227,7 @@
         color: #1877f2;
     }
     .story-label { font-size: 0.75rem; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     .categories-section {
         padding: 12px 16px;
         background: white;
@@ -255,6 +256,8 @@
         font-weight: 600;
         border: none;
     }
+
+    /* ===== FEED ===== */
     .feed-container { max-width: 600px; margin: 0 auto; padding: 8px 0 20px 0; }
     .feed-card {
         background: white;
@@ -271,8 +274,7 @@
         gap: 12px;
     }
     .channel-icon {
-        width: 44px;
-        height: 44px;
+        width: 44px; height: 44px;
         border-radius: 12px;
         background: #f0f2f5;
         display: flex;
@@ -297,8 +299,7 @@
     }
     .video-container iframe { width: 100%; height: 100%; border: none; }
     .image-placeholder {
-        width: 100%;
-        height: 200px;
+        width: 100%; height: 200px;
         background: linear-gradient(145deg, #f0f2f5, #e4e6eb);
         display: flex;
         align-items: center;
@@ -325,11 +326,11 @@
     .footer-item i.fa-heart { color: #f23b5c; }
     .footer-item i.fa-comment { color: #1877f2; }
     .footer-item i.fa-share { color: #42b72a; }
+
+    /* ===== SHARE POPUP ===== */
     .share-popup {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        bottom: 0; left: 0; right: 0;
         background: white;
         border-radius: 24px 24px 0 0;
         padding: 20px;
@@ -367,8 +368,7 @@
         cursor: pointer;
     }
     .share-icon {
-        width: 60px;
-        height: 60px;
+        width: 60px; height: 60px;
         border-radius: 30px;
         display: flex;
         align-items: center;
@@ -388,6 +388,8 @@
         display: none;
     }
     .share-overlay.visible { display: block; }
+
+    /* ===== EVENT & VIDEO OVERLAYS ===== */
     .event-details {
         padding: 0 14px 14px 14px;
         display: flex;
@@ -398,9 +400,7 @@
     .event-details span i { margin-right: 6px; color: #65676b; }
     .video-info-overlay {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        bottom: 0; left: 0; right: 0;
         padding: 30px 14px 14px;
         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         color: white;
@@ -432,7 +432,7 @@
     const shareOverlay = document.getElementById('shareOverlay');
     const closeShare = document.getElementById('closeShare');
 
-    // App state
+    // === App State ===
     let userInteracted = false;
     let videoPlayerManager = null;
     let logoClickCount = 0;
@@ -448,6 +448,7 @@
     const BUFFER_PREV = 2;
     const BUFFER_NEXT = 6;
 
+    // === Helper Functions ===
     function getVisibleIndex() {
         for (let i = 0; i < videoContainers.length; i++) {
             const rect = videoContainers[i].getBoundingClientRect();
@@ -526,9 +527,7 @@
         const timer = setInterval(() => {
             attempts++;
             playVideo(container);
-            if (attempts >= maxAttempts) {
-                clearInterval(timer);
-            }
+            if (attempts >= maxAttempts) clearInterval(timer);
         }, interval);
     }
 
@@ -536,30 +535,21 @@
         if (!videoContainers.length) return;
         const start = Math.max(0, visibleIdx - BUFFER_PREV);
         const end = Math.min(videoContainers.length - 1, visibleIdx + BUFFER_NEXT);
-
         for (let i = start; i <= end; i++) {
             const container = videoContainers[i];
-            if (container?.dataset.videoId) {
-                loadVideo(container, container.dataset.videoId, false);
-            }
+            if (container?.dataset.videoId) loadVideo(container, container.dataset.videoId, false);
         }
-
-        for (let i = 0; i < start; i++) {
-            pauseVideo(videoContainers[i]);
-        }
-        for (let i = end + 1; i < videoContainers.length; i++) {
-            pauseVideo(videoContainers[i]);
-        }
+        for (let i = 0; i < start; i++) pauseVideo(videoContainers[i]);
+        for (let i = end + 1; i < videoContainers.length; i++) pauseVideo(videoContainers[i]);
     }
 
-    // Splash timing - 3 seconds max
+    // === Splash Timing (Guaranteed to disappear) ===
     setTimeout(() => { stage1.style.display = 'none'; stage2.style.display = 'flex'; }, 2000);
     setTimeout(() => {
         timeoutDone = true;
         checkAndShowTap();
-    }, 3000); // Changed from 10000 to 3000
-
-    // Force show tap screen after 4 seconds no matter what
+    }, 3000);
+    // Ultimate fallback: after 4 seconds, force tap screen
     setTimeout(() => {
         if (!fallbackShown) {
             fallbackShown = true;
@@ -571,7 +561,6 @@
 
     function checkAndShowTap() {
         if (fallbackShown) return;
-        // Show tap screen if we have first video playing OR timeout reached
         if ((firstVideoConfirmedPlaying && secondVideoReady) || timeoutDone) {
             fallbackShown = true;
             stage2.style.display = 'none';
@@ -580,9 +569,17 @@
         }
     }
 
-    // Share functions
-    function showSharePopup(videoId) { currentShareVideoId = videoId; shareOverlay.classList.add('visible'); sharePopup.classList.add('visible'); }
-    function hideSharePopup() { shareOverlay.classList.remove('visible'); sharePopup.classList.remove('visible'); currentShareVideoId = null; }
+    // === Share Functions ===
+    function showSharePopup(videoId) {
+        currentShareVideoId = videoId;
+        shareOverlay.classList.add('visible');
+        sharePopup.classList.add('visible');
+    }
+    function hideSharePopup() {
+        shareOverlay.classList.remove('visible');
+        sharePopup.classList.remove('visible');
+        currentShareVideoId = null;
+    }
     document.querySelectorAll('.share-option').forEach(option => {
         option.addEventListener('click', (e) => {
             if (!currentShareVideoId) return;
@@ -598,6 +595,7 @@
     closeShare.addEventListener('click', hideSharePopup);
     shareOverlay.addEventListener('click', hideSharePopup);
 
+    // === Start App (tap to unmute) ===
     function startApp() {
         if (userInteracted) return;
         userInteracted = true;
@@ -607,22 +605,29 @@
         }
     }
 
+    // === Handle Shared Video Links ===
     function loadVideoFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         const videoId = urlParams.get('v');
-        if (videoId) { youtubePlayerContainer.classList.add('active'); youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; }
+        if (videoId) {
+            youtubePlayerContainer.classList.add('active');
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        }
     }
-    closePlayerBtn.addEventListener('click', () => { youtubePlayerContainer.classList.remove('active'); youtubePlayer.src = ''; });
+    closePlayerBtn.addEventListener('click', () => {
+        youtubePlayerContainer.classList.remove('active');
+        youtubePlayer.src = '';
+    });
     loadVideoFromUrl();
 
-    // ===== LOAD FEED FROM JSON =====
+    // === Load Feed from videos.json ===
     async function loadFeed() {
         loadingEl.style.display = 'block';
         feedContainer.innerHTML = '';
         feedContainer.appendChild(loadingEl);
 
         try {
-            // Try multiple paths in case of deployment differences
+            // Try multiple paths to locate videos.json
             let response;
             try {
                 response = await fetch('../videos.json');
@@ -633,7 +638,6 @@
                     response = await fetch('/SOCIAL.COM/videos.json');
                 }
             }
-            
             if (!response.ok) throw new Error('Failed to load videos.json');
             const videoData = await response.json();
 
@@ -673,7 +677,6 @@
 
                 const videoContainer = card.querySelector('.video-container');
                 if (videoContainer) videoContainers.push(videoContainer);
-
                 feedContainer.appendChild(card);
             });
 
@@ -681,6 +684,7 @@
             feedReady = true;
 
             if (videoContainers.length > 0) {
+                // Preload first 8 videos
                 for (let i = 0; i < Math.min(8, videoContainers.length); i++) {
                     const container = videoContainers[i];
                     if (container?.dataset.videoId) {
@@ -689,10 +693,9 @@
                 }
 
                 const firstContainer = videoContainers[0];
-                setTimeout(() => {
-                    ensureFirstVideoPlays(firstContainer, 15, 200);
-                }, 1000);
+                setTimeout(() => ensureFirstVideoPlays(firstContainer, 15, 200), 1000);
 
+                // Monitor second video readiness
                 const checkSecondInterval = setInterval(() => {
                     const secondIframe = videoContainers[1]?.querySelector('iframe');
                     if (secondIframe && secondIframe.src) {
@@ -701,7 +704,6 @@
                         checkAndShowTap();
                     }
                 }, 200);
-                
                 // Fallback if second video takes too long
                 setTimeout(() => {
                     secondVideoReady = true;
@@ -720,8 +722,7 @@
         } catch (error) {
             console.error('Error loading feed:', error);
             loadingEl.innerHTML = '<p style="color:red; text-align:center; padding:30px;">Unable to load videos. Please try again later.</p>';
-            
-            // Force tap screen to appear even if videos fail
+            // Force tap screen to appear anyway
             setTimeout(() => {
                 if (!fallbackShown) {
                     fallbackShown = true;
@@ -733,6 +734,7 @@
         }
     }
 
+    // === Setup Intersection Observer ===
     function setupVideoObserver() {
         class VideoPlayerManager {
             constructor() {
@@ -740,12 +742,9 @@
                     entries.forEach(entry => {
                         const container = entry.target;
                         const idx = videoContainers.indexOf(container);
-
                         if (entry.isIntersecting && idx !== -1) {
                             if (idx !== previousVisibleIndex) {
-                                if (previousVisibleIndex !== -1) {
-                                    pauseVideo(videoContainers[previousVisibleIndex]);
-                                }
+                                if (previousVisibleIndex !== -1) pauseVideo(videoContainers[previousVisibleIndex]);
                                 playVideo(container);
                                 if (userInteracted) unmuteVideo(container);
                                 updateBufferWindow(idx);
@@ -754,10 +753,7 @@
                             }
                         }
                     });
-                }, {
-                    threshold: 0.7,
-                    rootMargin: "100px 0px"
-                });
+                }, { threshold: 0.7, rootMargin: "100px 0px" });
             }
             observe(el) { this.observer.observe(el); }
         }
@@ -765,8 +761,14 @@
         videoContainers.forEach(c => videoPlayerManager.observe(c));
     }
 
+    // === Load Live Stories ===
     function loadLiveStories() {
-        const lives = [{ name: 'Goa Shorts', icon: '📱' }, { name: 'Beach Life', icon: '🌊' }, { name: 'Foodie', icon: '🍛' }, { name: 'Travel', icon: '✈️' }];
+        const lives = [
+            { name: 'Goa Shorts', icon: '📱' },
+            { name: 'Beach Life', icon: '🌊' },
+            { name: 'Foodie', icon: '🍛' },
+            { name: 'Travel', icon: '✈️' }
+        ];
         liveStories.innerHTML = '';
         lives.forEach(live => {
             const story = document.createElement('div');
@@ -776,18 +778,26 @@
         });
     }
 
+    // === Initialize ===
     loadLiveStories();
     loadFeed();
 
+    // Handle back/forward navigation
     window.addEventListener('popstate', () => {
         const videoId = new URLSearchParams(window.location.search).get('v');
-        if (videoId) { youtubePlayerContainer.classList.add('active'); youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; }
-        else { youtubePlayerContainer.classList.remove('active'); youtubePlayer.src = ''; }
+        if (videoId) {
+            youtubePlayerContainer.classList.add('active');
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        } else {
+            youtubePlayerContainer.classList.remove('active');
+            youtubePlayer.src = '';
+        }
     });
 
+    // Tap on splash to start app
     splashOverlay.addEventListener('click', function onSplashTap(e) {
         if (splashOverlay.classList.contains('tappable')) {
             startApp();
         }
     });
-</script>
+    </script>
