@@ -57,7 +57,7 @@
 </div>
 
 <style>
-    /* All your existing styles */
+    /* All your existing styles - keeping them exactly the same */
     .splash-overlay {
         position: fixed;
         top: 0;
@@ -444,6 +444,7 @@
     let firstVideoConfirmedPlaying = false;
     let secondVideoReady = false;
     let timeoutDone = false;
+    let fallbackShown = false;
     const BUFFER_PREV = 2;
     const BUFFER_NEXT = 6;
 
@@ -505,7 +506,7 @@
                     playVideo(container);
                     setTimeout(() => {
                         firstVideoConfirmedPlaying = true;
-                        maybeShowTapScreen();
+                        checkAndShowTap();
                     }, 500);
                 } else {
                     setTimeout(() => {
@@ -551,15 +552,29 @@
         }
     }
 
-    // Splash timing
+    // Splash timing - REDUCED TO 3 SECONDS
     setTimeout(() => { stage1.style.display = 'none'; stage2.style.display = 'flex'; }, 2000);
     setTimeout(() => {
         timeoutDone = true;
-        maybeShowTapScreen();
-    }, 10000);
+        checkAndShowTap();
+    }, 3000); // Reduced from 10000 to 3000
 
-    function maybeShowTapScreen() {
-        if (timeoutDone && firstVideoConfirmedPlaying && secondVideoReady) {
+    // Force show tap screen after 4 seconds no matter what
+    setTimeout(() => {
+        if (!fallbackShown) {
+            fallbackShown = true;
+            stage2.style.display = 'none';
+            stage3.style.display = 'flex';
+            splashOverlay.classList.add('tappable');
+        }
+    }, 4000);
+
+    function checkAndShowTap() {
+        if (fallbackShown) return;
+        
+        // Show tap screen if we have first video playing OR timeout reached
+        if ((firstVideoConfirmedPlaying && secondVideoReady) || timeoutDone) {
+            fallbackShown = true;
             stage2.style.display = 'none';
             stage3.style.display = 'flex';
             splashOverlay.classList.add('tappable');
@@ -608,7 +623,18 @@
         feedContainer.appendChild(loadingEl);
 
         try {
-            const response = await fetch('../videos.json');
+            // Try multiple possible paths
+            let response;
+            try {
+                response = await fetch('../videos.json');
+            } catch {
+                try {
+                    response = await fetch('videos.json');
+                } catch {
+                    response = await fetch('/SOCIAL.COM/videos.json');
+                }
+            }
+            
             if (!response.ok) throw new Error('Failed to load videos.json');
             const videoData = await response.json();
 
@@ -673,9 +699,15 @@
                     if (secondIframe && secondIframe.src) {
                         secondVideoReady = true;
                         clearInterval(checkSecondInterval);
-                        maybeShowTapScreen();
+                        checkAndShowTap();
                     }
                 }, 200);
+                
+                // Fallback for second video
+                setTimeout(() => {
+                    secondVideoReady = true;
+                    checkAndShowTap();
+                }, 2000);
             }
 
             setupVideoObserver();
@@ -688,7 +720,27 @@
 
         } catch (error) {
             console.error('Error loading feed:', error);
-            loadingEl.innerHTML = '<p style="color:red;">Failed to load videos. Check console.</p>';
+            loadingEl.innerHTML = '<p style="color:red;">Failed to load videos. Using demo mode.</p>';
+            
+            // Add a simple demo card so page doesn't look empty
+            feedContainer.innerHTML = `
+                <div style="text-align:center; padding:30px; color:#666; background:white; border-radius:24px; margin:16px;">
+                    <i class="fas fa-video" style="font-size:3rem; color:#1877f2;"></i>
+                    <p style="margin-top:16px;">Unable to load videos. Please check your connection.</p>
+                    <p style="font-size:0.8rem; margin-top:8px;">Make sure videos.json exists in your root folder.</p>
+                </div>
+            `;
+            loadingEl.style.display = 'none';
+            
+            // Force tap screen to appear
+            setTimeout(() => {
+                if (!fallbackShown) {
+                    fallbackShown = true;
+                    stage2.style.display = 'none';
+                    stage3.style.display = 'flex';
+                    splashOverlay.classList.add('tappable');
+                }
+            }, 1000);
         }
     }
 
@@ -749,4 +801,4 @@
             startApp();
         }
     });
-                                                                    </script>
+</script>
