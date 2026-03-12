@@ -57,7 +57,7 @@
 </div>
 
 <style>
-    /* All your existing styles */
+    /* All your existing styles (keep them exactly as they are) */
     .splash-overlay {
         position: fixed;
         top: 0;
@@ -557,9 +557,9 @@
     setTimeout(() => {
         timeoutDone = true;
         checkAndShowTap();
-    }, 3000);
+    }, 3000); // Changed from 10000 to 3000
 
-    // Force show tap screen after 4 seconds
+    // Force show tap screen after 4 seconds no matter what
     setTimeout(() => {
         if (!fallbackShown) {
             fallbackShown = true;
@@ -571,6 +571,7 @@
 
     function checkAndShowTap() {
         if (fallbackShown) return;
+        // Show tap screen if we have first video playing OR timeout reached
         if ((firstVideoConfirmedPlaying && secondVideoReady) || timeoutDone) {
             fallbackShown = true;
             stage2.style.display = 'none';
@@ -621,7 +622,18 @@
         feedContainer.appendChild(loadingEl);
 
         try {
-            const response = await fetch('../videos.json');
+            // Try multiple paths in case of deployment differences
+            let response;
+            try {
+                response = await fetch('../videos.json');
+            } catch {
+                try {
+                    response = await fetch('videos.json');
+                } catch {
+                    response = await fetch('/SOCIAL.COM/videos.json');
+                }
+            }
+            
             if (!response.ok) throw new Error('Failed to load videos.json');
             const videoData = await response.json();
 
@@ -690,6 +702,7 @@
                     }
                 }, 200);
                 
+                // Fallback if second video takes too long
                 setTimeout(() => {
                     secondVideoReady = true;
                     checkAndShowTap();
@@ -708,6 +721,7 @@
             console.error('Error loading feed:', error);
             loadingEl.innerHTML = '<p style="color:red; text-align:center; padding:30px;">Unable to load videos. Please try again later.</p>';
             
+            // Force tap screen to appear even if videos fail
             setTimeout(() => {
                 if (!fallbackShown) {
                     fallbackShown = true;
