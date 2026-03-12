@@ -18,9 +18,25 @@
     <div class="loading-indicator" id="loading"><i class="fas fa-circle-notch"></i><p>loading goa shorts...</p></div>
 </div>
 
+<!-- Share Popup -->
+<div class="share-overlay" id="shareOverlay"></div>
+<div class="share-popup" id="sharePopup">
+    <div class="share-popup-header"><h3>Share to</h3><button class="close-share" id="closeShare">&times;</button></div>
+    <div class="share-options">
+        <div class="share-option" data-share="whatsapp"><div class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span></div>
+        <div class="share-option" data-share="instagram"><div class="share-icon instagram"><i class="fab fa-instagram"></i></div><span>Instagram</span></div>
+        <div class="share-option" data-share="facebook"><div class="share-icon facebook"><i class="fab fa-facebook-f"></i></div><span>Facebook</span></div>
+        <div class="share-option" data-share="copy"><div class="share-icon copy"><i class="fas fa-link"></i></div><span>Copy Link</span></div>
+    </div>
+</div>
+
+<!-- YouTube Player Container (for shared videos) -->
+<div class="youtube-player-container" id="youtubePlayerContainer">
+    <div class="player-wrapper"><button class="close-player" id="closePlayerBtn">&times;</button><iframe id="youtubePlayer" allow="autoplay; fullscreen"></iframe></div>
+</div>
+
 <style>
-    /* Copy ALL your existing styles here - keep them exactly as they were */
-    /* Just make sure the splash styles are NOT included */
+    /* All your styles here - keep them exactly as before */
     .stories-section {
         padding: 16px 16px 12px 16px;
         background: white;
@@ -255,6 +271,40 @@
     }
     .loading-indicator i { font-size: 2rem; animation: spin 1s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
+    .youtube-player-container {
+        position: fixed;
+        top: 60px; left: 0; right: 0;
+        z-index: 1000;
+        background: white;
+        display: none;
+        padding: 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .youtube-player-container.active { display: block; }
+    .player-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .player-wrapper iframe { width: 100%; height: 100%; border: none; }
+    .close-player {
+        position: absolute;
+        top: -40px; right: 10px;
+        background: #1877f2;
+        color: white;
+        border: none;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        z-index: 1001;
+    }
 </style>
 
 <script>
@@ -279,6 +329,7 @@
     const BUFFER_PREV = 2;
     const BUFFER_NEXT = 6;
 
+    // Helper Functions
     function getVisibleIndex() {
         for (let i = 0; i < videoContainers.length; i++) {
             const rect = videoContainers[i].getBoundingClientRect();
@@ -320,10 +371,14 @@
         if (!videoContainers.length) return;
         const start = Math.max(0, visibleIdx - BUFFER_PREV);
         const end = Math.min(videoContainers.length - 1, visibleIdx + BUFFER_NEXT);
+        
         for (let i = start; i <= end; i++) {
             const container = videoContainers[i];
-            if (container?.dataset.videoId) loadVideo(container, container.dataset.videoId);
+            if (container?.dataset.videoId) {
+                loadVideo(container, container.dataset.videoId);
+            }
         }
+        
         for (let i = 0; i < start; i++) pauseVideo(videoContainers[i]);
         for (let i = end + 1; i < videoContainers.length; i++) pauseVideo(videoContainers[i]);
     }
@@ -334,11 +389,13 @@
         shareOverlay.classList.add('visible');
         sharePopup.classList.add('visible');
     }
+    
     function hideSharePopup() {
         shareOverlay.classList.remove('visible');
         sharePopup.classList.remove('visible');
         currentShareVideoId = null;
     }
+
     document.querySelectorAll('.share-option').forEach(option => {
         option.addEventListener('click', (e) => {
             if (!currentShareVideoId) return;
@@ -351,6 +408,7 @@
             hideSharePopup();
         });
     });
+    
     closeShare.addEventListener('click', hideSharePopup);
     shareOverlay.addEventListener('click', hideSharePopup);
 
@@ -363,22 +421,46 @@
             youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
         }
     }
+    
     closePlayerBtn.addEventListener('click', () => {
         youtubePlayerContainer.classList.remove('active');
         youtubePlayer.src = '';
     });
+    
     loadVideoFromUrl();
 
-    // Load feed from JSON
+    // Load feed from JSON - FIXED PATH
     async function loadFeed() {
         loadingEl.style.display = 'block';
         feedContainer.innerHTML = '';
         feedContainer.appendChild(loadingEl);
 
         try {
-            const response = await fetch('../videos.json');
-            if (!response.ok) throw new Error('Failed to load videos.json');
+            // Try multiple paths to find videos.json
+            let response;
+            
+            // Try 1: Go up one level (from pages/ to root)
+            try {
+                response = await fetch('../videos.json');
+                if (response.ok) console.log('Found videos.json at ../videos.json');
+            } catch {
+                // Try 2: Absolute path with your repo name
+                try {
+                    response = await fetch('/SOCIAL.COM/videos.json');
+                    if (response.ok) console.log('Found videos.json at /SOCIAL.COM/videos.json');
+                } catch {
+                    // Try 3: Root path
+                    response = await fetch('videos.json');
+                    if (response.ok) console.log('Found videos.json at videos.json');
+                }
+            }
+            
+            if (!response || !response.ok) {
+                throw new Error('Could not find videos.json in any location');
+            }
+            
             const videoData = await response.json();
+            console.log('Loaded videos:', videoData.length);
 
             feedContainer.innerHTML = '';
 
@@ -425,11 +507,14 @@
             if (videoContainers.length > 0) {
                 for (let i = 0; i < Math.min(8, videoContainers.length); i++) {
                     const container = videoContainers[i];
-                    if (container?.dataset.videoId) loadVideo(container, container.dataset.videoId);
+                    if (container?.dataset.videoId) {
+                        loadVideo(container, container.dataset.videoId);
+                    }
                 }
             }
 
             setupVideoObserver();
+            
             setTimeout(() => {
                 const visibleIdx = getVisibleIndex();
                 currentVisibleIndex = visibleIdx;
@@ -439,7 +524,7 @@
 
         } catch (error) {
             console.error('Error loading feed:', error);
-            loadingEl.innerHTML = '<p style="color:red; text-align:center; padding:30px;">Unable to load videos.</p>';
+            loadingEl.innerHTML = '<p style="color:red; text-align:center; padding:30px;">Unable to load videos. Please check console.</p>';
         }
     }
 
@@ -450,9 +535,12 @@
                     entries.forEach(entry => {
                         const container = entry.target;
                         const idx = videoContainers.indexOf(container);
+                        
                         if (entry.isIntersecting && idx !== -1) {
                             if (idx !== previousVisibleIndex) {
-                                if (previousVisibleIndex !== -1) pauseVideo(videoContainers[previousVisibleIndex]);
+                                if (previousVisibleIndex !== -1) {
+                                    pauseVideo(videoContainers[previousVisibleIndex]);
+                                }
                                 playVideo(container);
                                 if (userInteracted) unmuteVideo(container);
                                 updateBufferWindow(idx);
@@ -489,7 +577,7 @@
     loadLiveStories();
     loadFeed();
 
-    // Tap anywhere to unmute (simple version)
+    // Tap anywhere to unmute
     document.addEventListener('click', function firstTap() {
         if (!userInteracted) {
             userInteracted = true;
