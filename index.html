@@ -206,9 +206,9 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation - Dating changed to Explore -->
+    <!-- Bottom Navigation - COMPASS ICON FOR EXPLORE -->
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="loadPage('home')">
+        <button class="nav-item" onclick="loadPage('home')">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </button>
@@ -230,7 +230,7 @@
         </button>
     </nav>
 
-    <!-- Install PWA Popup - Appears after 10 seconds -->
+    <!-- Install PWA Popup -->
     <div id="installPopup" style="display: none; position: fixed; bottom: 80px; left: 16px; right: 16px; background: white; border-radius: 24px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10001; max-width: 400px; margin: 0 auto; border: 1px solid #e4e6eb; animation: slideUp 0.3s ease;">
         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
             <div style="width: 60px; height: 60px; border-radius: 16px; overflow: hidden; background: #1877f2; flex-shrink: 0;">
@@ -259,7 +259,15 @@
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.closest('.nav-item').classList.add('active');
+            
+            // Find and activate the clicked button
+            const buttons = document.querySelectorAll('.nav-item');
+            for (let btn of buttons) {
+                if (btn.querySelector('span').innerText.toLowerCase() === pageName.toLowerCase()) {
+                    btn.classList.add('active');
+                    break;
+                }
+            }
             
             try {
                 // Fetch the page HTML from pages folder
@@ -274,6 +282,8 @@
 
         // Load home page by default
         window.addEventListener('load', () => {
+            // Set home as active
+            document.querySelectorAll('.nav-item')[0].classList.add('active');
             loadPage('home');
         });
 
@@ -298,55 +308,32 @@
 
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome from automatically showing the prompt
             e.preventDefault();
-            // Stash the event so it can be triggered later
             deferredPrompt = e;
             
-            // Show popup after 10 seconds
             setTimeout(() => {
-                // Check if app is not already installed
                 if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
                     installPopup.style.display = 'block';
                 }
-            }, 10000); // 10 seconds
+            }, 10000);
         });
 
-        // Install button click
         installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) return;
-            
-            // Show the install prompt
             deferredPrompt.prompt();
-            
-            // Wait for the user to respond to the prompt
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            
-            // We've used the prompt, can't use it again
+            console.log(`User response: ${outcome}`);
             deferredPrompt = null;
-            
-            // Hide popup
             installPopup.style.display = 'none';
         });
 
-        // Later button click
         laterBtn.addEventListener('click', () => {
             installPopup.style.display = 'none';
         });
 
-        // Hide popup if app is already installed
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            // App is installed, don't show popup
             installPopup.style.display = 'none';
         }
-
-        // Also hide if user clicks outside (optional)
-        window.addEventListener('click', (e) => {
-            if (e.target === installPopup) {
-                installPopup.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
