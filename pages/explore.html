@@ -1,0 +1,147 @@
+<div style="padding: 16px; max-width: 600px; margin: 0 auto;">
+    <!-- Search Bar -->
+    <div style="background: white; border-radius: 40px; padding: 12px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e4e6eb;">
+        <i class="fas fa-search" style="color: #1877f2;"></i>
+        <input type="text" placeholder="Search Goans..." style="border: none; outline: none; flex: 1; font-size: 1rem;" id="searchInput">
+    </div>
+
+    <!-- Only Goans Verified Badge -->
+    <div style="background: linear-gradient(145deg, #1877f2, #0a5cff); border-radius: 30px; padding: 12px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; color: white;">
+        <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+        <div style="flex: 1;">
+            <h3 style="font-size: 1rem; font-weight: 600;">Only Goans Community</h3>
+            <p style="font-size: 0.8rem; opacity: 0.9;">Verified Goan profiles only</p>
+        </div>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 40px; font-size: 0.7rem;">2 free messages</span>
+    </div>
+
+    <!-- Category Chips -->
+    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px; scrollbar-width: none;">
+        <span style="background: #1877f2; color: white; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">All Goans</span>
+        <span style="background: #f0f2f5; color: #1c1e21; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">North Goa</span>
+        <span style="background: #f0f2f5; color: #1c1e21; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">South Goa</span>
+        <span style="background: #f0f2f5; color: #1c1e21; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">Artists</span>
+        <span style="background: #f0f2f5; color: #1c1e21; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">Foodies</span>
+        <span style="background: #f0f2f5; color: #1c1e21; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; white-space: nowrap;">Travel</span>
+    </div>
+
+    <!-- People Cards -->
+    <div id="peopleContainer">
+        <!-- Card 1 -->
+        <div class="people-card" style="background: white; border-radius: 24px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e4e6eb;">
+            <div style="display: flex; padding: 16px; gap: 16px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(145deg, #1877f2, #0a5cff); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; flex-shrink: 0;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600;">Rohan Pereira</h3>
+                        <i class="fas fa-check-circle" style="color: #1877f2; font-size: 0.9rem;"></i>
+                        <span style="background: #e7f3ff; color: #1877f2; padding: 2px 8px; border-radius: 40px; font-size: 0.6rem;">Goan</span>
+                    </div>
+                    <p style="color: #65676b; font-size: 0.85rem; margin-bottom: 4px;"><i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i> Panjim</p>
+                    <p style="color: #1c1e21; font-size: 0.9rem; margin-bottom: 8px;">Surfer | Foodie | Love beach sunsets 🌊</p>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="message-btn" data-msg="2" style="background: #1877f2; color: white; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; flex: 1;">Message (2 left)</button>
+                        <button style="background: #f0f2f5; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <i class="fas fa-heart" style="color: #f23b5c;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="people-card" style="background: white; border-radius: 24px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e4e6eb;">
+            <div style="display: flex; padding: 16px; gap: 16px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(145deg, #f23b5c, #ff6b6b); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; flex-shrink: 0;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600;">Anjali Naik</h3>
+                        <i class="fas fa-check-circle" style="color: #1877f2; font-size: 0.9rem;"></i>
+                        <span style="background: #e7f3ff; color: #1877f2; padding: 2px 8px; border-radius: 40px; font-size: 0.6rem;">Goan</span>
+                    </div>
+                    <p style="color: #65676b; font-size: 0.85rem; margin-bottom: 4px;"><i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i> Margao</p>
+                    <p style="color: #1c1e21; font-size: 0.9rem; margin-bottom: 8px;">Artist | Yoga teacher | Nature lover 🌿</p>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="message-btn" data-msg="1" style="background: #1877f2; color: white; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; flex: 1;">Message (1 left)</button>
+                        <button style="background: #f0f2f5; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <i class="fas fa-heart" style="color: #f23b5c;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 - Friend Example -->
+        <div class="people-card" style="background: white; border-radius: 24px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #1877f2;">
+            <div style="display: flex; padding: 16px; gap: 16px; background: linear-gradient(145deg, #f0f8ff, white);">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(145deg, #42b72a, #2e8b57); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; flex-shrink: 0;">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600;">Vikas Gaonkar</h3>
+                        <i class="fas fa-check-circle" style="color: #1877f2; font-size: 0.9rem;"></i>
+                        <span style="background: #42b72a; color: white; padding: 2px 8px; border-radius: 40px; font-size: 0.6rem;">Friend</span>
+                    </div>
+                    <p style="color: #65676b; font-size: 0.85rem; margin-bottom: 4px;"><i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i> Mapusa</p>
+                    <p style="color: #1c1e21; font-size: 0.9rem; margin-bottom: 8px;">Cafe owner | Music lover | Let's catch up! ☕</p>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button style="background: #42b72a; color: white; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; flex: 1;"><i class="fas fa-comment"></i> Chat (unlimited)</button>
+                        <button style="background: #f0f2f5; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <i class="fas fa-star" style="color: #ffb347;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Limit Info -->
+    <div style="background: #f0f2f5; border-radius: 30px; padding: 16px; margin-top: 20px; text-align: center; border: 1px solid #e4e6eb;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
+            <i class="fas fa-info-circle" style="color: #1877f2;"></i>
+            <span style="font-size: 0.9rem; color: #1c1e21;"><strong>2 free messages</strong> per account</span>
+        </div>
+        <p style="font-size: 0.8rem; color: #65676b;">After becoming friends, you can chat unlimited. Connect with Goans today!</p>
+    </div>
+</div>
+
+<script>
+    // Message limit logic
+    document.querySelectorAll('.message-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let msgCount = parseInt(this.getAttribute('data-msg'));
+            if (msgCount > 0) {
+                msgCount--;
+                this.setAttribute('data-msg', msgCount);
+                this.innerHTML = `Message (${msgCount} left)`;
+                if (msgCount === 0) {
+                    this.innerHTML = 'Message (0 left)';
+                    this.style.background = '#ccc';
+                    this.style.cursor = 'not-allowed';
+                }
+                alert('✨ Message sent! (Demo mode)');
+            } else {
+                alert('❌ No messages left.\n\nBecome friends to chat unlimited!');
+            }
+        });
+    });
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('.people-card').forEach(card => {
+            const name = card.querySelector('h3')?.innerText.toLowerCase() || '';
+            if (name.includes(searchTerm) || searchTerm === '') {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
