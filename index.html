@@ -27,7 +27,6 @@
             position: relative;
         }
 
-        /* Coconut decorations */
         .coconut-left {
             position: fixed;
             bottom: 80px;
@@ -62,7 +61,6 @@
             50% { transform: rotate(5deg) scaleX(-1); }
         }
 
-        /* Header */
         .app-header {
             background: white;
             backdrop-filter: blur(12px);
@@ -119,12 +117,10 @@
             font-size: 1.3rem;
         }
 
-        /* Content area where pages load */
         #content {
             min-height: calc(100vh - 140px);
         }
 
-        /* Bottom navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -161,7 +157,6 @@
             color: #1877f2;
         }
 
-        /* Loading indicator */
         .loader {
             text-align: center;
             padding: 50px;
@@ -173,7 +168,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Install Popup Animation */
         @keyframes slideUp {
             from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
@@ -184,7 +178,6 @@
     <div class="coconut-left">🌴</div>
     <div class="coconut-right">🌴</div>
 
-    <!-- Header -->
     <header class="app-header">
         <div class="logo-container" id="logoContainer">
             <div class="logo-crop">
@@ -198,7 +191,6 @@
         </div>
     </header>
 
-    <!-- Main Content Area - Pages Load Here -->
     <div id="content">
         <div class="loader">
             <i class="fas fa-circle-notch"></i>
@@ -206,7 +198,6 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION - CHANGED DATING TO EXPLORE -->
     <nav class="bottom-nav">
         <button class="nav-item" onclick="loadPage('home')">
             <i class="fas fa-home"></i>
@@ -230,7 +221,6 @@
         </button>
     </nav>
 
-    <!-- Install PWA Popup -->
     <div id="installPopup" style="display: none; position: fixed; bottom: 80px; left: 16px; right: 16px; background: white; border-radius: 24px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10001; max-width: 400px; margin: 0 auto; border: 1px solid #e4e6eb; animation: slideUp 0.3s ease;">
         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
             <div style="width: 60px; height: 60px; border-radius: 16px; overflow: hidden; background: #1877f2; flex-shrink: 0;">
@@ -248,19 +238,14 @@
     </div>
 
     <script>
-        // Function to load pages dynamically
         async function loadPage(pageName) {
             const contentDiv = document.getElementById('content');
-            
-            // Show loader
             contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
             
-            // Update active nav item
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Find and activate the clicked button
             const buttons = document.querySelectorAll('.nav-item');
             for (let btn of buttons) {
                 if (btn.querySelector('span').innerText.toLowerCase() === pageName.toLowerCase()) {
@@ -270,7 +255,6 @@
             }
             
             try {
-                // Fetch the page HTML from pages folder
                 const response = await fetch(`pages/${pageName}.html`);
                 if (!response.ok) throw new Error('Page not found');
                 const html = await response.text();
@@ -280,14 +264,11 @@
             }
         }
 
-        // Load home page by default
         window.addEventListener('load', () => {
-            // Set home as active
             document.querySelectorAll('.nav-item')[0].classList.add('active');
             loadPage('home');
         });
 
-        // Service worker registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -300,13 +281,11 @@
             });
         }
 
-        // ===== PWA Install Popup Logic =====
         let deferredPrompt;
         const installPopup = document.getElementById('installPopup');
         const installBtn = document.getElementById('installNowBtn');
         const laterBtn = document.getElementById('laterBtn');
 
-        // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
