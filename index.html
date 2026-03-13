@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Goa Social · Premium</title>
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
@@ -22,37 +22,51 @@
         }
 
         :root {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #e4e6eb;
+            --card-bg: #ffffff;
+            --text-primary: #1c1e21;
+            --text-secondary: #65676b;
             --primary-color: #1877f2;
             --primary-dark: #0a5cff;
-            --beach-green: #2E7D32;
-            --beach-green-light: #4CAF50;
-            --grayish: #4A5568;
-            --bg-gradient: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
+            --nav-bg: #ffffff;
+            --border-color: #e4e6eb;
+        }
+
+        body.dark-mode {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --card-bg: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --primary-color: #1877f2;
+            --primary-dark: #0a5cff;
+            --nav-bg: #111111;
+            --border-color: #2a2a2a;
+        }
+
+        body.dark-red-mode {
+            --bg-primary: #000000;
+            --bg-secondary: #1a0000;
+            --card-bg: #1a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #ffaaaa;
+            --primary-color: #ff4444;
+            --primary-dark: #cc0000;
+            --nav-bg: #1a0a0a;
+            --border-color: #440000;
         }
 
         body {
-            background: linear-gradient(145deg, #f0f2f5, #e4e6eb);
-            color: #1c1e21;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.4;
             padding-bottom: 70px;
             min-height: 100vh;
             position: relative;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            transition: background 0.5s ease;
-        }
-
-        /* Beach Mode Classes */
-        body.beach-mode {
-            --primary-color: #2E7D32;
-            --primary-dark: #1B5E20;
-            --bg-gradient: linear-gradient(145deg, #2E7D32, #1B5E20);
-        }
-
-        body.transition-mode {
-            --primary-color: #4A5568;
-            --primary-dark: #2D3748;
-            --bg-gradient: linear-gradient(145deg, #4A5568, #2D3748);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Subtle coconut tree decorations */
@@ -61,11 +75,12 @@
             bottom: 80px;
             left: 10px;
             font-size: 4rem;
-            opacity: 0.15;
+            opacity: 0.1;
             transform: rotate(-10deg);
             z-index: 0;
             pointer-events: none;
             animation: swayLeft 6s ease-in-out infinite;
+            color: var(--text-secondary);
         }
 
         .coconut-right {
@@ -73,11 +88,12 @@
             bottom: 80px;
             right: 10px;
             font-size: 4rem;
-            opacity: 0.15;
+            opacity: 0.1;
             transform: rotate(10deg) scaleX(-1);
             z-index: 0;
             pointer-events: none;
             animation: swayRight 6s ease-in-out infinite;
+            color: var(--text-secondary);
         }
 
         @keyframes swayLeft {
@@ -97,7 +113,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--bg-gradient);
+            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
             z-index: 10000;
             display: flex;
             align-items: center;
@@ -247,8 +263,9 @@
             font-weight: 600;
             display: none;
             position: sticky;
-            top: 60px;
+            top: 0;
             z-index: 99;
+            width: 100%;
         }
 
         .offline-banner.show {
@@ -286,20 +303,21 @@
             justify-content: center;
         }
 
-        /* ===== HEADER WITH BACK BUTTON ===== */
+        /* ===== HEADER ===== */
         .app-header {
-            background: white;
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e4e6eb;
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
         }
 
         .header-left {
@@ -325,7 +343,7 @@
         }
 
         .back-button:hover {
-            background: #f0f2f5;
+            background: var(--bg-secondary);
         }
 
         .back-button.hidden {
@@ -346,7 +364,7 @@
             overflow: hidden;
             background: var(--primary-color);
             flex-shrink: 0;
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
         }
 
         .logo-crop img {
@@ -366,7 +384,7 @@
         .header-actions {
             display: flex;
             gap: 20px;
-            color: #65676b;
+            color: var(--text-secondary);
         }
 
         .header-actions i {
@@ -376,8 +394,9 @@
         /* ===== STORIES ===== */
         .stories-section {
             padding: 16px 16px 12px 16px;
-            background: white;
+            background: var(--card-bg);
             margin: 8px 0;
+            width: 100%;
         }
 
         .section-header {
@@ -390,7 +409,7 @@
         .section-header h3 {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #1c1e21;
+            color: var(--text-primary);
         }
 
         .section-header a {
@@ -414,7 +433,7 @@
         }
 
         .story-item {
-            min-width: 80px;
+            min-width: 70px;
             text-align: center;
         }
 
@@ -422,18 +441,19 @@
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #e4e6eb, #d8dade);
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
             margin: 0 auto 8px auto;
             border: 3px solid var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
+            color: var(--primary-color);
         }
 
         .story-label {
             font-size: 0.7rem;
-            color: #65676b;
+            color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -442,8 +462,9 @@
         /* ===== CATEGORIES ===== */
         .categories-section {
             padding: 12px 16px;
-            background: white;
+            background: var(--card-bg);
             margin: 8px 0;
+            width: 100%;
         }
 
         .chips-scroll {
@@ -458,13 +479,13 @@
         }
 
         .chip {
-            background: #f0f2f5;
-            color: #1c1e21;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             padding: 8px 18px;
             border-radius: 40px;
             font-size: 0.85rem;
             white-space: nowrap;
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
             font-weight: 500;
             transition: all 0.2s;
             cursor: pointer;
@@ -486,23 +507,22 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 8px 0 20px 0;
-            scroll-snap-type: y mandatory;
+            width: 100%;
         }
 
         .feed-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 28px;
             margin: 0 12px 16px 12px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border: 1px solid #e4e6eb;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
             transition: transform 0.2s;
-            scroll-snap-align: start;
-            scroll-margin-top: 10px;
+            width: calc(100% - 24px);
         }
 
         .feed-card:active {
-            transform: scale(0.98);
+            transform: scale(0.99);
         }
 
         .card-header {
@@ -516,13 +536,13 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            background: #f0f2f5;
+            background: var(--bg-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
             color: var(--primary-color);
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
         }
 
         .channel-info {
@@ -532,17 +552,17 @@
         .channel-name {
             font-weight: 600;
             font-size: 1rem;
-            color: #1c1e21;
+            color: var(--text-primary);
         }
 
         .post-time {
             font-size: 0.7rem;
-            color: #65676b;
+            color: var(--text-secondary);
             margin-top: 2px;
         }
 
         .card-header i {
-            color: #65676b;
+            color: var(--text-secondary);
             font-size: 1.2rem;
         }
 
@@ -580,14 +600,14 @@
             padding: 14px;
             display: flex;
             gap: 24px;
-            border-top: 1px solid #e4e6eb;
+            border-top: 1px solid var(--border-color);
         }
 
         .footer-item {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #65676b;
+            color: var(--text-secondary);
             font-size: 0.9rem;
             cursor: pointer;
             transition: color 0.2s;
@@ -669,6 +689,7 @@
             text-align: center;
             padding: 30px;
             color: var(--primary-color);
+            width: 100%;
         }
 
         .loading-indicator i {
@@ -680,12 +701,13 @@
 
         /* ===== BUSINESS CARD ===== */
         .business-card {
-            background: linear-gradient(145deg, #1877f2, #0a5cff);
+            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
             color: white;
             border-radius: 24px;
             margin: 16px 12px 24px 12px;
             padding: 20px;
-            box-shadow: 0 12px 24px rgba(24,119,242,0.3);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+            width: calc(100% - 24px);
         }
 
         .business-card h3 {
@@ -700,7 +722,7 @@
 
         .business-card button {
             background: white;
-            color: #1877f2;
+            color: var(--primary-color);
             border: none;
             padding: 12px 24px;
             border-radius: 40px;
@@ -714,10 +736,11 @@
             margin: 0 auto;
             padding: 20px 16px;
             min-height: calc(100vh - 140px);
+            width: 100%;
         }
 
         .message-credits {
-            background: white;
+            background: var(--card-bg);
             border-radius: 24px;
             padding: 16px;
             margin-bottom: 20px;
@@ -725,6 +748,7 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
 
         .credits-count {
@@ -741,8 +765,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
-            border-top: 1px solid #e4e6eb;
+            background: var(--nav-bg);
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -750,6 +774,7 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease;
+            width: 100%;
         }
 
         .bottom-nav.hidden {
@@ -760,7 +785,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #65676b;
+            color: var(--text-secondary);
             font-size: 0.7rem;
             padding: 4px 12px;
             border-radius: 30px;
@@ -780,7 +805,7 @@
         }
 
         .nav-item:active {
-            background: #f0f2f5;
+            background: var(--bg-secondary);
         }
 
         /* ===== SHARE POPUP ===== */
@@ -789,13 +814,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--card-bg);
             border-radius: 24px 24px 0 0;
             padding: 20px;
             z-index: 10001;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            border-top: 1px solid var(--border-color);
         }
 
         .share-popup.visible {
@@ -809,11 +835,15 @@
             margin-bottom: 20px;
         }
 
+        .share-popup-header h3 {
+            color: var(--text-primary);
+        }
+
         .close-share {
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: #65676b;
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 8px;
         }
@@ -831,6 +861,7 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            color: var(--text-primary);
         }
 
         .share-icon {
@@ -851,7 +882,7 @@
         .share-icon.whatsapp { background: #25D366; color: white; }
         .share-icon.instagram { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); color: white; }
         .share-icon.facebook { background: #1877f2; color: white; }
-        .share-icon.copy { background: #f0f2f5; color: #1c1e21; }
+        .share-icon.copy { background: var(--bg-secondary); color: var(--text-primary); }
 
         .share-overlay {
             position: fixed;
@@ -872,12 +903,12 @@
             bottom: 80px;
             left: 16px;
             right: 16px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 28px;
             padding: 24px;
             z-index: 10002;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
             animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
             max-width: 400px;
             margin: 0 auto;
@@ -891,6 +922,79 @@
         @keyframes slideUp {
             from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+
+        .install-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .install-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .install-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .install-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .install-sub {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .install-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .install-now {
+            flex: 2;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+
+        .install-now:active {
+            transform: scale(0.95);
+        }
+
+        .install-later {
+            flex: 1;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .install-later:active {
+            background: var(--border-color);
         }
     </style>
 </head>
@@ -933,7 +1037,7 @@
         </div>
     </div>
 
-    <!-- Install Popups -->
+    <!-- Install Popup -->
     <div class="install-popup" id="installPopup1">
         <div class="install-header">
             <div class="install-icon">
@@ -975,12 +1079,12 @@
                 <span>Copy Link</span>
             </div>
         </div>
-        <div style="text-align:center; margin-top:16px; font-size:0.8rem; color:#65676b;">
+        <div style="text-align:center; margin-top:16px; font-size:0.8rem; color:var(--text-secondary);">
             Each share = 1 message credit on Explore page
         </div>
     </div>
 
-    <!-- Share Info Tooltip (hidden by default) -->
+    <!-- Share Info Tooltip -->
     <div id="shareTooltip" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1e21; color: white; padding: 16px 24px; border-radius: 24px; z-index: 10002; text-align: center; max-width: 300px;">
         <i class="fas fa-gift" style="font-size: 2rem; color: #FF8C42; margin-bottom: 12px;"></i>
         <h4 style="margin-bottom: 8px;">Share to Earn</h4>
@@ -1019,7 +1123,7 @@
     <div id="festivalBanner" style="display: none;"></div>
 
     <!-- Dynamic Content Area -->
-    <div id="content">
+    <div id="content" style="width: 100%;">
         <!-- Home Feed -->
         <div id="home-feed">
             <!-- Stories -->
@@ -1055,7 +1159,7 @@
         </div>
 
         <!-- Other pages -->
-        <div id="page-content" style="display: none;"></div>
+        <div id="page-content" style="display: none; width: 100%;"></div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -1114,29 +1218,28 @@
         ];
         let businessIndex = 0;
 
-        // ===== BEACH MODE (Color Timer) =====
-        function updateBeachMode() {
+        // ===== COLOR TIMER (UPDATED) =====
+        function updateColorMode() {
             const now = new Date();
             const hours = now.getHours();
-            const root = document.documentElement;
+            const body = document.body;
             const themeColor = document.getElementById('themeColor');
             
-            if (hours >= 20 || hours < 5) { // 8pm to 5am
-                document.body.classList.add('beach-mode');
-                document.body.classList.remove('transition-mode');
-                themeColor.content = '#2E7D32';
-            } else if (hours >= 5 && hours < 6) { // 5am to 6am
-                document.body.classList.remove('beach-mode');
-                document.body.classList.add('transition-mode');
-                themeColor.content = '#4A5568';
-            } else { // 6am to 8pm
-                document.body.classList.remove('beach-mode');
-                document.body.classList.remove('transition-mode');
+            // Remove all existing mode classes
+            body.classList.remove('dark-mode', 'dark-red-mode');
+            
+            if (hours >= 7 && hours < 21) { // 7am to 9pm: White & Blue
                 themeColor.content = '#1877f2';
+            } else if (hours >= 21 || hours < 3) { // 9pm to 3am: Black & Blue
+                body.classList.add('dark-mode');
+                themeColor.content = '#1877f2';
+            } else if (hours >= 3 && hours < 7) { // 3am to 7am: Black & Red
+                body.classList.add('dark-red-mode');
+                themeColor.content = '#ff4444';
             }
         }
-        updateBeachMode();
-        setInterval(updateBeachMode, 60000); // Check every minute
+        updateColorMode();
+        setInterval(updateColorMode, 60000); // Check every minute
 
         // ===== OFFLINE DETECTION =====
         function updateOnlineStatus() {
@@ -1155,7 +1258,7 @@
             const now = new Date();
             const year = now.getFullYear();
             const festivals = [
-                { name: 'Ganesh Chaturthi', month: 8, day: 7, icon: '🐘' }, // Approx date
+                { name: 'Ganesh Chaturthi', month: 8, day: 7, icon: '🐘' },
                 { name: 'Goa Carnival', month: 2, day: 10, icon: '🎭' },
                 { name: 'Christmas', month: 11, day: 25, icon: '🎄' },
                 { name: 'New Year', month: 0, day: 1, icon: '🎉' }
@@ -1258,8 +1361,8 @@
                             <span class="credits-count" id="creditsDisplay">${messageCredits}</span>
                         </div>
                         <h2 style="margin-bottom:20px;">Explore Goans</h2>
-                        <p style="color:#65676b;">This is where you'll find Goan profiles. Use your credits to message them!</p>
-                        <div style="margin-top:20px; padding:16px; background:#f0f2f5; border-radius:24px;">
+                        <p style="color:var(--text-secondary);">This is where you'll find Goan profiles. Use your credits to message them!</p>
+                        <div style="margin-top:20px; padding:16px; background:var(--bg-secondary); border-radius:24px;">
                             <p><i class="fas fa-info-circle" style="color:var(--primary-color);"></i> You have ${messageCredits} message credits. Each message costs 1 credit.</p>
                         </div>
                     </div>
@@ -1268,7 +1371,7 @@
                 pageContent.innerHTML = `
                     <div class="page-content">
                         <h2 style="margin-bottom:16px;">${page.charAt(0).toUpperCase() + page.slice(1)}</h2>
-                        <p style="color:#65676b;">Coming soon...</p>
+                        <p style="color:var(--text-secondary);">Coming soon...</p>
                     </div>
                 `;
             }
@@ -1361,7 +1464,7 @@
             const views = videoViews[videoId] || 0;
             const allViews = Object.values(videoViews);
             const avg = allViews.length ? allViews.reduce((a,b) => a+b, 0) / allViews.length : 0;
-            return views > avg * 1.5; // Trending if 50% more views than average
+            return views > avg * 1.5;
         }
 
         // ===== SHARE FUNCTIONS =====
@@ -1382,7 +1485,6 @@
             option.addEventListener('click', (e) => {
                 if (!currentShareVideoId) return;
                 
-                // Add message credit
                 messageCredits++;
                 localStorage.setItem('messageCredits', messageCredits);
                 
@@ -1413,7 +1515,7 @@
             currentShareVideoId = null;
         }
 
-        // ===== LOAD FEED =====
+        // ===== LOAD FEED WITH AGGRESSIVE BUFFERING =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1421,7 +1523,6 @@
                 
                 loadingEl.style.display = 'none';
                 
-                // Add business card every 5 videos
                 let videoCount = 0;
                 
                 videos.forEach((item, index) => {
@@ -1436,7 +1537,7 @@
                                 <h3>${business.name}</h3>
                             </div>
                             <p>${business.desc}</p>
-                            <button>Visit Business</button>
+                            <button onclick="alert('Business page coming soon!')">Visit Business</button>
                         `;
                         feedContainer.appendChild(bizCard);
                         businessIndex++;
@@ -1485,20 +1586,16 @@
                     videoContainer.addEventListener('click', (e) => {
                         const now = new Date().getTime();
                         if (now - lastTap < 300) {
-                            // Double tap
                             const heartBtn = card.querySelector('.heart-btn');
                             const videoId = heartBtn.dataset.videoId;
                             const newCount = incrementHeart(videoId);
                             heartBtn.querySelector('.heart-count').textContent = newCount;
                             
-                            // Visual feedback
                             const heartIcon = heartBtn.querySelector('i');
                             heartIcon.style.transform = 'scale(1.3)';
                             setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
                         }
                         lastTap = now;
-                        
-                        // Track view
                         trackView(item.videoId);
                     });
 
@@ -1515,7 +1612,6 @@
                         const newCount = incrementHeart(videoId);
                         e.currentTarget.querySelector('.heart-count').textContent = newCount;
                         
-                        // Visual feedback
                         const heartIcon = e.currentTarget.querySelector('i');
                         heartIcon.style.transform = 'scale(1.3)';
                         setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
@@ -1526,26 +1622,36 @@
                     const container = card.querySelector('.video-container');
                     videoContainers.push(container);
                     
+                    // Preload first 3 videos immediately
+                    if (index < 3) {
+                        setTimeout(() => {
+                            if (!container.querySelector('iframe').src) {
+                                container.querySelector('iframe').src = 
+                                    `https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small`;
+                            }
+                        }, index * 200);
+                    }
+                    
                     if (index === 0) {
                         const iframe = container.querySelector('iframe');
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
                             playVideo(iframe);
                             
-                            // Preload next 2 videos
-                            for (let i = 1; i <= 2; i++) {
+                            // Aggressively preload next 3 videos
+                            for (let i = 1; i <= 3; i++) {
                                 const nextContainer = videoContainers[i];
                                 if (nextContainer && !nextContainer.querySelector('iframe').src) {
                                     const nextId = nextContainer.dataset.videoId;
                                     nextContainer.querySelector('iframe').src = 
-                                        `https://www.youtube.com/embed/${nextId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0&vq=small`;
+                                        `https://www.youtube.com/embed/${nextId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${nextId}&modestbranding=1&rel=0&vq=small`;
                                 }
                             }
                         });
                     }
                 });
 
-                // Intersection Observer for buffering
+                // AGGRESSIVE BUFFERING: 2 ABOVE + 3 BELOW
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1556,9 +1662,9 @@
                             playVideo(iframe);
                             if (userInteracted) unmuteVideo(iframe);
                             
-                            // Preload 2 above, 2 below
+                            // Preload 2 above, 3 below
                             const start = Math.max(0, index - 2);
-                            const end = Math.min(videoContainers.length - 1, index + 2);
+                            const end = Math.min(videoContainers.length - 1, index + 3);
                             
                             for (let i = start; i <= end; i++) {
                                 if (i === index) continue;
@@ -1566,7 +1672,7 @@
                                 if (bufferContainer && !bufferContainer.querySelector('iframe').src) {
                                     const bufferId = bufferContainer.dataset.videoId;
                                     bufferContainer.querySelector('iframe').src = 
-                                        `https://www.youtube.com/embed/${bufferId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0&vq=small`;
+                                        `https://www.youtube.com/embed/${bufferId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${bufferId}&modestbranding=1&rel=0&vq=small`;
                                 }
                             }
                             
@@ -1575,7 +1681,7 @@
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.7, rootMargin: '400px 0px' });
+                }, { threshold: 0.6, rootMargin: '600px 0px' }); // Load even earlier
 
                 videoContainers.forEach(container => observer.observe(container));
 
