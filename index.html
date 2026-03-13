@@ -168,7 +168,7 @@
             const contentDiv = document.getElementById('content');
             contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
 
-            // Update active nav item
+            // Update active nav
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             const buttons = document.querySelectorAll('.nav-item');
             for (let btn of buttons) {
@@ -194,7 +194,6 @@
             }
         }
 
-        // Load home page by default
         window.addEventListener('load', () => {
             document.querySelectorAll('.nav-item')[0].classList.add('active');
             loadPage('home');
