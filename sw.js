@@ -2,11 +2,6 @@ const CACHE_NAME = 'goa-social-v1';
 const urlsToCache = [
   '/SOCIAL.COM/',
   '/SOCIAL.COM/index.html',
-  '/SOCIAL.COM/pages/home.html',
-  '/SOCIAL.COM/pages/dating.html',
-  '/SOCIAL.COM/pages/business.html',
-  '/SOCIAL.COM/pages/chats.html',
-  '/SOCIAL.COM/pages/profile.html',
   '/SOCIAL.COM/videos.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
   'https://i.imgur.com/u5kGI2s.jpeg'
@@ -30,8 +25,7 @@ self.addEventListener('fetch', event => {
           return response;
         }
         return fetch(event.request);
-      }
-    )
+      })
   );
 });
 
