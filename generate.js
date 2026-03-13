@@ -1,14 +1,15 @@
 const fs = require('fs');
 
-const API_KEY = 'AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4';
+const API_KEY = 'AIzaSyDGHXHuPiHAfJGin_c2-LF4FZ5IBMYLNK4'; // Your API key
 const MAX_SHORTS_PER_CHANNEL = 20;
-const SHORTS_MAX_DURATION = 70;
+const SHORTS_MAX_DURATION = 70; // seconds
 
 const channels = [
   { id: 'UCZ8yT-EnZneKIlJX7SgxzLQ', name: 'Channel 1', icon: '🎬' },
   { id: 'UC-i0Rvr1-JtE2A8Z5RuVatg', name: 'Channel 2', icon: '🎥' }
 ];
 
+// Parse YouTube ISO 8601 duration
 function parseDuration(duration) {
   const match = duration.match(/PT(?:(\d+)M)?(?:(\d+)S)?/);
   if (!match) return 0;
@@ -94,13 +95,17 @@ async function main() {
     allVideos.push(...shorts);
   }
 
+  // Shuffle to mix channels
   allVideos.sort(() => Math.random() - 0.5);
+
+  // Write file (even if empty)
   fs.writeFileSync('videos.json', JSON.stringify(allVideos, null, 2));
   console.log(`✅ videos.json created with ${allVideos.length} shorts.`);
 }
 
 main().catch(err => {
   console.error('Fatal error in generate.js:', err);
+  // Still create an empty file to avoid breaking the site
   fs.writeFileSync('videos.json', JSON.stringify([], null, 2));
   process.exit(1);
 });
