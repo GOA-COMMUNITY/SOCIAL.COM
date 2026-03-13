@@ -120,6 +120,36 @@
         .loading-content {
             text-align: center;
             color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 30px;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .splash-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .loading-message {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .loading-sub {
+            font-size: 1rem;
+            opacity: 0.8;
         }
 
         .loading-spinner {
@@ -129,38 +159,10 @@
             border-top-color: white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 25px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        .loading-message {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .loading-sub {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
-        .splash-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 30px;
-            overflow: hidden;
-            margin: 0 auto 20px;
-            border: 4px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .splash-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         /* Stage 3: Tap to begin */
@@ -410,7 +412,7 @@
             transform: scale(0.95);
         }
 
-        /* ===== FEED ===== */
+        /* ===== FEED - OPTIMIZED FOR 360p ===== */
         .feed-container {
             max-width: 600px;
             margin: 0 auto;
@@ -872,15 +874,15 @@
             </div>
         </div>
 
-        <!-- Stage 2: Loading screen -->
+        <!-- Stage 2: Loading screen - CIRCLE BELOW TEXT -->
         <div class="splash-stage stage2" id="stage2">
             <div class="loading-content">
-                <div class="loading-spinner"></div>
-                <div class="splash-logo" style="width: 80px; height: 80px; margin-bottom: 20px;">
+                <div class="splash-logo">
                     <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
                 </div>
                 <div class="loading-message">Goa Social is loading...</div>
                 <div class="loading-sub">Preparing your feed</div>
+                <div class="loading-spinner"></div>
             </div>
         </div>
 
@@ -1052,7 +1054,7 @@
         <div id="page-content" style="display: none;"></div>
     </div>
 
-    <!-- Bottom Navigation - UPDATED: Dating changed to Explore -->
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav" id="bottomNav">
         <button class="nav-item active" onclick="navigateTo('home')"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="navigateTo('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
@@ -1297,7 +1299,7 @@
             }
         }
 
-        // ===== LOAD FEED =====
+        // ===== LOAD FEED WITH 360p AND AGGRESSIVE BUFFERING =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1309,6 +1311,8 @@
                 videos.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'feed-card';
+                    
+                    // Force 360p with vq=small parameter
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="channel-icon">📺</div>
@@ -1320,7 +1324,7 @@
                         </div>
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${index === 0 ? 1 : 0}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${index === 0 ? 1 : 0}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small"
                                 allow="autoplay; fullscreen">
                             </iframe>
                             <div class="video-info-overlay">
@@ -1352,11 +1356,21 @@
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
                             playVideo(iframe);
+                            
+                            // Preload next 2 videos immediately
+                            for (let i = 1; i <= 2; i++) {
+                                const nextContainer = videoContainers[i];
+                                if (nextContainer && !nextContainer.querySelector('iframe').src) {
+                                    const nextId = nextContainer.dataset.videoId;
+                                    nextContainer.querySelector('iframe').src = 
+                                        `https://www.youtube.com/embed/${nextId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0&vq=small`;
+                                }
+                            }
                         });
                     }
                 });
 
-                // ===== SMOOTH SCROLL OBSERVER =====
+                // ===== AGGRESSIVE BUFFER WINDOW: 2 ABOVE + 2 BELOW =====
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1368,13 +1382,17 @@
                             playVideo(iframe);
                             if (userInteracted) unmuteVideo(iframe);
                             
-                            // Preload next 3 videos
-                            for (let i = 1; i <= 3; i++) {
-                                const nextContainer = videoContainers[index + i];
-                                if (nextContainer && !nextContainer.querySelector('iframe').src) {
-                                    const nextId = nextContainer.dataset.videoId;
-                                    nextContainer.querySelector('iframe').src = 
-                                        `https://www.youtube.com/embed/${nextId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0`;
+                            // Preload 2 videos above and 2 below for instant scrolling
+                            const start = Math.max(0, index - 2);
+                            const end = Math.min(videoContainers.length - 1, index + 2);
+                            
+                            for (let i = start; i <= end; i++) {
+                                if (i === index) continue; // Skip current (already playing)
+                                const bufferContainer = videoContainers[i];
+                                if (bufferContainer && !bufferContainer.querySelector('iframe').src) {
+                                    const bufferId = bufferContainer.dataset.videoId;
+                                    bufferContainer.querySelector('iframe').src = 
+                                        `https://www.youtube.com/embed/${bufferId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0&vq=small`;
                                 }
                             }
                             
@@ -1384,7 +1402,7 @@
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.7, rootMargin: '200px 0px' });
+                }, { threshold: 0.7, rootMargin: '400px 0px' }); // Increased rootMargin to load earlier
 
                 videoContainers.forEach(container => observer.observe(container));
 
