@@ -1,17 +1,23 @@
-<div style="padding: 20px; font-size: 24px; text-align: center;">
-    🔍 If you can see this, home.html is loading!
+<!-- Simple test page -->
+<div style="padding: 20px; font-family: sans-serif;">
+    <h2>🔧 Testing Mode</h2>
+    <div id="status">Loading...</div>
 </div>
 
 <script>
-    // Try to fetch with absolute URL
+    // This is the ONLY JavaScript - nothing else
+    document.getElementById('status').innerHTML = '✅ JavaScript is working!';
+    
+    // Now try to fetch
     fetch('https://goa-community.github.io/SOCIAL.COM/videos.json')
         .then(response => {
-            document.body.innerHTML += `<div style="padding:20px; background:green; color:white;">✅ Fetch worked! Status: ${response.status}</div>`;
+            document.body.innerHTML += '<div style="color:green">✅ Fetch succeeded!</div>';
+            return response.json();
+        })
+        .then(data => {
+            document.body.innerHTML += `<div>✅ Found ${data.length} videos</div>`;
         })
         .catch(error => {
-            document.body.innerHTML += `<div style="padding:20px; background:red; color:white;">❌ Fetch failed: ${error.message}</div>`;
+            document.body.innerHTML += `<div style="color:red">❌ Fetch failed: ${error.message}</div>`;
         });
-        
-    // Also show that JavaScript is running
-    document.body.innerHTML += `<div style="padding:20px;">⏱️ JavaScript is running...</div>`;
 </script>
