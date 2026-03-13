@@ -67,7 +67,7 @@
             50% { transform: rotate(5deg) scaleX(-1); }
         }
 
-        /* ===== SPLASH SCREEN ===== */
+        /* ===== SPLASH SCREEN - THREE STAGES ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -80,11 +80,6 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-
-        .splash-overlay.tappable {
-            pointer-events: auto;
         }
 
         .splash-overlay.hidden {
@@ -92,9 +87,64 @@
             pointer-events: none;
         }
 
-        .splash-content {
+        .splash-stage {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Stage 1: Logo zoom out */
+        .stage1 {
+            animation: logoZoom 2s forwards;
+        }
+
+        @keyframes logoZoom {
+            0% { transform: scale(0.5); opacity: 0; }
+            30% { transform: scale(1.2); opacity: 1; }
+            60% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Stage 2: Loading screen */
+        .stage2 {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards 2s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .loading-content {
             text-align: center;
             color: white;
+        }
+
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .loading-sub {
+            font-size: 1rem;
+            opacity: 0.8;
         }
 
         .splash-logo {
@@ -105,7 +155,6 @@
             margin: 0 auto 20px;
             border: 4px solid white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: pulse 1.5s ease-in-out infinite;
         }
 
         .splash-logo img {
@@ -114,38 +163,59 @@
             object-fit: cover;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        /* Stage 3: Tap to begin */
+        .stage3 {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            display: none;
         }
 
-        .splash-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .tap-content {
+            text-align: center;
         }
 
-        .splash-sub {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        .tap-hint {
-            margin-top: 40px;
-            font-size: 1.1rem;
+        .tap-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 25px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(24,119,242,0.3);
+            border: 3px solid #1877f2;
             animation: gentlePulse 2s infinite;
         }
 
+        .tap-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tap-message {
+            font-size: 1.5rem;
+            color: #1877f2;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .tap-hint {
+            color: #65676b;
+            font-size: 1.1rem;
+        }
+
         .tap-hint i {
+            color: #1877f2;
             margin-right: 8px;
         }
 
         @keyframes gentlePulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER WITH BACK BUTTON ===== */
         .app-header {
             background: white;
             backdrop-filter: blur(12px);
@@ -161,10 +231,41 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1877f2;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .back-button:hover {
+            background: #f0f2f5;
+        }
+
+        .back-button.hidden {
+            display: none;
+        }
+
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
         }
 
         .logo-crop {
@@ -199,6 +300,13 @@
 
         .header-actions i {
             font-size: 1.3rem;
+        }
+
+        /* ===== PAGE TITLE ===== */
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1c1e21;
         }
 
         /* ===== STORIES ===== */
@@ -453,6 +561,14 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        /* ===== PAGE CONTENT (for non-home pages) ===== */
+        .page-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            min-height: calc(100vh - 140px);
+        }
+
         /* ===== BOTTOM NAVIGATION ===== */
         .bottom-nav {
             position: fixed;
@@ -467,6 +583,11 @@
             padding: 8px 10px 12px 10px;
             z-index: 1000;
             backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
         }
 
         .nav-item {
@@ -749,16 +870,37 @@
     <div class="coconut-left">🌴</div>
     <div class="coconut-right">🌴</div>
 
-    <!-- Splash Screen -->
+    <!-- Splash Screen - Three Stages -->
     <div class="splash-overlay" id="splashOverlay">
-        <div class="splash-content">
+        <!-- Stage 1: Logo zoom out -->
+        <div class="splash-stage stage1" id="stage1">
             <div class="splash-logo">
                 <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
             </div>
-            <div class="splash-title">Goa Social</div>
-            <div class="splash-sub">Your Goan community awaits</div>
-            <div class="tap-hint" id="tapHint">
-                <i class="fas fa-hand-pointer"></i> Tap to begin
+        </div>
+
+        <!-- Stage 2: Loading screen -->
+        <div class="splash-stage stage2" id="stage2">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <div class="splash-logo" style="width: 80px; height: 80px; margin-bottom: 20px;">
+                    <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+                </div>
+                <div class="loading-message">Goa Social is loading...</div>
+                <div class="loading-sub">Preparing your feed</div>
+            </div>
+        </div>
+
+        <!-- Stage 3: Tap to begin -->
+        <div class="splash-stage stage3" id="stage3">
+            <div class="tap-content">
+                <div class="tap-logo">
+                    <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+                </div>
+                <div class="tap-message">Welcome to Goa Social</div>
+                <div class="tap-hint">
+                    <i class="fas fa-hand-pointer"></i> Tap anywhere to begin
+                </div>
             </div>
         </div>
     </div>
@@ -858,13 +1000,18 @@
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header with Back Button -->
     <header class="app-header">
-        <div class="logo-container">
-            <div class="logo-crop">
-                <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+        <div class="header-left">
+            <button class="back-button hidden" id="backButton" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo-container" onclick="navigateTo('home')">
+                <div class="logo-crop">
+                    <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+                </div>
+                <span class="logo-text">Goa Social</span>
             </div>
-            <span class="logo-text">Goa Social</span>
         </div>
         <div class="header-actions">
             <i class="fas fa-search"></i>
@@ -872,44 +1019,53 @@
         </div>
     </header>
 
-    <!-- Stories -->
-    <div class="stories-section">
-        <div class="section-header">
-            <h3>LIVE NOW</h3>
-            <a href="#">View all <i class="fas fa-chevron-right"></i></a>
-        </div>
-        <div class="stories-scroll" id="liveStories"></div>
-    </div>
+    <!-- Dynamic Content Area -->
+    <div id="content">
+        <!-- Home Feed (Default) -->
+        <div id="home-feed">
+            <!-- Stories -->
+            <div class="stories-section">
+                <div class="section-header">
+                    <h3>LIVE NOW</h3>
+                    <a href="#">View all <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="stories-scroll" id="liveStories"></div>
+            </div>
 
-    <!-- Categories -->
-    <div class="categories-section">
-        <div class="chips-scroll">
-            <span class="chip active">All</span>
-            <span class="chip">Trending</span>
-            <span class="chip">Local</span>
-            <span class="chip">News</span>
-            <span class="chip">Shorts</span>
-            <span class="chip">Events</span>
-            <span class="chip">Food</span>
-            <span class="chip">Travel</span>
-        </div>
-    </div>
+            <!-- Categories -->
+            <div class="categories-section">
+                <div class="chips-scroll">
+                    <span class="chip active">All</span>
+                    <span class="chip">Trending</span>
+                    <span class="chip">Local</span>
+                    <span class="chip">News</span>
+                    <span class="chip">Shorts</span>
+                    <span class="chip">Events</span>
+                    <span class="chip">Food</span>
+                    <span class="chip">Travel</span>
+                </div>
+            </div>
 
-    <!-- Main Feed -->
-    <div class="feed-container" id="feedContainer">
-        <div class="loading-indicator" id="loading">
-            <i class="fas fa-circle-notch"></i>
-            <p>loading goa shorts...</p>
+            <!-- Main Feed -->
+            <div class="feed-container" id="feedContainer">
+                <div class="loading-indicator" id="loading">
+                    <i class="fas fa-circle-notch"></i>
+                    <p>loading goa shorts...</p>
+                </div>
+            </div>
         </div>
+
+        <!-- Other pages will be loaded here dynamically -->
+        <div id="page-content" style="display: none;"></div>
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="window.location.href='index.html'"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item" onclick="window.location.href='pages/explore.html'"><i class="fas fa-compass"></i><span>Explore</span></button>
-        <button class="nav-item" onclick="window.location.href='pages/business.html'"><i class="fas fa-store"></i><span>Business</span></button>
-        <button class="nav-item" onclick="window.location.href='pages/chats.html'"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
-        <button class="nav-item" onclick="window.location.href='pages/profile.html'"><i class="fas fa-user"></i><span>Profile</span></button>
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-item active" onclick="navigateTo('home')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="navigateTo('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
+        <button class="nav-item" onclick="navigateTo('business')"><i class="fas fa-store"></i><span>Business</span></button>
+        <button class="nav-item" onclick="navigateTo('chats')"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
+        <button class="nav-item" onclick="navigateTo('profile')"><i class="fas fa-user"></i><span>Profile</span></button>
     </nav>
 
     <script>
@@ -918,7 +1074,9 @@
         const liveStories = document.getElementById('liveStories');
         const loadingEl = document.getElementById('loading');
         const splashOverlay = document.getElementById('splashOverlay');
-        const tapHint = document.getElementById('tapHint');
+        const stage1 = document.getElementById('stage1');
+        const stage2 = document.getElementById('stage2');
+        const stage3 = document.getElementById('stage3');
         const youtubePlayerContainer = document.getElementById('youtubePlayerContainer');
         const youtubePlayer = document.getElementById('youtubePlayer');
         const closePlayerBtn = document.getElementById('closePlayerBtn');
@@ -931,6 +1089,10 @@
         const installLater1 = document.getElementById('installLater1');
         const installNow2 = document.getElementById('installNow2');
         const installLater2 = document.getElementById('installLater2');
+        const backButton = document.getElementById('backButton');
+        const bottomNav = document.getElementById('bottomNav');
+        const homeFeed = document.getElementById('home-feed');
+        const pageContent = document.getElementById('page-content');
 
         // App state
         let userInteracted = false;
@@ -941,11 +1103,22 @@
         let popup1Shown = false;
         let popup2Shown = false;
         let popup1Dismissed = false;
+        let currentPage = 'home';
+        let pageHistory = ['home'];
 
-        // ===== SPLASH SCREEN LOGIC =====
-        // Show splash until first video is ready
+        // ===== SPLASH SCREEN TIMING =====
+        // Stage 1: Logo zoom (2s)
+        setTimeout(() => {
+            stage1.style.display = 'none';
+            stage2.style.display = 'flex';
+        }, 2000);
+
+        // Check when first video is ready
         function checkFirstVideo() {
             if (firstVideoReady) {
+                // Hide loading, show tap screen
+                stage2.style.display = 'none';
+                stage3.style.display = 'flex';
                 splashOverlay.classList.add('tappable');
             } else {
                 setTimeout(checkFirstVideo, 100);
@@ -954,7 +1127,7 @@
         checkFirstVideo();
 
         // Tap anywhere to start app
-        splashOverlay.addEventListener('click', function startApp() {
+        splashOverlay.addEventListener('click', function startApp(e) {
             if (!userInteracted && splashOverlay.classList.contains('tappable')) {
                 userInteracted = true;
                 splashOverlay.classList.add('hidden');
@@ -966,6 +1139,66 @@
                 }
             }
         });
+
+        // ===== NAVIGATION FUNCTIONS =====
+        window.navigateTo = function(page) {
+            if (page === currentPage) return;
+            
+            // Update history
+            pageHistory.push(page);
+            currentPage = page;
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.querySelector('span').innerText.toLowerCase() === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Show/hide back button (hide on home)
+            if (page === 'home') {
+                backButton.classList.add('hidden');
+                bottomNav.classList.remove('hidden');
+                homeFeed.style.display = 'block';
+                pageContent.style.display = 'none';
+            } else {
+                backButton.classList.remove('hidden');
+                bottomNav.classList.add('hidden');
+                homeFeed.style.display = 'none';
+                pageContent.style.display = 'block';
+                loadPageContent(page);
+            }
+        };
+
+        window.goBack = function() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop(); // Remove current
+                const previousPage = pageHistory[pageHistory.length - 1];
+                navigateTo(previousPage);
+            } else {
+                navigateTo('home');
+            }
+        };
+
+        // Load page content
+        async function loadPageContent(page) {
+            pageContent.innerHTML = '<div class="loading-indicator"><i class="fas fa-circle-notch"></i><p>Loading...</p></div>';
+            
+            try {
+                const response = await fetch(`pages/${page}.html`);
+                if (!response.ok) throw new Error('Page not found');
+                const html = await response.text();
+                pageContent.innerHTML = html;
+            } catch (error) {
+                pageContent.innerHTML = `
+                    <div class="page-content">
+                        <h2 style="margin-bottom:16px;">${page.charAt(0).toUpperCase() + page.slice(1)}</h2>
+                        <p style="color:#65676b;">This page is under construction.</p>
+                    </div>
+                `;
+            }
+        }
 
         // ===== PWA INSTALL LOGIC =====
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -1062,12 +1295,6 @@
         function playVideo(iframe) {
             if (iframe?.contentWindow) {
                 iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
-
-        function muteVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
             }
         }
 
@@ -1237,6 +1464,17 @@
                 navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
             });
         }
+
+        // Handle browser back button
+        window.addEventListener('popstate', function() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop();
+                const previousPage = pageHistory[pageHistory.length - 1];
+                navigateTo(previousPage);
+            } else {
+                navigateTo('home');
+            }
+        });
     </script>
 </body>
-                                              </html>
+</html>
