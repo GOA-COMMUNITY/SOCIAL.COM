@@ -302,13 +302,6 @@
             font-size: 1.3rem;
         }
 
-        /* ===== PAGE TITLE ===== */
-        .page-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1c1e21;
-        }
-
         /* ===== STORIES ===== */
         .stories-section {
             padding: 16px 16px 12px 16px;
@@ -1059,7 +1052,7 @@
         <div id="page-content" style="display: none;"></div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - UPDATED: Dating changed to Explore -->
     <nav class="bottom-nav" id="bottomNav">
         <button class="nav-item active" onclick="navigateTo('home')"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="navigateTo('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
@@ -1156,7 +1149,7 @@
                 }
             });
             
-            // Show/hide back button (hide on home)
+            // Show/hide back button and bottom nav (hide on non-home pages)
             if (page === 'home') {
                 backButton.classList.add('hidden');
                 bottomNav.classList.remove('hidden');
