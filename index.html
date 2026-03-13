@@ -29,6 +29,7 @@
             min-height: 100vh;
             position: relative;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Subtle coconut tree decorations */
@@ -66,7 +67,7 @@
             50% { transform: rotate(5deg) scaleX(-1); }
         }
 
-        /* ===== SPLASH SCREEN (MINIMAL) ===== */
+        /* ===== SPLASH SCREEN ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -82,9 +83,18 @@
             pointer-events: none;
         }
 
+        .splash-overlay.tappable {
+            pointer-events: auto;
+        }
+
         .splash-overlay.hidden {
             opacity: 0;
             pointer-events: none;
+        }
+
+        .splash-content {
+            text-align: center;
+            color: white;
         }
 
         .splash-logo {
@@ -92,9 +102,16 @@
             height: 120px;
             border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 0 auto 20px;
             border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .splash-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         @keyframes pulse {
@@ -102,10 +119,30 @@
             50% { transform: scale(1.05); }
         }
 
-        .splash-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .splash-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .splash-sub {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .tap-hint {
+            margin-top: 40px;
+            font-size: 1.1rem;
+            animation: gentlePulse 2s infinite;
+        }
+
+        .tap-hint i {
+            margin-right: 8px;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
 
         /* ===== HEADER ===== */
@@ -258,6 +295,7 @@
             border: 1px solid #e4e6eb;
             font-weight: 500;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .chip.active {
@@ -267,22 +305,28 @@
             border: none;
         }
 
+        .chip:active {
+            transform: scale(0.95);
+        }
+
         /* ===== FEED ===== */
         .feed-container {
             max-width: 600px;
             margin: 0 auto;
             padding: 8px 0 20px 0;
+            scroll-snap-type: y mandatory;
         }
 
         .feed-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 28px;
             margin: 0 12px 16px 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             border: 1px solid #e4e6eb;
             transition: transform 0.2s;
             scroll-snap-align: start;
+            scroll-margin-top: 10px;
         }
 
         .feed-card:active {
@@ -362,15 +406,14 @@
             transition: color 0.2s;
         }
 
-        .footer-item:hover {
-            color: #1877f2;
+        .footer-item:active {
+            opacity: 0.7;
         }
 
         .footer-item i.fa-heart { color: #f23b5c; }
         .footer-item i.fa-comment { color: #1877f2; }
         .footer-item i.fa-share { color: #42b72a; }
 
-        /* Video overlay */
         .video-info-overlay {
             position: absolute;
             bottom: 0;
@@ -410,6 +453,7 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        /* ===== BOTTOM NAVIGATION ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -448,7 +492,11 @@
             color: #1877f2;
         }
 
-        /* Share popup */
+        .nav-item:active {
+            background: #f0f2f5;
+        }
+
+        /* ===== SHARE POPUP ===== */
         .share-popup {
             position: fixed;
             bottom: 0;
@@ -480,6 +528,7 @@
             font-size: 1.5rem;
             color: #65676b;
             cursor: pointer;
+            padding: 8px;
         }
 
         .share-options {
@@ -530,13 +579,169 @@
             display: block;
         }
 
-        /* Smooth scrolling container */
-        .feed-container {
-            scroll-snap-type: y mandatory;
+        /* ===== INSTALL POPUP ===== */
+        .install-popup {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            z-index: 10002;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid #e4e6eb;
+            animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            max-width: 400px;
+            margin: 0 auto;
+            display: none;
         }
 
-        .feed-card {
-            scroll-snap-align: start;
+        .install-popup.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .install-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .install-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #1877f2;
+            flex-shrink: 0;
+        }
+
+        .install-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .install-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1c1e21;
+            margin-bottom: 4px;
+        }
+
+        .install-sub {
+            font-size: 0.9rem;
+            color: #65676b;
+        }
+
+        .install-benefits {
+            background: #f0f2f5;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .benefit-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1877f2;
+        }
+
+        .benefit-text {
+            font-size: 0.95rem;
+            color: #1c1e21;
+        }
+
+        .install-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .install-now {
+            flex: 2;
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(24,119,242,0.3);
+            transition: all 0.2s;
+        }
+
+        .install-now:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(24,119,242,0.3);
+        }
+
+        .install-later {
+            flex: 1;
+            background: #f0f2f5;
+            color: #65676b;
+            border: none;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .install-later:active {
+            background: #e4e6eb;
+        }
+
+        /* Urgency badge */
+        .urgency-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #f23b5c;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(242,59,92,0.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Limited offer text */
+        .limited-offer {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #1877f2;
+            font-weight: 600;
+        }
+
+        /* Second popup (softer) */
+        .install-popup.second .install-now {
+            background: #42b72a;
+            box-shadow: 0 8px 16px rgba(66,183,42,0.3);
         }
     </style>
 </head>
@@ -544,28 +749,113 @@
     <div class="coconut-left">🌴</div>
     <div class="coconut-right">🌴</div>
 
-    <!-- Simple Splash Screen -->
+    <!-- Splash Screen -->
     <div class="splash-overlay" id="splashOverlay">
-        <div class="splash-logo">
-            <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+            </div>
+            <div class="splash-title">Goa Social</div>
+            <div class="splash-sub">Your Goan community awaits</div>
+            <div class="tap-hint" id="tapHint">
+                <i class="fas fa-hand-pointer"></i> Tap to begin
+            </div>
+        </div>
+    </div>
+
+    <!-- Install Popup - First Trigger (30 seconds) -->
+    <div class="install-popup" id="installPopup1">
+        <div class="urgency-badge">🔥 LIMITED TIME</div>
+        <div class="install-header">
+            <div class="install-icon">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+            </div>
+            <div>
+                <div class="install-title">Install Goa Social</div>
+                <div class="install-sub">30 second setup</div>
+            </div>
+        </div>
+        <div class="install-benefits">
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-bolt"></i></div>
+                <div class="benefit-text">2x faster video loading</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-download"></i></div>
+                <div class="benefit-text">Watch offline anywhere</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-bell"></i></div>
+                <div class="benefit-text">Get Goa updates instantly</div>
+            </div>
+        </div>
+        <div class="install-buttons">
+            <button class="install-now" id="installNow1">Add to Home Screen</button>
+            <button class="install-later" id="installLater1">Later</button>
+        </div>
+        <div class="limited-offer">✨ Exclusive for first 1000 Goans</div>
+    </div>
+
+    <!-- Install Popup - Second Trigger (5 minutes) - Softer approach -->
+    <div class="install-popup second" id="installPopup2">
+        <div class="install-header">
+            <div class="install-icon">
+                <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
+            </div>
+            <div>
+                <div class="install-title">Love Goa Social?</div>
+                <div class="install-sub">Make it yours</div>
+            </div>
+        </div>
+        <div class="install-benefits">
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-rocket"></i></div>
+                <div class="benefit-text">Open instantly from home screen</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-heart"></i></div>
+                <div class="benefit-text">Support local Goan community</div>
+            </div>
+        </div>
+        <div class="install-buttons">
+            <button class="install-now" id="installNow2">Install Now</button>
+            <button class="install-later" id="installLater2">Not now</button>
         </div>
     </div>
 
     <!-- Share Popup -->
     <div class="share-overlay" id="shareOverlay"></div>
     <div class="share-popup" id="sharePopup">
-        <div class="share-popup-header"><h3>Share to</h3><button class="close-share" id="closeShare">&times;</button></div>
+        <div class="share-popup-header">
+            <h3>Share to</h3>
+            <button class="close-share" id="closeShare">&times;</button>
+        </div>
         <div class="share-options">
-            <div class="share-option" data-share="whatsapp"><div class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span></div>
-            <div class="share-option" data-share="instagram"><div class="share-icon instagram"><i class="fab fa-instagram"></i></div><span>Instagram</span></div>
-            <div class="share-option" data-share="facebook"><div class="share-icon facebook"><i class="fab fa-facebook-f"></i></div><span>Facebook</span></div>
-            <div class="share-option" data-share="copy"><div class="share-icon copy"><i class="fas fa-link"></i></div><span>Copy Link</span></div>
+            <div class="share-option" data-share="whatsapp">
+                <div class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
+                <span>WhatsApp</span>
+            </div>
+            <div class="share-option" data-share="instagram">
+                <div class="share-icon instagram"><i class="fab fa-instagram"></i></div>
+                <span>Instagram</span>
+            </div>
+            <div class="share-option" data-share="facebook">
+                <div class="share-icon facebook"><i class="fab fa-facebook-f"></i></div>
+                <span>Facebook</span>
+            </div>
+            <div class="share-option" data-share="copy">
+                <div class="share-icon copy"><i class="fas fa-link"></i></div>
+                <span>Copy Link</span>
+            </div>
         </div>
     </div>
 
     <!-- YouTube Player Container (for shared videos) -->
     <div class="youtube-player-container" id="youtubePlayerContainer">
-        <div class="player-wrapper"><button class="close-player" id="closePlayerBtn">&times;</button><iframe id="youtubePlayer" allow="autoplay; fullscreen"></iframe></div>
+        <div class="player-wrapper">
+            <button class="close-player" id="closePlayerBtn">&times;</button>
+            <iframe id="youtubePlayer" allow="autoplay; fullscreen"></iframe>
+        </div>
     </div>
 
     <!-- Header -->
@@ -584,31 +874,42 @@
 
     <!-- Stories -->
     <div class="stories-section">
-        <div class="section-header"><h3>LIVE NOW</h3><a href="#">View all <i class="fas fa-chevron-right"></i></a></div>
+        <div class="section-header">
+            <h3>LIVE NOW</h3>
+            <a href="#">View all <i class="fas fa-chevron-right"></i></a>
+        </div>
         <div class="stories-scroll" id="liveStories"></div>
     </div>
 
     <!-- Categories -->
     <div class="categories-section">
         <div class="chips-scroll">
-            <span class="chip active">All</span> <span class="chip">Trending</span> <span class="chip">Local</span>
-            <span class="chip">News</span> <span class="chip">Shorts</span> <span class="chip">Events</span>
-            <span class="chip">Food</span> <span class="chip">Travel</span>
+            <span class="chip active">All</span>
+            <span class="chip">Trending</span>
+            <span class="chip">Local</span>
+            <span class="chip">News</span>
+            <span class="chip">Shorts</span>
+            <span class="chip">Events</span>
+            <span class="chip">Food</span>
+            <span class="chip">Travel</span>
         </div>
     </div>
 
     <!-- Main Feed -->
     <div class="feed-container" id="feedContainer">
-        <div class="loading-indicator" id="loading"><i class="fas fa-circle-notch"></i><p>loading goa shorts...</p></div>
+        <div class="loading-indicator" id="loading">
+            <i class="fas fa-circle-notch"></i>
+            <p>loading goa shorts...</p>
+        </div>
     </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="window.location.href='index.html'"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item" onclick="window.location.href='dating.html'"><i class="fas fa-heart"></i><span>Dating</span></button>
-        <button class="nav-item" onclick="window.location.href='business.html'"><i class="fas fa-store"></i><span>Business</span></button>
-        <button class="nav-item" onclick="window.location.href='chats.html'"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
-        <button class="nav-item" onclick="window.location.href='profile.html'"><i class="fas fa-user"></i><span>Profile</span></button>
+        <button class="nav-item" onclick="window.location.href='pages/explore.html'"><i class="fas fa-compass"></i><span>Explore</span></button>
+        <button class="nav-item" onclick="window.location.href='pages/business.html'"><i class="fas fa-store"></i><span>Business</span></button>
+        <button class="nav-item" onclick="window.location.href='pages/chats.html'"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
+        <button class="nav-item" onclick="window.location.href='pages/profile.html'"><i class="fas fa-user"></i><span>Profile</span></button>
     </nav>
 
     <script>
@@ -617,90 +918,141 @@
         const liveStories = document.getElementById('liveStories');
         const loadingEl = document.getElementById('loading');
         const splashOverlay = document.getElementById('splashOverlay');
+        const tapHint = document.getElementById('tapHint');
         const youtubePlayerContainer = document.getElementById('youtubePlayerContainer');
         const youtubePlayer = document.getElementById('youtubePlayer');
         const closePlayerBtn = document.getElementById('closePlayerBtn');
         const sharePopup = document.getElementById('sharePopup');
         const shareOverlay = document.getElementById('shareOverlay');
         const closeShare = document.getElementById('closeShare');
+        const installPopup1 = document.getElementById('installPopup1');
+        const installPopup2 = document.getElementById('installPopup2');
+        const installNow1 = document.getElementById('installNow1');
+        const installLater1 = document.getElementById('installLater1');
+        const installNow2 = document.getElementById('installNow2');
+        const installLater2 = document.getElementById('installLater2');
 
         // App state
         let userInteracted = false;
         let videoContainers = [];
         let currentVideoIndex = 0;
-        const BUFFER_SIZE = 4; // Load 4 videos ahead
+        let firstVideoReady = false;
+        let deferredPrompt = null;
+        let popup1Shown = false;
+        let popup2Shown = false;
+        let popup1Dismissed = false;
 
-        // Hide splash after 2 seconds
-        setTimeout(() => {
-            splashOverlay.classList.add('hidden');
-        }, 2000);
+        // ===== SPLASH SCREEN LOGIC =====
+        // Show splash until first video is ready
+        function checkFirstVideo() {
+            if (firstVideoReady) {
+                splashOverlay.classList.add('tappable');
+            } else {
+                setTimeout(checkFirstVideo, 100);
+            }
+        }
+        checkFirstVideo();
 
-        // Load stories
+        // Tap anywhere to start app
+        splashOverlay.addEventListener('click', function startApp() {
+            if (!userInteracted && splashOverlay.classList.contains('tappable')) {
+                userInteracted = true;
+                splashOverlay.classList.add('hidden');
+                
+                // Unmute current video
+                if (videoContainers[currentVideoIndex]) {
+                    const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
+                    unmuteVideo(iframe);
+                }
+            }
+        });
+
+        // ===== PWA INSTALL LOGIC =====
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show first popup after 30 seconds if not installed
+            setTimeout(() => {
+                if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches && !popup1Shown) {
+                    popup1Shown = true;
+                    installPopup1.classList.add('show');
+                }
+            }, 30000);
+            
+            // Show second popup after 5 minutes if first was dismissed
+            setTimeout(() => {
+                if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches && !popup2Shown && popup1Dismissed) {
+                    popup2Shown = true;
+                    installPopup2.classList.add('show');
+                }
+            }, 300000); // 5 minutes
+        });
+
+        // Install button handlers
+        async function handleInstall(button) {
+            if (!deferredPrompt) return;
+            
+            button.textContent = 'Installing...';
+            button.disabled = true;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                // Show success message
+                installPopup1.innerHTML = `
+                    <div style="text-align:center; padding:20px;">
+                        <i class="fas fa-check-circle" style="font-size:4rem; color:#42b72a; margin-bottom:16px;"></i>
+                        <h3 style="margin-bottom:8px;">Installation Started!</h3>
+                        <p style="color:#65676b;">Check your home screen</p>
+                    </div>
+                `;
+                setTimeout(() => {
+                    installPopup1.classList.remove('show');
+                }, 3000);
+            }
+            
+            deferredPrompt = null;
+        }
+
+        installNow1.addEventListener('click', () => handleInstall(installNow1));
+        installNow2.addEventListener('click', () => handleInstall(installNow2));
+
+        installLater1.addEventListener('click', () => {
+            popup1Dismissed = true;
+            installPopup1.classList.remove('show');
+        });
+
+        installLater2.addEventListener('click', () => {
+            installPopup2.classList.remove('show');
+        });
+
+        // ===== LOAD STORIES =====
         function loadStories() {
-            const stories = ['📱 Live', '🌊 Beach', '🍛 Food', '✈️ Travel', '🎵 Music', '⚽ Sports'];
+            const stories = [
+                { name: 'Goa News', icon: '📺' },
+                { name: 'Beach Party', icon: '🎵' },
+                { name: 'Foodies', icon: '🍛' },
+                { name: 'Travel', icon: '✈️' },
+                { name: 'Sunset', icon: '🌅' },
+                { name: 'DJ Night', icon: '🎧' }
+            ];
+            
             liveStories.innerHTML = '';
-            stories.forEach(text => {
-                const story = document.createElement('div');
-                story.className = 'story-item';
-                story.innerHTML = `<div class="story-avatar">${text.split(' ')[0]}</div><div class="story-label">${text.split(' ')[1]}</div>`;
-                liveStories.appendChild(story);
+            stories.forEach(story => {
+                const item = document.createElement('div');
+                item.className = 'story-item';
+                item.innerHTML = `
+                    <div class="story-avatar">${story.icon}</div>
+                    <div class="story-label">${story.name}</div>
+                `;
+                liveStories.appendChild(item);
             });
         }
         loadStories();
 
-        // Share functions
-        function showSharePopup(videoId) { 
-            currentShareVideoId = videoId; 
-            shareOverlay.classList.add('visible'); 
-            sharePopup.classList.add('visible'); 
-        }
-        
-        function hideSharePopup() { 
-            shareOverlay.classList.remove('visible'); 
-            sharePopup.classList.remove('visible'); 
-            currentShareVideoId = null; 
-        }
-        
-        document.querySelectorAll('.share-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                if (!currentShareVideoId) return;
-                const shareUrl = `${window.location.origin}${window.location.pathname}?v=${currentShareVideoId}`;
-                const type = option.dataset.share;
-                if (type === 'whatsapp') {
-                    window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`, '_blank');
-                } else if (type === 'instagram') { 
-                    navigator.clipboard.writeText(shareUrl); 
-                    alert('Link copied!'); 
-                } else if (type === 'facebook') {
-                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-                } else if (type === 'copy') { 
-                    navigator.clipboard.writeText(shareUrl); 
-                    alert('Copied!'); 
-                }
-                hideSharePopup();
-            });
-        });
-        
-        closeShare.addEventListener('click', hideSharePopup);
-        shareOverlay.addEventListener('click', hideSharePopup);
-
-        // Load video from URL param
-        function loadVideoFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoId = urlParams.get('v');
-            if (videoId) { 
-                youtubePlayerContainer.classList.add('active'); 
-                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; 
-            }
-        }
-        
-        closePlayerBtn.addEventListener('click', () => { 
-            youtubePlayerContainer.classList.remove('active'); 
-            youtubePlayer.src = ''; 
-        });
-        loadVideoFromUrl();
-
-        // Video control functions
+        // ===== VIDEO CONTROL FUNCTIONS =====
         function pauseVideo(iframe) {
             if (iframe?.contentWindow) {
                 iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
@@ -725,7 +1077,7 @@
             }
         }
 
-        // Load videos with instant playback
+        // ===== LOAD FEED =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -740,7 +1092,10 @@
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="channel-icon">📺</div>
-                            <div class="channel-info"><div class="channel-name">Goa Shorts</div><div class="post-time">Shorts</div></div>
+                            <div class="channel-info">
+                                <div class="channel-name">Goa Shorts</div>
+                                <div class="post-time">Shorts</div>
+                            </div>
                             <i class="fas fa-ellipsis-h"></i>
                         </div>
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
@@ -767,10 +1122,21 @@
                     });
 
                     feedContainer.appendChild(card);
-                    videoContainers.push(card.querySelector('.video-container'));
+                    
+                    const container = card.querySelector('.video-container');
+                    videoContainers.push(container);
+                    
+                    // Mark first video as ready after its iframe loads
+                    if (index === 0) {
+                        const iframe = container.querySelector('iframe');
+                        iframe.addEventListener('load', () => {
+                            firstVideoReady = true;
+                            playVideo(iframe);
+                        });
+                    }
                 });
 
-                // Setup intersection observer for smooth scroll
+                // ===== SMOOTH SCROLL OBSERVER =====
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -782,8 +1148,8 @@
                             playVideo(iframe);
                             if (userInteracted) unmuteVideo(iframe);
                             
-                            // Preload next videos
-                            for (let i = 1; i <= BUFFER_SIZE; i++) {
+                            // Preload next 3 videos
+                            for (let i = 1; i <= 3; i++) {
                                 const nextContainer = videoContainers[index + i];
                                 if (nextContainer && !nextContainer.querySelector('iframe').src) {
                                     const nextId = nextContainer.dataset.videoId;
@@ -802,15 +1168,6 @@
 
                 videoContainers.forEach(container => observer.observe(container));
 
-                // First tap to unmute
-                document.addEventListener('click', function firstTap() {
-                    if (!userInteracted && videoContainers[currentVideoIndex]) {
-                        userInteracted = true;
-                        const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
-                        unmuteVideo(iframe);
-                    }
-                }, { once: true });
-
             } catch (error) {
                 loadingEl.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
             }
@@ -818,7 +1175,63 @@
 
         loadFeed();
 
-        // Service worker
+        // ===== SHARE FUNCTIONS =====
+        let currentShareVideoId = null;
+
+        function showSharePopup(videoId) {
+            currentShareVideoId = videoId;
+            shareOverlay.classList.add('visible');
+            sharePopup.classList.add('visible');
+        }
+        
+        function hideSharePopup() {
+            shareOverlay.classList.remove('visible');
+            sharePopup.classList.remove('visible');
+            currentShareVideoId = null;
+        }
+        
+        document.querySelectorAll('.share-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                if (!currentShareVideoId) return;
+                const shareUrl = `${window.location.origin}${window.location.pathname}?v=${currentShareVideoId}`;
+                const type = option.dataset.share;
+                
+                if (type === 'whatsapp') {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`, '_blank');
+                } else if (type === 'instagram') { 
+                    navigator.clipboard.writeText(shareUrl); 
+                    alert('Link copied! Share on Instagram'); 
+                } else if (type === 'facebook') {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+                } else if (type === 'copy') { 
+                    navigator.clipboard.writeText(shareUrl); 
+                    alert('Link copied!'); 
+                }
+                hideSharePopup();
+            });
+        });
+        
+        closeShare.addEventListener('click', hideSharePopup);
+        shareOverlay.addEventListener('click', hideSharePopup);
+
+        // ===== SHARED VIDEO PLAYER =====
+        function loadVideoFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('v');
+            if (videoId) { 
+                youtubePlayerContainer.classList.add('active'); 
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; 
+            }
+        }
+        
+        closePlayerBtn.addEventListener('click', () => { 
+            youtubePlayerContainer.classList.remove('active'); 
+            youtubePlayer.src = ''; 
+        });
+        
+        loadVideoFromUrl();
+
+        // ===== SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
@@ -826,4 +1239,4 @@
         }
     </script>
 </body>
-</html>
+                                              </html>
