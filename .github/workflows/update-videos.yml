@@ -2,8 +2,9 @@ name: Update videos.json
 
 on:
   schedule:
+    # Runs every 30 minutes
     - cron: '*/30 * * * *'
-  workflow_dispatch:
+  workflow_dispatch: # allows manual trigger
 
 permissions:
   contents: write
