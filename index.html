@@ -17,6 +17,8 @@
             color: #1c1e21;
             line-height: 1.4;
             padding-bottom: 70px;
+            min-height: 100vh;
+            position: relative;
         }
         .coconut-left, .coconut-right {
             position: fixed;
@@ -41,6 +43,9 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #e4e6eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .logo-container {
             display: flex;
@@ -53,6 +58,7 @@
             border-radius: 14px;
             overflow: hidden;
             background: #1877f2;
+            border: 1px solid #e4e6eb;
         }
         .logo-crop img {
             width: 100%;
@@ -64,59 +70,15 @@
             font-weight: 700;
             color: #1877f2;
         }
-        .feed-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-        .feed-card {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .card-header {
+        .header-actions {
             display: flex;
-            align-items: center;
-            padding: 14px;
-            gap: 12px;
-        }
-        .channel-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: #f0f2f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1877f2;
-        }
-        .video-container {
-            width: 100%;
-            aspect-ratio: 9/16;
-            background: #000;
-        }
-        .video-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .card-footer {
-            padding: 14px;
-            display: flex;
-            gap: 24px;
-            border-top: 1px solid #e4e6eb;
-        }
-        .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            gap: 20px;
             color: #65676b;
         }
-        .footer-item i.fa-heart { color: #f23b5c; }
-        .footer-item i.fa-comment { color: #1877f2; }
-        .footer-item i.fa-share { color: #42b72a; }
+        .header-actions i { font-size: 1.3rem; }
+        #content {
+            min-height: calc(100vh - 140px);
+        }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -126,7 +88,9 @@
             border-top: 1px solid #e4e6eb;
             display: flex;
             justify-content: space-around;
-            padding: 8px 10px 12px;
+            align-items: center;
+            padding: 8px 10px 12px 10px;
+            z-index: 1000;
         }
         .nav-item {
             display: flex;
@@ -134,18 +98,20 @@
             align-items: center;
             color: #65676b;
             font-size: 0.7rem;
-            border: none;
+            padding: 4px 12px;
+            border-radius: 30px;
             background: transparent;
+            border: none;
             cursor: pointer;
         }
-        .nav-item i { font-size: 1.5rem; }
+        .nav-item i { font-size: 1.5rem; margin-bottom: 2px; }
         .nav-item.active { color: #1877f2; }
-        .loading {
+        .loader {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: #1877f2;
         }
-        .loading i {
+        .loader i {
             font-size: 2rem;
             animation: spin 1s linear infinite;
         }
@@ -169,67 +135,54 @@
         </div>
     </header>
 
-    <div class="feed-container" id="feedContainer">
-        <div class="loading">
+    <div id="content">
+        <div class="loader">
             <i class="fas fa-circle-notch"></i>
-            <p>Loading videos...</p>
+            <p>Loading...</p>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item"><i class="fas fa-compass"></i><span>Explore</span></button>
-        <button class="nav-item"><i class="fas fa-store"></i><span>Business</span></button>
-        <button class="nav-item"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
-        <button class="nav-item"><i class="fas fa-user"></i><span>Profile</span></button>
+        <button class="nav-item active" onclick="loadPage('home')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="loadPage('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
+        <button class="nav-item" onclick="loadPage('business')"><i class="fas fa-store"></i><span>Business</span></button>
+        <button class="nav-item" onclick="loadPage('chats')"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
+        <button class="nav-item" onclick="loadPage('profile')"><i class="fas fa-user"></i><span>Profile</span></button>
     </nav>
 
     <script>
-        const feedContainer = document.getElementById('feedContainer');
+        async function loadPage(pageName) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '<div class="loader"><i class="fas fa-circle-notch"></i><p>Loading ' + pageName + '...</p></div>';
 
-        async function loadVideos() {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            const buttons = document.querySelectorAll('.nav-item');
+            for (let btn of buttons) {
+                if (btn.querySelector('span').innerText.toLowerCase() === pageName.toLowerCase()) {
+                    btn.classList.add('active');
+                    break;
+                }
+            }
+
             try {
-                // Try direct URL first
-                const response = await fetch('https://goa-community.github.io/SOCIAL.COM/videos.json');
-                
-                if (!response.ok) throw new Error('Failed to fetch');
-                
-                const videos = await response.json();
-                
-                // Clear loading
-                feedContainer.innerHTML = '';
-                
-                // Add videos
-                videos.forEach(video => {
-                    const card = document.createElement('div');
-                    card.className = 'feed-card';
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <div class="channel-icon">📺</div>
-                            <div class="channel-info">
-                                <div style="font-weight:600;">${video.channelName || 'Goa Shorts'}</div>
-                                <div style="font-size:0.7rem; color:#65676b;">Shorts</div>
-                            </div>
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                        <div class="video-container">
-                            <iframe src="https://www.youtube.com/embed/${video.videoId}?autoplay=0&mute=1&controls=0&playsinline=1" allow="fullscreen"></iframe>
-                        </div>
-                        <div class="card-footer">
-                            <span class="footer-item"><i class="fas fa-heart"></i> 1.2k</span>
-                            <span class="footer-item"><i class="fas fa-comment"></i> 89</span>
-                            <span class="footer-item"><i class="fas fa-share"></i> Share</span>
-                        </div>
-                    `;
-                    feedContainer.appendChild(card);
-                });
-                
+                const response = await fetch(pageName + '.html');
+                if (!response.ok) throw new Error('Page not found');
+                const html = await response.text();
+                contentDiv.innerHTML = html;
             } catch (error) {
-                feedContainer.innerHTML = `<div style="color:red; padding:40px; text-align:center;">Error: ${error.message}</div>`;
+                contentDiv.innerHTML = `
+                    <div style="text-align:center; padding:50px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#f23b5c;"></i>
+                        <p style="margin-top:20px;">Could not load ${pageName}. Please try again.</p>
+                    </div>
+                `;
             }
         }
 
-        loadVideos();
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.nav-item')[0].classList.add('active');
+            loadPage('home');
+        });
     </script>
 </body>
 </html>
