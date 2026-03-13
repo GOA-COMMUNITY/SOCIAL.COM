@@ -1,95 +1,18 @@
-<!-- Stories -->
-<div class="stories-section">
-    <div class="section-header"><h3>LIVE NOW</h3><a href="#">View all <i class="fas fa-chevron-right"></i></a></div>
-    <div class="stories-scroll" id="liveStories"></div>
+<div style="padding: 20px; font-family: Arial;">
+    <h2>Test Page</h2>
+    <div id="result">Testing...</div>
 </div>
-
-<!-- Categories -->
-<div class="categories-section">
-    <div class="chips-scroll">
-        <span class="chip active">All</span> <span class="chip">Trending</span> <span class="chip">Local</span>
-        <span class="chip">News</span> <span class="chip">Shorts</span> <span class="chip">Events</span>
-        <span class="chip">Food</span> <span class="chip">Travel</span>
-    </div>
-</div>
-
-<!-- Main Feed -->
-<div class="feed-container" id="feedContainer">
-    <div class="loading-indicator" id="loading"><i class="fas fa-circle-notch"></i><p>loading goa shorts...</p></div>
-</div>
-
-<style>
-    /* Your existing styles - keep them */
-    .stories-section { padding: 16px; background: white; margin: 8px 0; }
-    .section-header { display: flex; justify-content: space-between; }
-    .stories-scroll { display: flex; gap: 16px; overflow-x: auto; }
-    .story-item { min-width: 90px; text-align: center; }
-    .story-avatar { width: 80px; height: 80px; border-radius: 50%; background: #e4e6eb; margin: 0 auto; border: 3px solid #1877f2; }
-    .categories-section { padding: 12px 16px; background: white; }
-    .chips-scroll { display: flex; gap: 10px; overflow-x: auto; }
-    .chip { background: #f0f2f5; padding: 8px 18px; border-radius: 40px; }
-    .feed-container { max-width: 600px; margin: 0 auto; padding: 8px 0; }
-    .feed-card { background: white; border-radius: 16px; margin: 0 12px 16px; overflow: hidden; }
-    .video-container { width: 100%; aspect-ratio: 9/16; background: #000; }
-    .video-container iframe { width: 100%; height: 100%; border: none; }
-    .card-footer { padding: 14px; display: flex; gap: 24px; }
-    .loading-indicator { text-align: center; padding: 30px; color: #1877f2; }
-    .loading-indicator i { font-size: 2rem; animation: spin 1s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-</style>
 
 <script>
-    const feedContainer = document.getElementById('feedContainer');
-    const loadingEl = document.getElementById('loading');
-    const liveStories = document.getElementById('liveStories');
-
-    // Load stories
-    const lives = [
-        { name: 'Goa Shorts', icon: '📱' },
-        { name: 'Beach Life', icon: '🌊' },
-        { name: 'Foodie', icon: '🍛' },
-        { name: 'Travel', icon: '✈️' }
-    ];
-    liveStories.innerHTML = '';
-    lives.forEach(live => {
-        const story = document.createElement('div');
-        story.className = 'story-item';
-        story.innerHTML = `<div class="story-avatar"><div class="story-avatar-inner">${live.icon}</div></div><div class="story-label">${live.name}</div>`;
-        liveStories.appendChild(story);
-    });
-
-    // Load videos - USING THE SAME PATH AS YOUR WORKING CODE
-    async function loadFeed() {
-        try {
-            const response = await fetch('videos.json'); // This matches your working code
-            const videoData = await response.json();
-            
-            loadingEl.style.display = 'none';
-            
-            videoData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'feed-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="channel-icon">📺</div>
-                        <div class="channel-info"><div class="channel-name">Goa Shorts</div><div class="post-time">Shorts</div></div>
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&mute=1&controls=0&playsinline=1" allow="fullscreen"></iframe>
-                    </div>
-                    <div class="card-footer">
-                        <span class="footer-item"><i class="fas fa-heart"></i> 1.2k</span>
-                        <span class="footer-item"><i class="fas fa-comment"></i> 89</span>
-                        <span class="footer-item"><i class="fas fa-share"></i> Share</span>
-                    </div>
-                `;
-                feedContainer.appendChild(card);
-            });
-        } catch (error) {
-            loadingEl.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
-        }
-    }
-
-    loadFeed();
+    fetch('videos.json')
+        .then(response => {
+            document.getElementById('result').innerHTML = '✅ Found! Status: ' + response.status;
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('result').innerHTML += '<br>✅ Loaded ' + data.length + ' videos';
+        })
+        .catch(error => {
+            document.getElementById('result').innerHTML = '❌ Error: ' + error.message;
+        });
 </script>
