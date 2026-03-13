@@ -1,10 +1,10 @@
 <div style="padding: 20px; font-family: Arial;">
-    <h2>Test Page</h2>
-    <div id="result">Testing...</div>
+    <h2>Testing Fetch</h2>
+    <div id="result">Loading...</div>
 </div>
 
 <script>
-    fetch('videos.json')
+    fetch('../videos.json')  // ← THIS IS THE CORRECT PATH
         .then(response => {
             document.getElementById('result').innerHTML = '✅ Found! Status: ' + response.status;
             return response.json();
