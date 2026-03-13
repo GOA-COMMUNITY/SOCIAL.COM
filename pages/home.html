@@ -1,23 +1,17 @@
-<div id="result"></div>
+<div style="padding: 20px; font-size: 24px; text-align: center;">
+    🔍 If you can see this, home.html is loading!
+</div>
 
 <script>
-    async function test() {
-        const result = document.getElementById('result');
+    // Try to fetch with absolute URL
+    fetch('https://goa-community.github.io/SOCIAL.COM/videos.json')
+        .then(response => {
+            document.body.innerHTML += `<div style="padding:20px; background:green; color:white;">✅ Fetch worked! Status: ${response.status}</div>`;
+        })
+        .catch(error => {
+            document.body.innerHTML += `<div style="padding:20px; background:red; color:white;">❌ Fetch failed: ${error.message}</div>`;
+        });
         
-        try {
-            // Try absolute URL first
-            const response = await fetch('https://goa-community.github.io/SOCIAL.COM/videos.json');
-            
-            if (response.ok) {
-                const data = await response.json();
-                result.innerHTML = `✅ Working! Found ${data.length} videos. First ID: ${data[0].videoId}`;
-            } else {
-                result.innerHTML = `❌ Failed: ${response.status}`;
-            }
-        } catch (e) {
-            result.innerHTML = `❌ Error: ${e.message}`;
-        }
-    }
-    
-    test();
+    // Also show that JavaScript is running
+    document.body.innerHTML += `<div style="padding:20px;">⏱️ JavaScript is running...</div>`;
 </script>
