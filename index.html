@@ -31,6 +31,9 @@
             --primary-dark: #0a5cff;
             --nav-bg: #ffffff;
             --border-color: #e4e6eb;
+            --success: #42b72a;
+            --warning: #ffb347;
+            --danger: #f23b5c;
         }
 
         body {
@@ -230,7 +233,7 @@
 
         /* ===== OFFLINE BANNER ===== */
         .offline-banner {
-            background: #f23b5c;
+            background: var(--danger);
             color: white;
             text-align: center;
             padding: 10px;
@@ -247,7 +250,7 @@
             display: block;
         }
 
-        /* ===== EVENT MODAL (POPUP) ===== */
+        /* ===== EVENT MODAL (POPUP) - FIXED POSITION ===== */
         .event-modal {
             display: none;
             position: fixed;
@@ -292,7 +295,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 8px;
-            color: #1c1e21;
+            color: var(--text-primary);
         }
 
         .event-countdown {
@@ -303,12 +306,12 @@
         }
 
         .event-desc {
-            color: #65676b;
+            color: var(--text-secondary);
             margin-bottom: 25px;
         }
 
         .event-close {
-            background: #1877f2;
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 14px 30px;
@@ -330,7 +333,7 @@
             padding: 24px;
             z-index: 10002;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
             animation: slideUp 0.4s ease;
             max-width: 400px;
             margin: 0 auto;
@@ -358,7 +361,7 @@
             height: 60px;
             border-radius: 16px;
             overflow: hidden;
-            background: #1877f2;
+            background: var(--primary-color);
         }
 
         .install-icon img {
@@ -370,13 +373,13 @@
         .install-title {
             font-size: 1.3rem;
             font-weight: 700;
-            color: #1c1e21;
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
         .install-sub {
             font-size: 0.9rem;
-            color: #65676b;
+            color: var(--text-secondary);
         }
 
         .install-buttons {
@@ -386,7 +389,7 @@
 
         .install-now {
             flex: 2;
-            background: #1877f2;
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 16px;
@@ -398,8 +401,8 @@
 
         .install-later {
             flex: 1;
-            background: #f0f2f5;
-            color: #65676b;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
             border: none;
             padding: 16px;
             border-radius: 40px;
@@ -494,6 +497,75 @@
 
         .header-actions i {
             font-size: 1.3rem;
+        }
+
+        /* ===== BEAUTIFUL TOP SECTION ===== */
+        .welcome-section {
+            background: linear-gradient(145deg, var(--primary-color), #0a5cff);
+            padding: 24px 16px 32px 16px;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-sub {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .benefit-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .benefit-card i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .benefit-card span {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .business-teaser {
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .business-teaser-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .business-teaser-number {
+            background: white;
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 700;
         }
 
         /* ===== STORIES ===== */
@@ -723,9 +795,9 @@
             opacity: 0.7;
         }
 
-        .footer-item i.fa-heart { color: #f23b5c; }
+        .footer-item i.fa-heart { color: var(--danger); }
         .footer-item i.fa-comment { color: var(--primary-color); }
-        .footer-item i.fa-share { color: #42b72a; }
+        .footer-item i.fa-share { color: var(--success); }
 
         .info-icon {
             margin-left: 4px;
@@ -1042,7 +1114,7 @@
         </div>
     </div>
 
-    <!-- Event Modal (Popup) -->
+    <!-- Event Modal (Popup) - FIXED: position fixed, display none -->
     <div class="event-modal" id="eventModal">
         <div class="event-card">
             <div class="event-icon" id="eventIcon">🎉</div>
@@ -1139,6 +1211,48 @@
     <div id="content" style="width: 100%;">
         <!-- Home Feed -->
         <div id="home-feed">
+            <!-- WELCOME SECTION - Beautiful top section with benefits -->
+            <div class="welcome-section">
+                <div class="welcome-title">Goa Social</div>
+                <div class="welcome-sub">Your complete Goan community</div>
+                
+                <div class="benefit-grid">
+                    <div class="benefit-card">
+                        <i class="fas fa-video"></i>
+                        <span>Goan Shorts</span>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-store"></i>
+                        <span>Local Business</span>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-tools"></i>
+                        <span>Services</span>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-utensils"></i>
+                        <span>Cafes</span>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-hotel"></i>
+                        <span>Hotels</span>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-bolt"></i>
+                        <span>Electricians</span>
+                    </div>
+                </div>
+
+                <!-- Business teaser - shows the vision -->
+                <div class="business-teaser">
+                    <div class="business-teaser-text">
+                        <i class="fas fa-database" style="margin-right: 8px;"></i>
+                        Coming soon: 10,000+ Goan businesses
+                    </div>
+                    <div class="business-teaser-number">🚀</div>
+                </div>
+            </div>
+
             <!-- Stories -->
             <div class="stories-section">
                 <div class="section-header">
@@ -1228,6 +1342,7 @@
         let messageCredits = parseInt(localStorage.getItem('messageCredits') || '5');
         let videoHearts = JSON.parse(localStorage.getItem('videoHearts') || '{}');
         let videoViews = JSON.parse(localStorage.getItem('videoViews') || '{}');
+        let splashForced = false;
 
         // Business listings
         const businesses = [
@@ -1257,7 +1372,6 @@
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
 
-                // Find first upcoming event within 30 days (including today)
                 for (let e of events) {
                     const eventDate = new Date(e.date);
                     eventDate.setHours(0, 0, 0, 0);
@@ -1289,6 +1403,16 @@
             stage1.style.display = 'none';
             stage2.style.display = 'flex';
         }, 2000);
+
+        // Force splash to disappear after 7 seconds max
+        setTimeout(() => {
+            if (!splashOverlay.classList.contains('hidden') && !splashForced) {
+                splashForced = true;
+                stage2.style.display = 'none';
+                stage3.style.display = 'flex';
+                splashOverlay.classList.add('tappable');
+            }
+        }, 7000);
 
         function checkFirstVideo() {
             if (firstVideoReady) {
@@ -1361,9 +1485,27 @@
                             <span class="credits-count" id="creditsDisplay">${messageCredits}</span>
                         </div>
                         <h2 style="margin-bottom:20px;">Explore Goans</h2>
-                        <p style="color:var(--text-secondary);">This is where you'll find Goan profiles. Use your credits to message them!</p>
-                        <div style="margin-top:20px; padding:16px; background:var(--bg-secondary); border-radius:24px;">
-                            <p><i class="fas fa-info-circle" style="color:var(--primary-color);"></i> You have ${messageCredits} message credits. Each message costs 1 credit.</p>
+                        <p style="color:var(--text-secondary);">Find and connect with Goan community members.</p>
+                    </div>
+                `;
+            } else if (page === 'business') {
+                pageContent.innerHTML = `
+                    <div class="page-content">
+                        <h2 style="margin-bottom:20px;">Goa Business Directory</h2>
+                        <div style="background: linear-gradient(145deg, #1877f2, #0a5cff); color: white; border-radius: 24px; padding: 24px; margin-bottom: 20px;">
+                            <h3 style="margin-bottom:12px;">Coming Soon!</h3>
+                            <p style="opacity:0.9;">We're building the most complete directory of Goan businesses:</p>
+                            <ul style="margin-top:16px; list-style:none; padding:0;">
+                                <li style="margin-bottom:8px;">✓ 500+ Restaurants & Cafes</li>
+                                <li style="margin-bottom:8px;">✓ 200+ Hotels & Stays</li>
+                                <li style="margin-bottom:8px;">✓ 1000+ Electricians, Plumbers, Carpenters</li>
+                                <li style="margin-bottom:8px;">✓ Verified contact numbers</li>
+                                <li style="margin-bottom:8px;">✓ User reviews & ratings</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--card-bg); border-radius: 24px; padding: 20px;">
+                            <p style="color: var(--text-secondary);">Know a Goan business? Help us grow!</p>
+                            <button style="background: var(--success); color: white; border: none; padding: 14px; border-radius: 40px; width: 100%; margin-top:12px; font-weight:600;">Add Business</button>
                         </div>
                     </div>
                 `;
@@ -1382,7 +1524,6 @@
             e.preventDefault();
             deferredPrompt = e;
 
-            // Show after 30 seconds
             setTimeout(() => {
                 if (deferredPrompt && !installShown && !window.matchMedia('(display-mode: standalone)').matches) {
                     installPopup.classList.add('show');
@@ -1390,11 +1531,9 @@
                 }
             }, 30000);
 
-            // Show again after 60 seconds if not installed
             setTimeout(() => {
                 if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
                     installPopup.classList.add('show');
-                    installShown = true;
                 }
             }, 60000);
         });
@@ -1507,12 +1646,12 @@
                     window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`, '_blank');
                 } else if (type === 'instagram') { 
                     navigator.clipboard.writeText(shareUrl); 
-                    alert('Link copied! +1 credit earned'); 
+                    alert('Link copied! +1 credit'); 
                 } else if (type === 'facebook') {
                     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
                 } else if (type === 'copy') { 
                     navigator.clipboard.writeText(shareUrl); 
-                    alert('Link copied! +1 credit earned'); 
+                    alert('Link copied! +1 credit'); 
                 }
                 hideSharePopup();
             });
@@ -1648,7 +1787,6 @@
                             firstVideoReady = true;
                             playVideo(iframe);
                             
-                            // Aggressively preload next 3 videos
                             for (let i = 1; i <= 3; i++) {
                                 const nextContainer = videoContainers[i];
                                 if (nextContainer && !nextContainer.querySelector('iframe').src) {
@@ -1661,7 +1799,7 @@
                     }
                 });
 
-                // AGGRESSIVE BUFFERING: 2 ABOVE + 3 BELOW
+                // Aggressive buffering: 2 above + 3 below
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1672,7 +1810,6 @@
                             playVideo(iframe);
                             if (userInteracted) unmuteVideo(iframe);
                             
-                            // Preload 2 above, 3 below
                             const start = Math.max(0, index - 2);
                             const end = Math.min(videoContainers.length - 1, index + 3);
                             
@@ -1727,7 +1864,6 @@
             });
         }
 
-        // Handle browser back button
         window.addEventListener('popstate', function() {
             if (pageHistory.length > 1) {
                 pageHistory.pop();
