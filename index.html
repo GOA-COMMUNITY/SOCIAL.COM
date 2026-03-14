@@ -14,13 +14,12 @@
     <link rel="preconnect" href="https://i.ytimg.com">
     <link rel="preconnect" href="https://www.googlevideo.com">
     <style>
-        /* ===== OPTIMIZED FOR INSTANT PLAYBACK ===== */
+        /* ===== OPTIMIZED WITH AUDIO FIXES ===== */
         html, body {
             overscroll-behavior: none;
             margin: 0;
             padding: 0;
             height: 100%;
-            background: var(--bg-primary);
         }
 
         * {
@@ -54,12 +53,12 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Subtle coconut decorations (lightweight) */
+        /* Subtle coconut decorations */
         .coconut-left, .coconut-right {
             position: fixed;
             bottom: 80px;
-            font-size: 3rem;
-            opacity: 0.08;
+            font-size: 3.5rem;
+            opacity: 0.1;
             z-index: 0;
             pointer-events: none;
             color: var(--text-secondary);
@@ -67,7 +66,7 @@
         .coconut-left { left: 5px; transform: rotate(-10deg); }
         .coconut-right { right: 5px; transform: rotate(10deg) scaleX(-1); }
 
-        /* ===== SPLASH SCREEN - 7 SECOND MINIMUM ===== */
+        /* ===== SPLASH SCREEN - 10 SECOND MAX ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -499,7 +498,7 @@
         }
         .chip.active { background: var(--primary-color); color: white; border: none; }
 
-        /* ===== FEED - PROPER SHORTS FORMAT WITH GAP ===== */
+        /* ===== FEED - MORE SPACE BETWEEN SHORTS (40px gap) ===== */
         .feed-container {
             max-width: 600px;
             margin: 0 auto;
@@ -510,7 +509,7 @@
         .feed-card {
             background: var(--card-bg);
             border-radius: 32px;
-            margin: 0 12px 30px 12px; /* Increased bottom margin for more gap */
+            margin: 0 12px 40px 12px; /* Increased to 40px gap between shorts */
             overflow: hidden;
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             border: 1px solid var(--border-color);
@@ -543,7 +542,7 @@
             position: relative;
             width: 100%;
             background: #000;
-            aspect-ratio: 9/16; /* Restored proper Shorts format */
+            aspect-ratio: 9/16;
             max-height: 600px;
             cursor: pointer;
         }
@@ -552,7 +551,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            pointer-events: none; /* Prevents YouTube logo/play button from appearing */
+            pointer-events: none;
         }
 
         .trending-badge {
@@ -621,7 +620,7 @@
         }
         .footer-item:hover .tooltip { display: block; }
 
-        /* Video overlay - shows video info without blocking playback */
+        /* Video overlay */
         .video-info-overlay {
             position: absolute;
             bottom: 0;
@@ -658,7 +657,7 @@
             background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
             color: white;
             border-radius: 28px;
-            margin: 16px 12px 30px 12px;
+            margin: 16px 12px 40px 12px;
             padding: 24px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             width: calc(100% - 24px);
@@ -877,7 +876,7 @@
         <i class="fas fa-wifi-slash"></i> You're offline – watching cached videos
     </div>
 
-    <!-- Splash Screen - 7 second minimum -->
+    <!-- Splash Screen - 10 second max -->
     <div class="splash-overlay" id="splashOverlay">
         <div class="splash-stage stage1" id="stage1">
             <div class="splash-logo">
@@ -1161,41 +1160,51 @@
         }
         closeEventBtn.addEventListener('click', () => eventModal.classList.remove('show'));
 
-        // ===== SPLASH SCREEN - 7 SECOND MINIMUM =====
+        // ===== SPLASH SCREEN - 10 SECOND MAXIMUM =====
         // Stage 1: Logo zoom (2.5s)
         setTimeout(() => {
             stage1.style.display = 'none';
             stage2.style.display = 'flex';
         }, 2500);
 
-        // Force splash to stay for at least 7 seconds total
-        // But first video might be ready earlier, so we wait for both conditions
-        const SPLASH_MINIMUM_MS = 7000; // 7 seconds
-        const splashStartTime = Date.now();
+        // FORCE tap screen to appear after 10 seconds MAXIMUM
+        setTimeout(() => {
+            if (!splashOverlay.classList.contains('hidden') && !splashOverlay.classList.contains('tappable')) {
+                // Force tap screen to appear even if video not ready
+                stage2.style.display = 'none';
+                stage3.style.display = 'flex';
+                splashOverlay.classList.add('tappable');
+                console.log('10-second force: tap screen shown');
+            }
+        }, 10000); // 10 second max
 
-        function allowTapWhenReady() {
-            const elapsed = Date.now() - splashStartTime;
-            const remaining = Math.max(0, SPLASH_MINIMUM_MS - elapsed);
-            
-            setTimeout(() => {
-                if (!splashOverlay.classList.contains('hidden') && firstVideoReady) {
+        // Check when first video is ready
+        function checkFirstVideo() {
+            if (firstVideoReady) {
+                // Video is ready, but we still need to wait for 7 seconds minimum
+                const elapsed = Date.now() - splashStartTime;
+                const minTimePassed = elapsed >= 7000;
+                
+                if (minTimePassed) {
                     stage2.style.display = 'none';
                     stage3.style.display = 'flex';
                     splashOverlay.classList.add('tappable');
-                } else if (!splashOverlay.classList.contains('hidden')) {
-                    // First video not ready yet, check again in 100ms
-                    allowTapWhenReady();
+                } else {
+                    // Wait until 7 seconds have passed
+                    setTimeout(() => {
+                        if (!splashOverlay.classList.contains('hidden')) {
+                            stage2.style.display = 'none';
+                            stage3.style.display = 'flex';
+                            splashOverlay.classList.add('tappable');
+                        }
+                    }, 7000 - elapsed);
                 }
-            }, remaining > 0 ? remaining : 0);
-        }
-
-        function checkFirstVideo() {
-            if (firstVideoReady) {
-                allowTapWhenReady();
             } else {
                 setTimeout(checkFirstVideo, 100);
             }
         }
+        
+        const splashStartTime = Date.now();
         checkFirstVideo();
 
         // Tap handler - only works after tappable class is added
@@ -1432,7 +1441,7 @@
             currentShareVideoId = null;
         }
 
-        // ===== LOAD FEED - AGGRESSIVE PRELOADING FOR INSTANT PLAYBACK =====
+        // ===== LOAD FEED - WITH AUDIO ISOLATION FIX =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1555,19 +1564,17 @@
                     }
                 });
 
-                // AGGRESSIVE PRELOADING - Load all videos immediately
-                // This ensures instant playback when scrolling
-                videoContainers.forEach((container, index) => {
-                    const iframe = container.querySelector('iframe');
-                    // Ensure src is set (it is from innerHTML, but just to be safe)
-                    if (!iframe.src) {
-                        const videoId = container.dataset.videoId;
-                        iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=small`;
-                    }
-                });
+                // AUDIO ISOLATION FIX: Pause all videos initially except first
+                setTimeout(() => {
+                    videoContainers.forEach((container, idx) => {
+                        const iframe = container.querySelector('iframe');
+                        if (idx !== 0) {
+                            pauseVideo(iframe);
+                        }
+                    });
+                }, 1000);
 
-                // INTERSECTION OBSERVER - Play/pause based on visibility
-                // With aggressive preloading, videos will start instantly
+                // INTERSECTION OBSERVER - Properly pause videos when not visible
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1575,27 +1582,17 @@
                         const index = parseInt(container.dataset.index);
                         
                         if (entry.isIntersecting) {
-                            // Play video when visible
+                            // First pause ALL other videos to prevent audio mixing
+                            videoContainers.forEach((otherContainer, otherIdx) => {
+                                if (otherIdx !== index) {
+                                    pauseVideo(otherContainer.querySelector('iframe'));
+                                }
+                            });
+                            
+                            // Then play current video
                             playVideo(iframe);
                             if (userInteracted) {
                                 unmuteVideo(iframe);
-                            }
-                            
-                            // Preload more aggressively: 3 above, 3 below
-                            const start = Math.max(0, index - 3);
-                            const end = Math.min(videoContainers.length - 1, index + 3);
-                            
-                            for (let i = start; i <= end; i++) {
-                                if (i === index) continue;
-                                const bufferContainer = videoContainers[i];
-                                if (bufferContainer) {
-                                    const bufferIframe = bufferContainer.querySelector('iframe');
-                                    // Ensure it's loaded (should be already)
-                                    if (!bufferIframe.src) {
-                                        const bufferId = bufferContainer.dataset.videoId;
-                                        bufferIframe.src = `https://www.youtube.com/embed/${bufferId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${bufferId}&modestbranding=1&rel=0&vq=small`;
-                                    }
-                                }
                             }
                             
                             currentVideoIndex = index;
@@ -1604,7 +1601,7 @@
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.3, rootMargin: '400px 0px' }); // Larger root margin for earlier loading
+                }, { threshold: 0.3, rootMargin: '200px 0px' });
 
                 videoContainers.forEach(container => observer.observe(container));
 
