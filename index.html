@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Goa Social · Premium</title>
+    <title>Goa Social · Lite</title>
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1877f2">
     <link rel="apple-touch-icon" href="https://i.imgur.com/u5kGI2s.jpeg">
-    <!-- Font Awesome 6 -->
+    <!-- Font Awesome 6 - critical only -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://www.youtube.com">
     <link rel="preconnect" href="https://i.ytimg.com">
     <link rel="preconnect" href="https://www.googlevideo.com">
     <style>
-        /* ===== FIX: Remove top blank space on scroll ===== */
+        /* ===== OPTIMIZED FOR 1GB RAM DEVICES ===== */
         html, body {
             overscroll-behavior: none;
             margin: 0;
             padding: 0;
+            height: 100%;
         }
 
         * {
@@ -39,7 +40,6 @@
             --nav-bg: #ffffff;
             --border-color: #e4e6eb;
             --success: #42b72a;
-            --warning: #ffb347;
             --danger: #f23b5c;
         }
 
@@ -50,48 +50,15 @@
             padding-bottom: 70px;
             min-height: 100vh;
             position: relative;
-            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Subtle coconut tree decorations */
-        .coconut-left {
-            position: fixed;
-            bottom: 80px;
-            left: 10px;
-            font-size: 4rem;
-            opacity: 0.1;
-            transform: rotate(-10deg);
-            z-index: 0;
-            pointer-events: none;
-            animation: swayLeft 6s ease-in-out infinite;
-            color: var(--text-secondary);
+        /* Remove heavy animations on low-end devices */
+        .coconut-left, .coconut-right {
+            display: none; /* Remove coconut animations - too heavy */
         }
 
-        .coconut-right {
-            position: fixed;
-            bottom: 80px;
-            right: 10px;
-            font-size: 4rem;
-            opacity: 0.1;
-            transform: rotate(10deg) scaleX(-1);
-            z-index: 0;
-            pointer-events: none;
-            animation: swayRight 6s ease-in-out infinite;
-            color: var(--text-secondary);
-        }
-
-        @keyframes swayLeft {
-            0%, 100% { transform: rotate(-10deg); }
-            50% { transform: rotate(-5deg); }
-        }
-
-        @keyframes swayRight {
-            0%, 100% { transform: rotate(10deg) scaleX(-1); }
-            50% { transform: rotate(5deg) scaleX(-1); }
-        }
-
-        /* ===== SPLASH SCREEN ===== */
+        /* ===== SPLASH SCREEN - LIGHTWEIGHT ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -103,7 +70,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease; /* Faster transition */
         }
 
         .splash-overlay.hidden {
@@ -119,23 +86,23 @@
             justify-content: center;
         }
 
+        /* Simplified animations for better performance */
         .stage1 {
-            animation: logoZoom 2s forwards;
+            animation: simpleZoom 1.5s forwards;
         }
 
-        @keyframes logoZoom {
-            0% { transform: scale(0.5); opacity: 0; }
-            30% { transform: scale(1.2); opacity: 1; }
-            60% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+        @keyframes simpleZoom {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
         }
 
         .stage2 {
             opacity: 0;
-            animation: fadeIn 0.5s forwards 2s;
+            animation: simpleFade 0.3s forwards 1.5s;
         }
 
-        @keyframes fadeIn {
+        @keyframes simpleFade {
             to { opacity: 1; }
         }
 
@@ -145,17 +112,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .splash-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 30px;
+            width: 100px; /* Slightly smaller */
+            height: 100px;
+            border-radius: 25px;
             overflow: hidden;
             margin: 0 auto;
-            border: 4px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 3px solid white;
         }
 
         .splash-logo img {
@@ -165,22 +131,17 @@
         }
 
         .loading-message {
-            font-size: 1.8rem;
+            font-size: 1.5rem; /* Smaller */
             font-weight: 600;
         }
 
-        .loading-sub {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
         .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 5px solid rgba(255,255,255,0.3);
+            width: 50px; /* Smaller spinner */
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
             border-top-color: white;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite; /* Faster spin */
         }
 
         @keyframes spin {
@@ -189,9 +150,8 @@
 
         .stage3 {
             opacity: 0;
-            animation: fadeIn 0.5s forwards;
+            animation: simpleFade 0.3s forwards;
             background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(5px);
             display: none;
         }
 
@@ -200,14 +160,12 @@
         }
 
         .tap-logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 25px;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
             overflow: hidden;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 30px rgba(24,119,242,0.3);
-            border: 3px solid var(--primary-color);
-            animation: gentlePulse 2s infinite;
+            margin: 0 auto 15px;
+            border: 2px solid var(--primary-color);
         }
 
         .tap-logo img {
@@ -217,25 +175,15 @@
         }
 
         .tap-message {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--primary-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .tap-hint {
             color: #65676b;
-            font-size: 1.1rem;
-        }
-
-        .tap-hint i {
-            color: var(--primary-color);
-            margin-right: 8px;
-        }
-
-        @keyframes gentlePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            font-size: 1rem;
         }
 
         /* ===== OFFLINE BANNER ===== */
@@ -243,8 +191,8 @@
             background: var(--danger);
             color: white;
             text-align: center;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
             display: none;
             position: sticky;
@@ -257,7 +205,7 @@
             display: block;
         }
 
-        /* ===== EVENT MODAL (POPUP) - FIXED POSITION ===== */
+        /* ===== EVENT MODAL - SIMPLIFIED ===== */
         .event-modal {
             display: none;
             position: fixed;
@@ -266,7 +214,6 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
             z-index: 10001;
             align-items: center;
             justify-content: center;
@@ -278,53 +225,47 @@
 
         .event-card {
             background: white;
-            border-radius: 32px;
-            padding: 30px 24px;
-            max-width: 350px;
+            border-radius: 24px;
+            padding: 24px 20px;
+            max-width: 320px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
-            animation: modalPop 0.3s ease;
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .event-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
+            font-size: 3rem;
+            margin-bottom: 12px;
             color: #ff8c42;
         }
 
         .event-name {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
         .event-countdown {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: #ff5e3a;
-            margin: 15px 0 5px;
+            margin: 12px 0 4px;
         }
 
         .event-desc {
             color: var(--text-secondary);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
         .event-close {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 14px 30px;
+            padding: 12px 24px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             width: 100%;
         }
@@ -332,17 +273,15 @@
         /* ===== INSTALL POPUP ===== */
         .install-popup {
             position: fixed;
-            bottom: 80px;
-            left: 16px;
-            right: 16px;
+            bottom: 70px;
+            left: 12px;
+            right: 12px;
             background: white;
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 20px;
+            padding: 20px;
             z-index: 10002;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-            animation: slideUp 0.4s ease;
-            max-width: 400px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            max-width: 380px;
             margin: 0 auto;
             display: none;
         }
@@ -351,24 +290,18 @@
             display: block;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
         .install-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .install-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             overflow: hidden;
-            background: var(--primary-color);
         }
 
         .install-icon img {
@@ -378,20 +311,19 @@
         }
 
         .install-title {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .install-sub {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
         .install-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .install-now {
@@ -399,10 +331,10 @@
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 40px;
+            padding: 14px;
+            border-radius: 30px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
         }
 
@@ -411,19 +343,17 @@
             background: var(--bg-secondary);
             color: var(--text-secondary);
             border: none;
-            padding: 16px;
-            border-radius: 40px;
+            padding: 14px;
+            border-radius: 30px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER - COMPACT ===== */
         .app-header {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 12px 18px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -431,34 +361,27 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             width: 100%;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .back-button {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--primary-color);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            padding: 6px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .back-button:hover {
-            background: var(--bg-secondary);
         }
 
         .back-button.hidden {
@@ -468,29 +391,26 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             cursor: pointer;
         }
 
         .logo-crop {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             overflow: hidden;
-            background: var(--primary-color);
             flex-shrink: 0;
-            border: 1px solid var(--border-color);
         }
 
         .logo-crop img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
         }
 
         .logo-text {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: -0.5px;
             color: var(--primary-color);
@@ -498,88 +418,87 @@
 
         .header-actions {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             color: var(--text-secondary);
         }
 
         .header-actions i {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
-        /* ===== BEAUTIFUL TOP SECTION ===== */
+        /* ===== WELCOME SECTION - COMPACT ===== */
         .welcome-section {
             background: linear-gradient(145deg, var(--primary-color), #0a5cff);
-            padding: 24px 16px 32px 16px;
-            margin-bottom: 8px;
+            padding: 16px 16px 20px 16px;
+            margin-bottom: 6px;
             color: white;
         }
 
         .welcome-title {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .welcome-sub {
-            font-size: 1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .benefit-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .benefit-card {
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(5px);
-            border-radius: 20px;
-            padding: 16px 8px;
+            border-radius: 16px;
+            padding: 12px 4px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .benefit-card i {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
         }
 
         .benefit-card span {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
+            display: block;
         }
 
         .business-teaser {
             background: rgba(255,255,255,0.1);
-            border-radius: 30px;
-            padding: 16px;
+            border-radius: 24px;
+            padding: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .business-teaser-text {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .business-teaser-number {
             background: white;
             color: var(--primary-color);
-            padding: 4px 12px;
-            border-radius: 40px;
+            padding: 4px 10px;
+            border-radius: 30px;
             font-weight: 700;
+            font-size: 0.8rem;
         }
 
         /* ===== STORIES ===== */
         .stories-section {
-            padding: 16px 16px 12px 16px;
+            padding: 12px 16px 8px 16px;
             background: var(--card-bg);
-            margin: 8px 0;
+            margin: 6px 0;
             width: 100%;
         }
 
@@ -587,25 +506,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .section-header h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--text-primary);
         }
 
         .section-header a {
             color: var(--primary-color);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-decoration: none;
-            font-weight: 500;
         }
 
         .stories-scroll {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
@@ -617,26 +534,25 @@
         }
 
         .story-item {
-            min-width: 70px;
+            min-width: 60px;
             text-align: center;
         }
 
         .story-avatar {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
-            margin: 0 auto 8px auto;
-            border: 3px solid var(--primary-color);
+            margin: 0 auto 6px auto;
+            border: 2px solid var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            color: var(--primary-color);
+            font-size: 1.5rem;
         }
 
         .story-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
@@ -645,15 +561,15 @@
 
         /* ===== CATEGORIES ===== */
         .categories-section {
-            padding: 12px 16px;
+            padding: 8px 16px;
             background: var(--card-bg);
-            margin: 8px 0;
+            margin: 6px 0;
             width: 100%;
         }
 
         .chips-scroll {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -665,68 +581,56 @@
         .chip {
             background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
             white-space: nowrap;
             border: 1px solid var(--border-color);
             font-weight: 500;
-            transition: all 0.2s;
             cursor: pointer;
         }
 
         .chip.active {
             background: var(--primary-color);
             color: white;
-            font-weight: 600;
             border: none;
         }
 
-        .chip:active {
-            transform: scale(0.95);
-        }
-
-        /* ===== FEED ===== */
+        /* ===== FEED - OPTIMIZED FOR 200px VIDEOS ===== */
         .feed-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 8px 0 20px 0;
+            padding: 6px 0 16px 0;
             width: 100%;
         }
 
         .feed-card {
             background: var(--card-bg);
-            border-radius: 28px;
-            margin: 0 12px 16px 12px;
+            border-radius: 20px;
+            margin: 0 12px 12px 12px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s;
             width: calc(100% - 24px);
-        }
-
-        .feed-card:active {
-            transform: scale(0.99);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            padding: 14px;
-            gap: 12px;
+            padding: 10px 12px;
+            gap: 10px;
         }
 
         .channel-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: var(--bg-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--primary-color);
-            border: 1px solid var(--border-color);
         }
 
         .channel-info {
@@ -735,71 +639,58 @@
 
         .channel-name {
             font-weight: 600;
-            font-size: 1rem;
-            color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         .post-time {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
-            margin-top: 2px;
         }
 
-        .card-header i {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-        }
-
+        /* VIDEO CONTAINER - 200px MAX HEIGHT */
         .video-container {
             position: relative;
             width: 100%;
             background: #000;
-            aspect-ratio: 9/16;
-            max-height: 500px;
+            max-height: 200px; /* MAX 200 PIXELS */
+            overflow: hidden;
             cursor: pointer;
         }
 
         .video-container iframe {
             width: 100%;
-            height: 100%;
+            height: 200px; /* FIXED 200px HEIGHT */
             border: none;
             pointer-events: none;
         }
 
         .trending-badge {
             position: absolute;
-            top: 12px;
-            left: 12px;
+            top: 8px;
+            left: 8px;
             background: #FF8C42;
             color: white;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 0.6rem;
             font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             z-index: 2;
         }
 
         .card-footer {
-            padding: 14px;
+            padding: 10px 12px;
             display: flex;
-            gap: 24px;
+            gap: 20px;
             border-top: 1px solid var(--border-color);
         }
 
         .footer-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: color 0.2s;
-            position: relative;
-        }
-
-        .footer-item:active {
-            opacity: 0.7;
         }
 
         .footer-item i.fa-heart { color: var(--danger); }
@@ -809,108 +700,60 @@
         .info-icon {
             margin-left: 4px;
             color: #aaa;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             cursor: help;
         }
 
         .tooltip {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1c1e21;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            display: none;
-            z-index: 10;
-        }
-
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1c1e21 transparent transparent transparent;
-        }
-
-        .footer-item:hover .tooltip {
-            display: block;
+            display: none; /* Hide tooltips on low-end devices */
         }
 
         .video-info-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 40px 14px 14px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            color: white;
-            pointer-events: none;
-        }
-
-        .video-title-small {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: white;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-        }
-
-        .video-meta {
-            font-size: 0.7rem;
-            color: #ccc;
-            display: flex;
-            gap: 12px;
+            display: none; /* Hide overlay to reduce rendering */
         }
 
         .loading-indicator {
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             color: var(--primary-color);
             width: 100%;
         }
 
         .loading-indicator i {
-            font-size: 2rem;
-            animation: spin 1s linear infinite;
+            font-size: 1.5rem;
+            animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* ===== BUSINESS CARD ===== */
+        /* ===== BUSINESS CARD - COMPACT ===== */
         .business-card {
             background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
             color: white;
-            border-radius: 24px;
-            margin: 16px 12px 24px 12px;
-            padding: 20px;
-            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            margin: 12px 12px 20px 12px;
+            padding: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             width: calc(100% - 24px);
         }
 
         .business-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
         }
 
         .business-card p {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             opacity: 0.9;
+            font-size: 0.9rem;
         }
 
         .business-card button {
             background: white;
             color: var(--primary-color);
             border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
+            padding: 10px 20px;
+            border-radius: 30px;
             font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
         }
 
@@ -918,29 +761,29 @@
         .page-content {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px 16px;
-            min-height: calc(100vh - 140px);
+            padding: 16px 16px;
+            min-height: calc(100vh - 130px);
             width: 100%;
         }
 
         .message-credits {
             background: var(--card-bg);
-            border-radius: 24px;
-            padding: 16px;
-            margin-bottom: 20px;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .credits-count {
             background: var(--primary-color);
             color: white;
-            padding: 8px 16px;
-            border-radius: 40px;
+            padding: 6px 14px;
+            border-radius: 30px;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         /* ===== BOTTOM NAVIGATION ===== */
@@ -954,15 +797,9 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 8px 10px 12px 10px;
+            padding: 6px 8px 10px 8px;
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
             width: 100%;
-        }
-
-        .bottom-nav.hidden {
-            transform: translateY(100%);
         }
 
         .nav-item {
@@ -970,17 +807,16 @@
             flex-direction: column;
             align-items: center;
             color: var(--text-secondary);
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 30px;
+            font-size: 0.65rem;
+            padding: 4px 8px;
+            border-radius: 20px;
             background: transparent;
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .nav-item i {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 2px;
         }
 
@@ -988,24 +824,19 @@
             color: var(--primary-color);
         }
 
-        .nav-item:active {
-            background: var(--bg-secondary);
-        }
-
-        /* ===== SHARE POPUP ===== */
+        /* ===== SHARE POPUP - SIMPLIFIED ===== */
         .share-popup {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background: var(--card-bg);
-            border-radius: 24px 24px 0 0;
-            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            padding: 16px;
             z-index: 10001;
             transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-            border-top: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
         }
 
         .share-popup.visible {
@@ -1016,26 +847,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .share-popup-header h3 {
-            color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .close-share {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
         }
 
         .share-options {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            gap: 12px;
             text-align: center;
         }
 
@@ -1043,24 +874,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
-            color: var(--text-primary);
+            font-size: 0.75rem;
         }
 
         .share-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            transition: transform 0.2s;
-        }
-
-        .share-icon:active {
-            transform: scale(0.9);
+            font-size: 1.5rem;
         }
 
         .share-icon.whatsapp { background: #25D366; color: white; }
@@ -1074,14 +900,13 @@
             background: rgba(0,0,0,0.5);
             z-index: 10000;
             display: none;
-            backdrop-filter: blur(3px);
         }
 
         .share-overlay.visible {
             display: block;
         }
 
-        /* ===== YOUTUBE PLAYER CONTAINER (for shared videos) ===== */
+        /* ===== YOUTUBE PLAYER ===== */
         .youtube-player-container {
             display: none;
             position: fixed;
@@ -1101,20 +926,20 @@
 
         .player-wrapper {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             position: relative;
         }
 
         .close-player {
             position: absolute;
-            top: -40px;
+            top: -35px;
             right: 0;
             background: none;
             border: none;
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            padding: 10px;
+            padding: 8px;
         }
 
         #youtubePlayer {
@@ -1125,12 +950,9 @@
     </style>
 </head>
 <body>
-    <div class="coconut-left">🌴</div>
-    <div class="coconut-right">🌴</div>
-
     <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
-        <i class="fas fa-wifi-slash"></i> You're offline – watching cached videos
+        <i class="fas fa-wifi-slash"></i> Offline - cached videos
     </div>
 
     <!-- Splash Screen -->
@@ -1145,8 +967,7 @@
                 <div class="splash-logo">
                     <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
                 </div>
-                <div class="loading-message">Goa Social is loading...</div>
-                <div class="loading-sub">Preparing your feed</div>
+                <div class="loading-message">Goa Social</div>
                 <div class="loading-spinner"></div>
             </div>
         </div>
@@ -1155,15 +976,15 @@
                 <div class="tap-logo">
                     <img src="https://i.imgur.com/u5kGI2s.jpeg" alt="Goa Social">
                 </div>
-                <div class="tap-message">Welcome to Goa Social</div>
+                <div class="tap-message">Welcome</div>
                 <div class="tap-hint">
-                    <i class="fas fa-hand-pointer"></i> Tap anywhere to begin
+                    <i class="fas fa-hand-pointer"></i> Tap to start
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Event Modal (Popup) - FIXED: position fixed, display none -->
+    <!-- Event Modal -->
     <div class="event-modal" id="eventModal">
         <div class="event-card">
             <div class="event-icon" id="eventIcon">🎉</div>
@@ -1174,7 +995,7 @@
         </div>
     </div>
 
-    <!-- Install Popup (PWA) -->
+    <!-- Install Popup -->
     <div class="install-popup" id="installPopup">
         <div class="install-header">
             <div class="install-icon">
@@ -1182,7 +1003,7 @@
             </div>
             <div>
                 <div class="install-title">Install Goa Social</div>
-                <div class="install-sub">Add to home screen for quick access</div>
+                <div class="install-sub">Add to home screen</div>
             </div>
         </div>
         <div class="install-buttons">
@@ -1195,7 +1016,7 @@
     <div class="share-overlay" id="shareOverlay"></div>
     <div class="share-popup" id="sharePopup">
         <div class="share-popup-header">
-            <h3>Share to earn 1 credit <i class="fas fa-info-circle info-icon" id="shareInfoIcon"></i></h3>
+            <h3>Share to earn 1 credit</h3>
             <button class="close-share" id="closeShare">&times;</button>
         </div>
         <div class="share-options">
@@ -1216,20 +1037,9 @@
                 <span>Copy Link</span>
             </div>
         </div>
-        <div style="text-align:center; margin-top:16px; font-size:0.8rem; color:var(--text-secondary);">
-            Each share = 1 message credit on Explore page
-        </div>
     </div>
 
-    <!-- Share Info Tooltip -->
-    <div id="shareTooltip" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1e21; color: white; padding: 16px 24px; border-radius: 24px; z-index: 10002; text-align: center; max-width: 300px;">
-        <i class="fas fa-gift" style="font-size: 2rem; color: #FF8C42; margin-bottom: 12px;"></i>
-        <h4 style="margin-bottom: 8px;">Share to Earn</h4>
-        <p style="margin-bottom: 16px;">Each time you share a video, you get 1 message credit. Use credits to message anyone on Explore page!</p>
-        <button onclick="this.parentElement.style.display='none'" style="background: var(--primary-color); color: white; border: none; padding: 8px 24px; border-radius: 40px; cursor: pointer;">Got it</button>
-    </div>
-
-    <!-- YouTube Player Container (for shared videos) -->
+    <!-- YouTube Player -->
     <div class="youtube-player-container" id="youtubePlayerContainer">
         <div class="player-wrapper">
             <button class="close-player" id="closePlayerBtn">&times;</button>
@@ -1256,86 +1066,53 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <div id="content" style="width: 100%;">
-        <!-- Home Feed -->
         <div id="home-feed">
-            <!-- WELCOME SECTION - Beautiful top section with benefits -->
             <div class="welcome-section">
                 <div class="welcome-title">Goa Social</div>
-                <div class="welcome-sub">Your complete Goan community</div>
-                
+                <div class="welcome-sub">Your Goan community</div>
                 <div class="benefit-grid">
-                    <div class="benefit-card">
-                        <i class="fas fa-video"></i>
-                        <span>Goan Shorts</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-store"></i>
-                        <span>Local Business</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-tools"></i>
-                        <span>Services</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-utensils"></i>
-                        <span>Cafes</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-hotel"></i>
-                        <span>Hotels</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-bolt"></i>
-                        <span>Electricians</span>
-                    </div>
+                    <div class="benefit-card"><i class="fas fa-video"></i><span>Shorts</span></div>
+                    <div class="benefit-card"><i class="fas fa-store"></i><span>Business</span></div>
+                    <div class="benefit-card"><i class="fas fa-tools"></i><span>Services</span></div>
+                    <div class="benefit-card"><i class="fas fa-utensils"></i><span>Cafes</span></div>
+                    <div class="benefit-card"><i class="fas fa-hotel"></i><span>Hotels</span></div>
+                    <div class="benefit-card"><i class="fas fa-bolt"></i><span>Electricians</span></div>
                 </div>
-
-                <!-- Business teaser - shows the vision -->
                 <div class="business-teaser">
-                    <div class="business-teaser-text">
-                        <i class="fas fa-database" style="margin-right: 8px;"></i>
-                        Coming soon: 10,000+ Goan businesses
-                    </div>
-                    <div class="business-teaser-number">🚀</div>
+                    <span><i class="fas fa-database"></i> 10,000+ businesses</span>
+                    <span class="business-teaser-number">🚀</span>
                 </div>
             </div>
 
-            <!-- Stories -->
             <div class="stories-section">
                 <div class="section-header">
                     <h3>LIVE NOW</h3>
-                    <a href="#">View all <i class="fas fa-chevron-right"></i></a>
+                    <a href="#">View all</a>
                 </div>
                 <div class="stories-scroll" id="liveStories"></div>
             </div>
 
-            <!-- Categories -->
             <div class="categories-section">
-                <div class="chips-scroll">
+                <div class="chips-scroll" id="categoryChips">
                     <span class="chip active">All</span>
                     <span class="chip">Trending</span>
                     <span class="chip">Local</span>
                     <span class="chip">News</span>
-                    <span class="chip">Shorts</span>
-                    <span class="chip">Events</span>
                     <span class="chip">Food</span>
                     <span class="chip">Travel</span>
                 </div>
             </div>
 
-            <!-- Main Feed -->
             <div class="feed-container" id="feedContainer">
                 <div class="loading-indicator" id="loading">
                     <i class="fas fa-circle-notch"></i>
-                    <p>loading goa shorts...</p>
+                    <p>loading shorts...</p>
                 </div>
             </div>
         </div>
-
-        <!-- Other pages (loaded dynamically) -->
-        <div id="page-content" style="display: none; width: 100%;"></div>
+        <div id="page-content" style="display: none;"></div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -1371,8 +1148,6 @@
         const sharePopup = document.getElementById('sharePopup');
         const shareOverlay = document.getElementById('shareOverlay');
         const closeShare = document.getElementById('closeShare');
-        const shareInfoIcon = document.getElementById('shareInfoIcon');
-        const shareTooltip = document.getElementById('shareTooltip');
         const backButton = document.getElementById('backButton');
         const bottomNav = document.getElementById('bottomNav');
         const homeFeed = document.getElementById('home-feed');
@@ -1395,25 +1170,21 @@
 
         // Business listings
         const businesses = [
-            { name: 'Fisherman\'s Wharf', desc: 'Best seafood in Panjim', icon: '🦐', color: '#1877f2' },
-            { name: 'Goa Surf School', desc: 'Learn to surf at Morjim', icon: '🏄', color: '#42b72a' },
-            { name: 'Cafe Alchemia', desc: 'Artsy cafe in Assagao', icon: '☕', color: '#f23b5c' }
+            { name: 'Fisherman\'s Wharf', desc: 'Best seafood in Panjim', icon: '🦐' },
+            { name: 'Goa Surf School', desc: 'Learn to surf at Morjim', icon: '🏄' },
+            { name: 'Cafe Alchemia', desc: 'Artsy cafe in Assagao', icon: '☕' }
         ];
         let businessIndex = 0;
 
         // ===== OFFLINE DETECTION =====
         function updateOnlineStatus() {
-            if (navigator.onLine) {
-                offlineBanner.classList.remove('show');
-            } else {
-                offlineBanner.classList.add('show');
-            }
+            offlineBanner.classList.toggle('show', !navigator.onLine);
         }
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-        // ===== EVENT MODAL (from events.json) =====
+        // ===== EVENT MODAL =====
         async function checkEvents() {
             try {
                 const res = await fetch('events.json');
@@ -1424,36 +1195,26 @@
                 for (let e of events) {
                     const eventDate = new Date(e.date);
                     eventDate.setHours(0, 0, 0, 0);
-                    const diffDays = Math.ceil((eventDate - today) / (86400000));
+                    const diffDays = Math.ceil((eventDate - today) / 86400000);
                     if (diffDays >= 0 && diffDays <= 30) {
-                        showEventModal(e, diffDays);
+                        eventIcon.innerHTML = `<i class="fas ${e.icon || 'fa-calendar-alt'}"></i>`;
+                        eventName.textContent = e.name;
+                        eventCountdown.textContent = diffDays === 0 ? 'TODAY!' : `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+                        eventDesc.textContent = e.description || '';
+                        eventModal.classList.add('show');
                         return;
                     }
                 }
-            } catch (err) {
-                console.log('No events.json or error', err);
-            }
+            } catch (err) {}
         }
-
-        function showEventModal(event, days) {
-            eventIcon.innerHTML = `<i class="fas ${event.icon || 'fa-calendar-alt'}"></i>`;
-            eventName.textContent = event.name;
-            eventCountdown.textContent = days === 0 ? 'TODAY!' : `${days} day${days > 1 ? 's' : ''}`;
-            eventDesc.textContent = event.description || '';
-            eventModal.classList.add('show');
-        }
-
-        closeEventBtn.addEventListener('click', () => {
-            eventModal.classList.remove('show');
-        });
+        closeEventBtn.addEventListener('click', () => eventModal.classList.remove('show'));
 
         // ===== SPLASH SCREEN =====
         setTimeout(() => {
             stage1.style.display = 'none';
             stage2.style.display = 'flex';
-        }, 2000);
+        }, 1500);
 
-        // Force splash to disappear after 7 seconds max
         setTimeout(() => {
             if (!splashOverlay.classList.contains('hidden') && !splashForced) {
                 splashForced = true;
@@ -1461,7 +1222,7 @@
                 stage3.style.display = 'flex';
                 splashOverlay.classList.add('tappable');
             }
-        }, 7000);
+        }, 5000);
 
         function checkFirstVideo() {
             if (firstVideoReady) {
@@ -1474,14 +1235,13 @@
         }
         checkFirstVideo();
 
-        splashOverlay.addEventListener('click', function startApp(e) {
+        splashOverlay.addEventListener('click', function() {
             if (!userInteracted && splashOverlay.classList.contains('tappable')) {
                 userInteracted = true;
                 splashOverlay.classList.add('hidden');
-                
                 if (videoContainers[currentVideoIndex]) {
                     const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
-                    unmuteVideo(iframe);
+                    iframe?.contentWindow?.postMessage('{"event":"command","func":"unMute","args":""}', '*');
                 }
             }
         });
@@ -1489,15 +1249,11 @@
         // ===== NAVIGATION =====
         window.navigateTo = function(page) {
             if (page === currentPage) return;
-            
             pageHistory.push(page);
             currentPage = page;
             
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.querySelector('span').innerText.toLowerCase() === page) {
-                    item.classList.add('active');
-                }
+                item.classList.toggle('active', item.querySelector('span').innerText.toLowerCase() === page);
             });
             
             if (page === 'home') {
@@ -1515,340 +1271,218 @@
         };
 
         window.goBack = function() {
-            if (pageHistory.length > 1) {
-                pageHistory.pop();
-                navigateTo(pageHistory[pageHistory.length - 1]);
-            } else {
-                navigateTo('home');
-            }
+            pageHistory.pop();
+            navigateTo(pageHistory[pageHistory.length - 1] || 'home');
         };
 
         async function loadPageContent(page) {
-            pageContent.innerHTML = '<div class="loading-indicator"><i class="fas fa-circle-notch"></i><p>Loading...</p></div>';
-            
+            let html = '<div class="loading-indicator"><i class="fas fa-circle-notch"></i><p>Loading...</p></div>';
             if (page === 'explore') {
-                pageContent.innerHTML = `
+                html = `
                     <div class="page-content">
                         <div class="message-credits">
-                            <span><i class="fas fa-coins" style="color: #FFD700;"></i> Your Message Credits</span>
-                            <span class="credits-count" id="creditsDisplay">${messageCredits}</span>
+                            <span><i class="fas fa-coins" style="color:#FFD700;"></i> Credits</span>
+                            <span class="credits-count">${messageCredits}</span>
                         </div>
-                        <h2 style="margin-bottom:20px;">Explore Goans</h2>
-                        <p style="color:var(--text-secondary);">Find and connect with Goan community members.</p>
-                    </div>
-                `;
-            } else if (page === 'business') {
-                pageContent.innerHTML = `
-                    <div class="page-content">
-                        <h2 style="margin-bottom:20px;">Goa Business Directory</h2>
-                        <div style="background: linear-gradient(145deg, #1877f2, #0a5cff); color: white; border-radius: 24px; padding: 24px; margin-bottom: 20px;">
-                            <h3 style="margin-bottom:12px;">Coming Soon!</h3>
-                            <p style="opacity:0.9;">We're building the most complete directory of Goan businesses:</p>
-                            <ul style="margin-top:16px; list-style:none; padding:0;">
-                                <li style="margin-bottom:8px;">✓ 500+ Restaurants & Cafes</li>
-                                <li style="margin-bottom:8px;">✓ 200+ Hotels & Stays</li>
-                                <li style="margin-bottom:8px;">✓ 1000+ Electricians, Plumbers, Carpenters</li>
-                                <li style="margin-bottom:8px;">✓ Verified contact numbers</li>
-                                <li style="margin-bottom:8px;">✓ User reviews & ratings</li>
-                            </ul>
-                        </div>
-                        <div style="background: var(--card-bg); border-radius: 24px; padding: 20px;">
-                            <p style="color: var(--text-secondary);">Know a Goan business? Help us grow!</p>
-                            <button style="background: var(--success); color: white; border: none; padding: 14px; border-radius: 40px; width: 100%; margin-top:12px; font-weight:600;">Add Business</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                pageContent.innerHTML = `
-                    <div class="page-content">
-                        <h2 style="margin-bottom:16px;">${page.charAt(0).toUpperCase() + page.slice(1)}</h2>
+                        <h2>Explore Goans</h2>
                         <p style="color:var(--text-secondary);">Coming soon...</p>
                     </div>
                 `;
+            } else if (page === 'business') {
+                html = `
+                    <div class="page-content">
+                        <h2>Business Directory</h2>
+                        <p style="color:var(--text-secondary);">Coming soon: 10,000+ businesses</p>
+                    </div>
+                `;
+            } else {
+                html = `<div class="page-content"><h2>${page}</h2><p>Coming soon...</p></div>`;
             }
+            pageContent.innerHTML = html;
         }
 
         // ===== PWA INSTALL =====
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-
             setTimeout(() => {
                 if (deferredPrompt && !installShown && !window.matchMedia('(display-mode: standalone)').matches) {
                     installPopup.classList.add('show');
                     installShown = true;
                 }
-            }, 30000);
-
-            setTimeout(() => {
-                if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-                    installPopup.classList.add('show');
-                }
-            }, 60000);
+            }, 10000);
         });
 
         installNowBtn.addEventListener('click', async () => {
             if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-                installPopup.classList.remove('show');
-            }
-        });
-
-        installLaterBtn.addEventListener('click', () => {
+            await deferredPrompt.prompt();
+            deferredPrompt = null;
             installPopup.classList.remove('show');
         });
+        installLaterBtn.addEventListener('click', () => installPopup.classList.remove('show'));
 
         // ===== LOAD STORIES =====
         function loadStories() {
-            const stories = [
-                { name: 'Goa News', icon: '📺' },
-                { name: 'Beach Party', icon: '🎵' },
-                { name: 'Foodies', icon: '🍛' },
-                { name: 'Travel', icon: '✈️' },
-                { name: 'Sunset', icon: '🌅' },
-                { name: 'DJ Night', icon: '🎧' }
-            ];
-            
-            liveStories.innerHTML = '';
-            stories.forEach(story => {
-                const item = document.createElement('div');
-                item.className = 'story-item';
-                item.innerHTML = `
-                    <div class="story-avatar">${story.icon}</div>
-                    <div class="story-label">${story.name}</div>
-                `;
-                liveStories.appendChild(item);
-            });
+            const stories = ['Goa News', 'Beach', 'Foodies', 'Travel', 'Sunset', 'DJ Night'];
+            liveStories.innerHTML = stories.map(s => `
+                <div class="story-item">
+                    <div class="story-avatar">📺</div>
+                    <div class="story-label">${s}</div>
+                </div>
+            `).join('');
         }
         loadStories();
 
         // ===== VIDEO CONTROLS =====
         function pauseVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }
+            iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
         }
-
         function playVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
-
-        function unmuteVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-            }
+            iframe?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         }
 
         // ===== HEART FUNCTIONS =====
-        function getVideoHeartCount(videoId) {
-            return videoHearts[videoId] || 100;
-        }
-
-        function incrementHeart(videoId) {
-            videoHearts[videoId] = (videoHearts[videoId] || 100) + 1;
+        function getHeartCount(id) { return videoHearts[id] || 100; }
+        function incrementHeart(id) {
+            videoHearts[id] = (videoHearts[id] || 100) + 1;
             localStorage.setItem('videoHearts', JSON.stringify(videoHearts));
-            return videoHearts[videoId];
+            return videoHearts[id];
         }
-
-        function trackView(videoId) {
-            videoViews[videoId] = (videoViews[videoId] || 0) + 1;
+        function trackView(id) {
+            videoViews[id] = (videoViews[id] || 0) + 1;
             localStorage.setItem('videoViews', JSON.stringify(videoViews));
         }
-
-        function isTrending(videoId) {
-            const views = videoViews[videoId] || 0;
-            const allViews = Object.values(videoViews);
-            const avg = allViews.length ? allViews.reduce((a,b) => a+b, 0) / allViews.length : 0;
+        function isTrending(id) {
+            const views = videoViews[id] || 0;
+            const avg = Object.values(videoViews).reduce((a,b) => a+b, 0) / (Object.keys(videoViews).length || 1);
             return views > avg * 1.5;
         }
 
-        // ===== SHARE FUNCTIONS =====
-        let currentShareVideoId = null;
-
-        function showSharePopup(videoId) {
-            currentShareVideoId = videoId;
+        // ===== SHARE =====
+        let currentVideoId = null;
+        function showSharePopup(id) {
+            currentVideoId = id;
             shareOverlay.classList.add('visible');
             sharePopup.classList.add('visible');
         }
-
-        shareInfoIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            shareTooltip.style.display = 'block';
-        });
-
-        document.querySelectorAll('.share-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                if (!currentShareVideoId) return;
-                
+        function hideSharePopup() {
+            shareOverlay.classList.remove('visible');
+            sharePopup.classList.remove('visible');
+            currentVideoId = null;
+        }
+        document.querySelectorAll('.share-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                if (!currentVideoId) return;
                 messageCredits++;
                 localStorage.setItem('messageCredits', messageCredits);
-                
-                const shareUrl = `${window.location.origin}${window.location.pathname}?v=${currentShareVideoId}`;
-                const type = option.dataset.share;
-                
-                if (type === 'whatsapp') {
-                    window.open(`https://wa.me/?text=${encodeURIComponent(shareUrl)}`, '_blank');
-                } else if (type === 'instagram') { 
-                    navigator.clipboard.writeText(shareUrl); 
-                    alert('Link copied! +1 credit'); 
-                } else if (type === 'facebook') {
-                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-                } else if (type === 'copy') { 
-                    navigator.clipboard.writeText(shareUrl); 
-                    alert('Link copied! +1 credit'); 
+                const url = `${location.origin}${location.pathname}?v=${currentVideoId}`;
+                if (opt.dataset.share === 'copy') {
+                    navigator.clipboard.writeText(url);
+                    alert('+1 credit');
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
                 }
                 hideSharePopup();
             });
         });
-
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        function hideSharePopup() {
-            shareOverlay.classList.remove('visible');
-            sharePopup.classList.remove('visible');
-            currentShareVideoId = null;
-        }
-
-        // ===== LOAD FEED =====
+        // ===== LOAD FEED - OPTIMIZED =====
         async function loadFeed() {
             try {
-                const response = await fetch('videos.json');
-                const videos = await response.json();
-                
+                const res = await fetch('videos.json');
+                const videos = await res.json();
                 loadingEl.style.display = 'none';
                 
                 videos.forEach((item, index) => {
-                    // Add business card every 5 videos
                     if (index > 0 && index % 5 === 0) {
-                        const business = businesses[businessIndex % businesses.length];
-                        const bizCard = document.createElement('div');
-                        bizCard.className = 'business-card';
-                        bizCard.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                                <span style="font-size:2rem;">${business.icon}</span>
-                                <h3>${business.name}</h3>
+                        const b = businesses[businessIndex++ % businesses.length];
+                        feedContainer.innerHTML += `
+                            <div class="business-card">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <span style="font-size:2rem;">${b.icon}</span>
+                                    <h3>${b.name}</h3>
+                                </div>
+                                <p>${b.desc}</p>
+                                <button onclick="alert('Business page coming soon!')">Visit</button>
                             </div>
-                            <p>${business.desc}</p>
-                            <button onclick="alert('Business page coming soon!')">Visit Business</button>
                         `;
-                        feedContainer.appendChild(bizCard);
-                        businessIndex++;
                     }
                     
-                    const heartCount = getVideoHeartCount(item.videoId);
-                    const trending = isTrending(item.videoId);
+                    const heart = getHeartCount(item.videoId);
+                    const trending = isTrending(item.videoId) ? '<span class="trending-badge"><i class="fas fa-fire"></i></span>' : '';
                     
-                    const card = document.createElement('div');
-                    card.className = 'feed-card';
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <div class="channel-icon">📺</div>
-                            <div class="channel-info">
-                                <div class="channel-name">Goa Shorts</div>
-                                <div class="post-time">Shorts</div>
+                    feedContainer.innerHTML += `
+                        <div class="feed-card">
+                            <div class="card-header">
+                                <div class="channel-icon">📺</div>
+                                <div class="channel-info">
+                                    <div class="channel-name">Goa Shorts</div>
+                                    <div class="post-time">Shorts</div>
+                                </div>
                             </div>
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                        <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
-                            ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
-                            <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${index === 0 ? 1 : 0}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small"
-                                allow="autoplay; fullscreen">
-                            </iframe>
-                            <div class="video-info-overlay">
-                                <div class="video-title-small">Goa Short</div>
-                                <div class="video-meta"><span>#Shorts</span></div>
+                            <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
+                                ${trending}
+                                <iframe loading="lazy" 
+                                    src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${index===0?1:0}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small"
+                                    allow="autoplay; fullscreen">
+                                </iframe>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="footer-item heart-btn" data-video-id="${item.videoId}">
-                                <i class="fas fa-heart"></i> <span class="heart-count">${heartCount}</span>
-                            </span>
-                            <span class="footer-item"><i class="fas fa-comment"></i> 89</span>
-                            <span class="footer-item share-btn" data-video-id="${item.videoId}">
-                                <i class="fas fa-share"></i> Share
-                                <span class="tooltip">Share to earn 1 credit</span>
-                            </span>
+                            <div class="card-footer">
+                                <span class="footer-item heart-btn" data-video-id="${item.videoId}">
+                                    <i class="fas fa-heart"></i> <span class="heart-count">${heart}</span>
+                                </span>
+                                <span class="footer-item"><i class="fas fa-comment"></i> 89</span>
+                                <span class="footer-item share-btn" data-video-id="${item.videoId}">
+                                    <i class="fas fa-share"></i>
+                                </span>
+                            </div>
                         </div>
                     `;
+                });
 
-                    // Double-tap heart
-                    const videoContainer = card.querySelector('.video-container');
-                    let lastTap = 0;
-                    videoContainer.addEventListener('click', (e) => {
-                        const now = new Date().getTime();
-                        if (now - lastTap < 300) {
-                            const heartBtn = card.querySelector('.heart-btn');
-                            const videoId = heartBtn.dataset.videoId;
-                            const newCount = incrementHeart(videoId);
-                            heartBtn.querySelector('.heart-count').textContent = newCount;
-                            
-                            const heartIcon = heartBtn.querySelector('i');
-                            heartIcon.style.transform = 'scale(1.3)';
-                            setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
-                        }
-                        lastTap = now;
-                        trackView(item.videoId);
-                    });
-
-                    // Share button
-                    card.querySelector('.share-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showSharePopup(item.videoId);
-                    });
-
-                    // Heart button click (single)
-                    card.querySelector('.heart-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const videoId = e.currentTarget.dataset.videoId;
-                        const newCount = incrementHeart(videoId);
-                        e.currentTarget.querySelector('.heart-count').textContent = newCount;
-                        
-                        const heartIcon = e.currentTarget.querySelector('i');
-                        heartIcon.style.transform = 'scale(1.3)';
-                        setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
-                    });
-
-                    feedContainer.appendChild(card);
-                    
+                // Attach event listeners
+                document.querySelectorAll('.feed-card').forEach((card, idx) => {
                     const container = card.querySelector('.video-container');
+                    const iframe = container.querySelector('iframe');
+                    const videoId = container.dataset.videoId;
+                    
                     videoContainers.push(container);
                     
-                    // Preload first 3 videos immediately
-                    if (index < 3) {
-                        setTimeout(() => {
-                            if (!container.querySelector('iframe').src) {
-                                container.querySelector('iframe').src = 
-                                    `https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small`;
-                            }
-                        }, index * 200);
-                    }
-                    
-                    if (index === 0) {
-                        const iframe = container.querySelector('iframe');
+                    if (idx === 0) {
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
                             playVideo(iframe);
-                            
-                            for (let i = 1; i <= 3; i++) {
-                                const nextContainer = videoContainers[i];
-                                if (nextContainer && !nextContainer.querySelector('iframe').src) {
-                                    const nextId = nextContainer.dataset.videoId;
-                                    nextContainer.querySelector('iframe').src = 
-                                        `https://www.youtube.com/embed/${nextId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${nextId}&modestbranding=1&rel=0&vq=small`;
-                                }
-                            }
                         });
                     }
+                    
+                    // Double-tap heart
+                    let lastTap = 0;
+                    container.addEventListener('click', () => {
+                        const now = Date.now();
+                        if (now - lastTap < 300) {
+                            const btn = card.querySelector('.heart-btn');
+                            const newCount = incrementHeart(btn.dataset.videoId);
+                            btn.querySelector('.heart-count').textContent = newCount;
+                        }
+                        lastTap = now;
+                        trackView(videoId);
+                    });
+                    
+                    card.querySelector('.heart-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const newCount = incrementHeart(e.currentTarget.dataset.videoId);
+                        e.currentTarget.querySelector('.heart-count').textContent = newCount;
+                    });
+                    
+                    card.querySelector('.share-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showSharePopup(videoId);
+                    });
                 });
 
-                // Aggressive buffering: 2 above + 3 below
+                // Simple intersection observer - only buffer 1 ahead
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1857,69 +1491,54 @@
                         
                         if (entry.isIntersecting) {
                             playVideo(iframe);
-                            if (userInteracted) unmuteVideo(iframe);
-                            
-                            const start = Math.max(0, index - 2);
-                            const end = Math.min(videoContainers.length - 1, index + 3);
-                            
-                            for (let i = start; i <= end; i++) {
-                                if (i === index) continue;
-                                const bufferContainer = videoContainers[i];
-                                if (bufferContainer && !bufferContainer.querySelector('iframe').src) {
-                                    const bufferId = bufferContainer.dataset.videoId;
-                                    bufferContainer.querySelector('iframe').src = 
-                                        `https://www.youtube.com/embed/${bufferId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${bufferId}&modestbranding=1&rel=0&vq=small`;
-                                }
+                            if (userInteracted) {
+                                iframe?.contentWindow?.postMessage('{"event":"command","func":"unMute","args":""}', '*');
                             }
-                            
                             currentVideoIndex = index;
+                            
+                            // Preload just next video
+                            const next = videoContainers[index + 1];
+                            if (next && !next.querySelector('iframe').src) {
+                                next.querySelector('iframe').src = next.querySelector('iframe').src;
+                            }
                         } else {
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.6, rootMargin: '600px 0px' });
+                }, { threshold: 0.3, rootMargin: '100px' });
 
-                videoContainers.forEach(container => observer.observe(container));
+                videoContainers.forEach(c => observer.observe(c));
 
             } catch (error) {
-                loadingEl.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+                loadingEl.innerHTML = `<p>Error loading videos</p>`;
             }
         }
 
         loadFeed();
         checkEvents();
 
-        // ===== SHARED VIDEO PLAYER =====
+        // ===== SHARED VIDEO =====
         function loadVideoFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoId = urlParams.get('v');
-            if (videoId) { 
-                youtubePlayerContainer.classList.add('active'); 
-                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; 
+            const videoId = new URLSearchParams(location.search).get('v');
+            if (videoId) {
+                youtubePlayerContainer.classList.add('active');
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
             }
         }
-        
-        closePlayerBtn.addEventListener('click', () => { 
-            youtubePlayerContainer.classList.remove('active'); 
-            youtubePlayer.src = ''; 
+        closePlayerBtn.addEventListener('click', () => {
+            youtubePlayerContainer.classList.remove('active');
+            youtubePlayer.src = '';
         });
-        
         loadVideoFromUrl();
 
         // ===== SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
-            });
+            navigator.serviceWorker.register('sw.js').catch(() => {});
         }
 
-        window.addEventListener('popstate', function() {
-            if (pageHistory.length > 1) {
-                pageHistory.pop();
-                navigateTo(pageHistory[pageHistory.length - 1]);
-            } else {
-                navigateTo('home');
-            }
+        window.addEventListener('popstate', () => {
+            pageHistory.pop();
+            navigateTo(pageHistory[pageHistory.length - 1] || 'home');
         });
     </script>
 </body>
