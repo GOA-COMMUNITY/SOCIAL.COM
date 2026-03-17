@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://i.ytimg.com">
     <link rel="preconnect" href="https://www.googlevideo.com">
     <style>
-        /* ===== COMPLETE STYLES ===== */
+        /* ===== OPTIMIZED WITH AUDIO FIXES ===== */
         html, body {
             overscroll-behavior: none;
             margin: 0;
@@ -87,7 +87,7 @@
         .coconut-left { left: 5px; transform: rotate(-10deg); }
         .coconut-right { right: 5px; transform: rotate(10deg) scaleX(-1); }
 
-        /* ===== SPLASH SCREEN ===== */
+        /* ===== SPLASH SCREEN - 10 SECOND MAX ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -407,7 +407,7 @@
         .header-actions { display: flex; gap: 22px; color: var(--text-secondary); }
         .header-actions i { font-size: 1.4rem; }
 
-        /* ===== WELCOME SECTION WITH REDESIGNED CARDS ===== */
+        /* ===== WELCOME SECTION - SIMPLE WHITE CARDS ===== */
         .welcome-section {
             background: linear-gradient(145deg, var(--primary-color), #0a5cff);
             padding: 28px 18px 36px 18px;
@@ -416,113 +416,22 @@
         }
         .welcome-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
         .welcome-sub { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; }
-        
-        /* REDESIGNED BENEFIT GRID - Mixed images and emojis */
         .benefit-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 14px;
             margin-bottom: 24px;
         }
-
         .benefit-card {
-            position: relative;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
             border-radius: 22px;
             padding: 18px 8px;
             text-align: center;
-            overflow: hidden;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .benefit-card:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Background image or emoji */
-        .benefit-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.3;
-            z-index: 0;
-        }
-
-        /* Different backgrounds for each card */
-        .benefit-card.shorts::before {
-            background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200&h=200&fit=crop');
-            content: '';
-        }
-        .benefit-card.business::before {
-            background-image: url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=200&h=200&fit=crop');
-            content: '';
-        }
-        .benefit-card.services::before {
-            background-image: url('https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=200&h=200&fit=crop');
-            content: '';
-        }
-        .benefit-card.cafes::before {
-            background-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&h=200&fit=crop');
-            content: '';
-        }
-        .benefit-card.hotels::before {
-            background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200&h=200&fit=crop');
-            content: '';
-        }
-        .benefit-card.electricians::before {
-            background-image: url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&h=200&fit=crop');
-            content: '';
-        }
-
-        /* Dark overlay for readability */
-        .benefit-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 1;
-            border-radius: 22px;
-        }
-
-        /* Content above overlay */
-        .benefit-card i,
-        .benefit-card span {
-            position: relative;
-            z-index: 2;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .benefit-card i {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-        }
-
-        .benefit-card span {
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: block;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 8px;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
-        }
-
-        /* Business teaser */
+        .benefit-card i { font-size: 2rem; margin-bottom: 8px; color: white; }
+        .benefit-card span { font-size: 0.85rem; font-weight: 600; display: block; color: white; }
         .business-teaser {
             background: rgba(255,255,255,0.1);
             border-radius: 40px;
@@ -531,9 +440,6 @@
             align-items: center;
             justify-content: space-between;
             border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-            position: relative;
-            z-index: 2;
         }
         .business-teaser-text { font-size: 1rem; font-weight: 600; }
         .business-teaser-number {
@@ -1071,39 +977,38 @@
     <div id="content" style="width: 100%;">
         <!-- Home Feed -->
         <div id="home-feed">
-            <!-- Welcome Section with REDESIGNED CARDS -->
+            <!-- Welcome Section - Simple white cards -->
             <div class="welcome-section">
                 <div class="welcome-title">Goa Social</div>
                 <div class="welcome-sub">Your complete Goan community</div>
                 
                 <div class="benefit-grid">
-                    <div class="benefit-card shorts">
+                    <div class="benefit-card">
                         <i class="fas fa-video"></i>
                         <span>Goan Shorts</span>
                     </div>
-                    <div class="benefit-card business">
+                    <div class="benefit-card">
                         <i class="fas fa-store"></i>
                         <span>Local Business</span>
                     </div>
-                    <div class="benefit-card services">
+                    <div class="benefit-card">
                         <i class="fas fa-tools"></i>
                         <span>Services</span>
                     </div>
-                    <div class="benefit-card cafes">
+                    <div class="benefit-card">
                         <i class="fas fa-utensils"></i>
                         <span>Cafes</span>
                     </div>
-                    <div class="benefit-card hotels">
+                    <div class="benefit-card">
                         <i class="fas fa-hotel"></i>
                         <span>Hotels</span>
                     </div>
-                    <div class="benefit-card electricians">
+                    <div class="benefit-card">
                         <i class="fas fa-bolt"></i>
                         <span>Electricians</span>
                     </div>
                 </div>
 
-                <!-- Business teaser -->
                 <div class="business-teaser">
                     <div class="business-teaser-text">
                         <i class="fas fa-database" style="margin-right: 8px;"></i>
@@ -1145,7 +1050,7 @@
             </div>
         </div>
 
-        <!-- Other pages placeholder -->
+        <!-- Other pages -->
         <div id="page-content" style="display: none; width: 100%;"></div>
     </div>
 
