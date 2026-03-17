@@ -7,7 +7,7 @@
     <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1877f2" id="themeColor">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/DV2aJ47.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://www.youtube.com">
@@ -54,6 +54,7 @@
             --border-color: #e4e6eb;
         }
 
+        /* Dark theme - ONLY active between 8pm-7am */
         body.dark-theme {
             --bg-primary: var(--dark-bg-primary);
             --bg-secondary: var(--dark-bg-secondary);
@@ -74,7 +75,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* ===== NEW SPLASH SCREEN ===== */
+        /* ===== SPLASH SCREEN ===== */
         .splash-overlay {
             position: fixed;
             top: 0;
@@ -163,7 +164,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Stage 3: Tap screen - LOGO ONLY, NO BOX */
+        /* Stage 3: Tap screen - LOGO ONLY */
         .stage3 {
             opacity: 0;
             animation: fadeIn 0.5s forwards;
@@ -558,7 +559,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            pointer-events: none;
+            pointer-events: none; /* CRITICAL: Prevents YouTube logo/play button */
         }
 
         .trending-badge {
@@ -840,11 +841,11 @@
             </div>
         </div>
         
-        <!-- Stage 3: Tap screen - LOGO ONLY (no box) -->
+        <!-- Stage 3: Tap screen - LOGO ONLY -->
         <div class="splash-stage stage3" id="stage3">
             <div class="tap-content">
                 <div class="tap-logo">
-                    <img src="https://i.imgur.com/DV2aJ47.png" alt="Goa Social">
+                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="eager">
                 </div>
                 <div class="tap-message">Welcome to Goa Social</div>
                 <div class="tap-hint">
@@ -869,7 +870,7 @@
     <div class="install-popup" id="installPopup">
         <div class="install-header">
             <div class="install-icon">
-                <img src="https://i.imgur.com/DV2aJ47.png" alt="Goa Social">
+                <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="lazy">
             </div>
             <div>
                 <div class="install-title">Install Goa Social</div>
@@ -936,7 +937,7 @@
             </button>
             <div class="logo-container" onclick="navigateTo('home')">
                 <div class="logo-crop">
-                    <img src="https://i.imgur.com/DV2aJ47.png" alt="Goa Social">
+                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="eager">
                 </div>
                 <span class="logo-text">Goa Social</span>
             </div>
@@ -1092,18 +1093,26 @@
         ];
         let businessIndex = 0;
 
-        // ===== TIME-BASED THEME =====
+        // ===== TIME-BASED THEME - FORCED WHITE/BLUE DURING DAY =====
         function setThemeBasedOnTime() {
             const hours = new Date().getHours();
+            // 7 AM to 8 PM = Light theme (white/blue)
+            // 8 PM to 7 AM = Dark theme (black/blue)
             if (hours >= 7 && hours < 20) {
                 document.body.classList.remove('dark-theme');
                 if(themeColor) themeColor.setAttribute('content', '#1877f2');
+                console.log('Light theme forced (7am-8pm)');
             } else {
                 document.body.classList.add('dark-theme');
                 if(themeColor) themeColor.setAttribute('content', '#121212');
+                console.log('Dark theme active (8pm-7am)');
             }
         }
+        
+        // Set initial theme
         setThemeBasedOnTime();
+        
+        // Check every minute for theme changes
         setInterval(setThemeBasedOnTime, 60000);
 
         // ===== OFFLINE DETECTION =====
@@ -1367,7 +1376,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - FIXED: ONLY ONE VIDEO PLAYS AT A TIME =====
+        // ===== LOAD FEED - ULTRA LOW QUALITY (240p) =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1380,7 +1389,7 @@
                     const preloadLink = document.createElement('link');
                     preloadLink.rel = 'preload';
                     preloadLink.as = 'video';
-                    preloadLink.href = `https://www.youtube.com/embed/${videos[0].videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${videos[0].videoId}&modestbranding=1&rel=0&vq=small`;
+                    preloadLink.href = `https://www.youtube.com/embed/${videos[0].videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${videos[0].videoId}&modestbranding=1&rel=0&vq=tiny`;
                     document.head.appendChild(preloadLink);
                 }
                 
@@ -1421,7 +1430,7 @@
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=small"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
                                 allow="autoplay; fullscreen"
                                 loading="${index === 0 ? 'eager' : 'lazy'}">
                             </iframe>
@@ -1504,7 +1513,7 @@
                             const iframe = videoContainers[i].querySelector('iframe');
                             if (iframe && !iframe.src) {
                                 const videoId = videoContainers[i].dataset.videoId;
-                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=small`;
+                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
                             }
                         }
                     }
@@ -1537,7 +1546,7 @@
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.5 }); // 50% visible before playing
+                }, { threshold: 0.5 });
 
                 videoContainers.forEach(c => observer.observe(c));
 
