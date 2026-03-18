@@ -1383,22 +1383,13 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - AGGRESSIVE PRELOADING (2 down, 1 up) =====
+        // ===== LOAD FEED - ULTRA AGGRESSIVE PRELOADING =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
                 const videos = await response.json();
                 
                 loadingEl.style.display = 'none';
-                
-                // Preload first video immediately
-                if (videos.length > 0) {
-                    const preloadLink = document.createElement('link');
-                    preloadLink.rel = 'preload';
-                    preloadLink.as = 'video';
-                    preloadLink.href = `https://www.youtube.com/embed/${videos[0].videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${videos[0].videoId}&modestbranding=1&rel=0&vq=tiny`;
-                    document.head.appendChild(preloadLink);
-                }
                 
                 videos.forEach((item, index) => {
                     if (index > 0 && index % 5 === 0) {
@@ -1422,8 +1413,8 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     
-                    // Force autoplay for first video, others start muted but not playing
-                    const autoplay = index === 0 ? 1 : 0;
+                    // Force autoplay for first video, others start muted and preload aggressively
+                    const autoplay = index === 0 ? 1 : 1; // Changed: ALL videos try to autoplay (muted)
                     
                     card.innerHTML = `
                         <div class="card-header">
@@ -1439,7 +1430,8 @@
                             <iframe 
                                 src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
                                 allow="autoplay; fullscreen"
-                                loading="${index === 0 ? 'eager' : 'lazy'}">
+                                loading="eager"
+                                preload="auto">
                             </iframe>
                             <div class="video-info-overlay">
                                 <div class="video-title-small">Goa Short</div>
@@ -1513,39 +1505,26 @@
                     }
                 });
 
-                // AGGRESSIVE PRELOADING: Load 2 videos ahead and 1 video behind
-                const preloadVideos = () => {
-                    const currentIdx = currentVideoIndex;
-                    const start = Math.max(0, currentIdx - 1);
-                    const end = Math.min(videoContainers.length - 1, currentIdx + 2);
-                    
-                    for (let i = start; i <= end; i++) {
-                        if (i === currentIdx) continue;
-                        const container = videoContainers[i];
-                        if (container) {
-                            const iframe = container.querySelector('iframe');
-                            if (iframe && !iframe.src) {
-                                const videoId = container.dataset.videoId;
-                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
+                // ULTRA AGGRESSIVE: Force all videos to start buffering immediately
+                function forceBufferAllVideos() {
+                    videoContainers.forEach((container, idx) => {
+                        const iframe = container.querySelector('iframe');
+                        if (iframe) {
+                            // Force reload to ensure buffering if needed
+                            const videoId = container.dataset.videoId;
+                            if (!iframe.src || idx > 0) {
+                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
                             }
                         }
-                    }
-                };
+                    });
+                }
 
-                // Initial preload
-                setTimeout(() => {
-                    for (let i = 0; i <= 2; i++) {
-                        if (videoContainers[i]) {
-                            const iframe = videoContainers[i].querySelector('iframe');
-                            if (iframe && !iframe.src) {
-                                const videoId = videoContainers[i].dataset.videoId;
-                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
-                            }
-                        }
-                    }
-                }, 500);
+                // Buffer immediately and again after 1 second to ensure all are loaded
+                forceBufferAllVideos();
+                setTimeout(forceBufferAllVideos, 1000);
+                setTimeout(forceBufferAllVideos, 2000);
 
-                // Intersection Observer with aggressive preloading
+                // Intersection Observer with ultra responsive thresholds
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1567,14 +1546,11 @@
                             }
                             
                             currentVideoIndex = index;
-                            
-                            // Preload surrounding videos
-                            preloadVideos();
                         } else {
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.3 });
+                }, { threshold: 0.1, rootMargin: '100px 0px' }); // Lower threshold for faster response
 
                 videoContainers.forEach(c => observer.observe(c));
 
