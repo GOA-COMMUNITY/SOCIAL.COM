@@ -13,6 +13,10 @@
     <link rel="preconnect" href="https://www.youtube.com">
     <link rel="preconnect" href="https://i.ytimg.com">
     <link rel="preconnect" href="https://www.googlevideo.com">
+    
+    <!-- Preload logo during splash -->
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
+    
     <style>
         /* ===== FAST LOADING OPTIMIZED ===== */
         html, body {
@@ -164,7 +168,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Stage 3: Tap screen - LOGO ONLY */
+        /* Stage 3: Tap screen - LOGO ONLY (no box) */
         .stage3 {
             opacity: 0;
             animation: fadeIn 0.5s forwards;
@@ -182,12 +186,17 @@
             max-width: 200px;
             max-height: 200px;
             margin: 0 auto 20px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
         }
 
         .tap-logo img {
             width: 100%;
             height: auto;
             object-fit: contain;
+            display: block;
         }
 
         .tap-message {
@@ -303,6 +312,8 @@
             height: 65px;
             border-radius: 18px;
             overflow: hidden;
+            background: transparent;
+            border: none;
         }
         .install-icon img {
             width: 100%;
@@ -372,7 +383,8 @@
             border-radius: 16px;
             overflow: hidden;
             flex-shrink: 0;
-            border: 1px solid var(--border-color);
+            border: none;
+            background: transparent;
         }
         .logo-crop img { width: 100%; height: 100%; object-fit: cover; }
         .logo-text {
@@ -832,7 +844,7 @@
             <div class="welcome-text">Welcome</div>
         </div>
         
-        <!-- Stage 2: Loading screen (7 seconds) -->
+        <!-- Stage 2: Loading screen (7 seconds) - logo loads in background -->
         <div class="splash-stage stage2" id="stage2">
             <div class="loading-content">
                 <div class="loading-message">Goa Social is loading...</div>
@@ -841,11 +853,11 @@
             </div>
         </div>
         
-        <!-- Stage 3: Tap screen - LOGO ONLY -->
+        <!-- Stage 3: Tap screen - LOGO ONLY (no box, preloaded) -->
         <div class="splash-stage stage3" id="stage3">
             <div class="tap-content">
                 <div class="tap-logo">
-                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="eager">
+                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" width="200" height="200">
                 </div>
                 <div class="tap-message">Welcome to Goa Social</div>
                 <div class="tap-hint">
@@ -1093,7 +1105,7 @@
         ];
         let businessIndex = 0;
 
-        // ===== TIME-BASED THEME - FORCED WHITE/BLUE DURING DAY =====
+        // ===== TIME-BASED THEME =====
         function setThemeBasedOnTime() {
             const hours = new Date().getHours();
             // 7 AM to 8 PM = Light theme (white/blue)
@@ -1101,18 +1113,13 @@
             if (hours >= 7 && hours < 20) {
                 document.body.classList.remove('dark-theme');
                 if(themeColor) themeColor.setAttribute('content', '#1877f2');
-                console.log('Light theme forced (7am-8pm)');
             } else {
                 document.body.classList.add('dark-theme');
                 if(themeColor) themeColor.setAttribute('content', '#121212');
-                console.log('Dark theme active (8pm-7am)');
             }
         }
         
-        // Set initial theme
         setThemeBasedOnTime();
-        
-        // Check every minute for theme changes
         setInterval(setThemeBasedOnTime, 60000);
 
         // ===== OFFLINE DETECTION =====
@@ -1155,7 +1162,7 @@
             stage2.style.display = 'flex';
         }, 1500);
 
-        // Stage 2: Loading screen for 7 seconds
+        // Stage 2: Loading screen for 7 seconds - logo already preloaded
         setTimeout(() => {
             stage2.style.display = 'none';
             stage3.style.display = 'flex';
@@ -1376,7 +1383,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - ULTRA LOW QUALITY (240p) =====
+        // ===== LOAD FEED - AGGRESSIVE PRELOADING (2 down, 1 up) =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1506,9 +1513,28 @@
                     }
                 });
 
-                // Preload next videos
+                // AGGRESSIVE PRELOADING: Load 2 videos ahead and 1 video behind
+                const preloadVideos = () => {
+                    const currentIdx = currentVideoIndex;
+                    const start = Math.max(0, currentIdx - 1);
+                    const end = Math.min(videoContainers.length - 1, currentIdx + 2);
+                    
+                    for (let i = start; i <= end; i++) {
+                        if (i === currentIdx) continue;
+                        const container = videoContainers[i];
+                        if (container) {
+                            const iframe = container.querySelector('iframe');
+                            if (iframe && !iframe.src) {
+                                const videoId = container.dataset.videoId;
+                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
+                            }
+                        }
+                    }
+                };
+
+                // Initial preload
                 setTimeout(() => {
-                    for (let i = 1; i <= 2; i++) {
+                    for (let i = 0; i <= 2; i++) {
                         if (videoContainers[i]) {
                             const iframe = videoContainers[i].querySelector('iframe');
                             if (iframe && !iframe.src) {
@@ -1517,9 +1543,9 @@
                             }
                         }
                     }
-                }, 1000);
+                }, 500);
 
-                // FIXED: Only one video plays at a time
+                // Intersection Observer with aggressive preloading
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1541,12 +1567,14 @@
                             }
                             
                             currentVideoIndex = index;
+                            
+                            // Preload surrounding videos
+                            preloadVideos();
                         } else {
-                            // Pause when not visible
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.5 });
+                }, { threshold: 0.3 });
 
                 videoContainers.forEach(c => observer.observe(c));
 
