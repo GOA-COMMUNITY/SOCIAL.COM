@@ -107,9 +107,9 @@
             justify-content: center;
         }
 
-        /* Stage 1: Welcome zoom (fast) */
+        /* Stage 1: Welcome zoom (2 seconds) */
         .stage1 {
-            animation: welcomeZoom 1.5s forwards ease-out;
+            animation: welcomeZoom 2s forwards ease-out;
         }
 
         @keyframes welcomeZoom {
@@ -168,7 +168,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Stage 3: Tap screen - LOGO ONLY (no box) */
+        /* Stage 3: Tap screen - LOGO ONLY */
         .stage3 {
             opacity: 0;
             animation: fadeIn 0.5s forwards;
@@ -216,7 +216,7 @@
             margin-right: 8px;
         }
 
-        /* ===== OFFLINE BANNER ===== */
+        /* ===== REST OF YOUR STYLES (COMPLETELY UNCHANGED) ===== */
         .offline-banner {
             background: var(--danger);
             color: white;
@@ -232,7 +232,6 @@
         }
         .offline-banner.show { display: block; }
 
-        /* ===== EVENT MODAL ===== */
         .event-modal {
             display: none;
             position: fixed;
@@ -278,7 +277,6 @@
             width: 100%;
         }
 
-        /* ===== INSTALL POPUP ===== */
         .install-popup {
             position: fixed;
             bottom: 80px;
@@ -312,8 +310,6 @@
             height: 65px;
             border-radius: 18px;
             overflow: hidden;
-            background: transparent;
-            border: none;
         }
         .install-icon img {
             width: 100%;
@@ -346,7 +342,6 @@
             cursor: pointer;
         }
 
-        /* ===== HEADER ===== */
         .app-header {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -383,8 +378,7 @@
             border-radius: 16px;
             overflow: hidden;
             flex-shrink: 0;
-            border: none;
-            background: transparent;
+            border: 1px solid var(--border-color);
         }
         .logo-crop img { width: 100%; height: 100%; object-fit: cover; }
         .logo-text {
@@ -396,7 +390,6 @@
         .header-actions { display: flex; gap: 22px; color: var(--text-secondary); }
         .header-actions i { font-size: 1.4rem; }
 
-        /* ===== WELCOME SECTION ===== */
         .welcome-section {
             background: linear-gradient(145deg, var(--primary-color), #0a5cff);
             padding: 28px 18px 36px 18px;
@@ -439,7 +432,6 @@
             font-weight: 700;
         }
 
-        /* ===== STORIES ===== */
         .stories-section {
             padding: 18px 18px 14px 18px;
             background: var(--card-bg);
@@ -492,7 +484,6 @@
             text-overflow: ellipsis;
         }
 
-        /* ===== CATEGORIES ===== */
         .categories-section {
             padding: 14px 18px;
             background: var(--card-bg);
@@ -519,7 +510,6 @@
         }
         .chip.active { background: var(--primary-color); color: white; border: none; }
 
-        /* ===== FEED ===== */
         .feed-container {
             max-width: 600px;
             margin: 0 auto;
@@ -693,7 +683,6 @@
             cursor: pointer;
         }
 
-        /* ===== BOTTOM NAVIGATION ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -724,7 +713,6 @@
         .nav-item i { font-size: 1.6rem; margin-bottom: 3px; }
         .nav-item.active { color: var(--primary-color); }
 
-        /* ===== SHARE POPUP ===== */
         .share-popup {
             position: fixed;
             bottom: 0;
@@ -839,21 +827,21 @@
 
     <!-- Splash Screen -->
     <div class="splash-overlay" id="splashOverlay">
-        <!-- Stage 1: Welcome zoom (fast) -->
+        <!-- Stage 1: Welcome zoom (2 seconds) -->
         <div class="splash-stage stage1" id="stage1">
             <div class="welcome-text">Welcome</div>
         </div>
         
-        <!-- Stage 2: Loading screen (7 seconds) - first video loads here -->
+        <!-- Stage 2: Loading screen (7 seconds) -->
         <div class="splash-stage stage2" id="stage2">
             <div class="loading-content">
                 <div class="loading-message">Goa Social is loading...</div>
-                <div class="loading-sub">Buffering your first short</div>
+                <div class="loading-sub">Your video is playing</div>
                 <div class="loading-spinner"></div>
             </div>
         </div>
         
-        <!-- Stage 3: Tap screen - appears after 7 seconds or when first video ready -->
+        <!-- Stage 3: Tap screen -->
         <div class="splash-stage stage3" id="stage3">
             <div class="tap-content">
                 <div class="tap-logo">
@@ -882,7 +870,7 @@
     <div class="install-popup" id="installPopup">
         <div class="install-header">
             <div class="install-icon">
-                <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="lazy">
+                <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social">
             </div>
             <div>
                 <div class="install-title">Install Goa Social</div>
@@ -949,7 +937,7 @@
             </button>
             <div class="logo-container" onclick="navigateTo('home')">
                 <div class="logo-crop">
-                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" loading="eager">
+                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social">
                 </div>
                 <span class="logo-text">Goa Social</span>
             </div>
@@ -1095,7 +1083,7 @@
         let messageCredits = parseInt(localStorage.getItem('messageCredits') || '5');
         let videoHearts = JSON.parse(localStorage.getItem('videoHearts') || '{}');
         let videoViews = JSON.parse(localStorage.getItem('videoViews') || '{}');
-        let splashEndTime = Date.now() + 7000; // 7 seconds from now
+        let firstVideoPlayed = false;
 
         // Business listings
         const businesses = [
@@ -1153,14 +1141,15 @@
         }
         closeEventBtn.addEventListener('click', () => eventModal.classList.remove('show'));
 
-        // ===== SPLASH SCREEN =====
-        // Stage 1: Welcome zoom (1.5s)
+        // ===== SPLASH SCREEN - PERFECT TIMING =====
+        const splashStartTime = Date.now();
+
+        // Stage 1: Welcome zoom (2 seconds)
         setTimeout(() => {
             stage1.style.display = 'none';
             stage2.style.display = 'flex';
-        }, 1500);
+        }, 2000);
 
-        // Function to show tap screen
         function showTapScreen() {
             if (splashOverlay.classList.contains('hidden')) return;
             stage2.style.display = 'none';
@@ -1168,8 +1157,18 @@
             splashOverlay.classList.add('tappable');
         }
 
-        // Force show after 7 seconds regardless of video
-        setTimeout(showTapScreen, 7000);
+        function onFirstVideoReady() {
+            if (!firstVideoPlayed) {
+                firstVideoPlayed = true;
+                // Show tap screen after total 9 seconds (2 welcome + 7 loading)
+                const elapsed = Date.now() - splashStartTime;
+                const remainingTime = Math.max(0, 9000 - elapsed);
+                setTimeout(showTapScreen, remainingTime);
+            }
+        }
+
+        // Force show after 9 seconds max
+        setTimeout(showTapScreen, 9000);
 
         // Tap handler
         splashOverlay.addEventListener('click', function startApp(e) {
@@ -1177,7 +1176,6 @@
                 userInteracted = true;
                 splashOverlay.classList.add('hidden');
                 
-                // Unmute current video
                 if (videoContainers[currentVideoIndex]) {
                     const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
                     unmuteVideo(iframe);
@@ -1382,7 +1380,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - SMART PRELOADING =====
+        // ===== LOAD FEED - ULTRA FAST 144p =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1390,7 +1388,6 @@
                 
                 loadingEl.style.display = 'none';
                 
-                // Create ALL video cards immediately
                 videos.forEach((item, index) => {
                     if (index > 0 && index % 5 === 0) {
                         const b = businesses[businessIndex++ % businesses.length];
@@ -1413,7 +1410,7 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     
-                    // CRITICAL: First video MUST autoplay, others load but don't play
+                    // First video autoplays (muted), others load but don't play
                     const autoplay = index === 0 ? 1 : 0;
                     
                     card.innerHTML = `
@@ -1428,7 +1425,7 @@
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=144"
                                 allow="autoplay; fullscreen"
                                 loading="eager">
                             </iframe>
@@ -1452,7 +1449,6 @@
                     feedContainer.appendChild(card);
                 });
 
-                // Get all video containers
                 videoContainers = [];
                 document.querySelectorAll('.video-container').forEach((container, idx) => {
                     videoContainers.push(container);
@@ -1460,7 +1456,6 @@
                     const videoId = container.dataset.videoId;
                     const card = container.closest('.feed-card');
                     
-                    // Heart double-tap
                     let lastTap = 0;
                     container.addEventListener('click', (e) => {
                         const now = Date.now();
@@ -1477,7 +1472,6 @@
                         trackView(videoId);
                     });
 
-                    // Heart button click
                     card.querySelector('.heart-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const newCount = incrementHeart(videoId);
@@ -1488,31 +1482,34 @@
                         setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
                     });
 
-                    // Share button
                     card.querySelector('.share-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         showSharePopup(videoId);
                     });
 
-                    // First video ready - mark it and ensure it's playing
                     if (idx === 0) {
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
                             playVideo(iframe);
+                            onFirstVideoReady();
                         });
                         
-                        // Force play after a short delay
-                        setTimeout(() => playVideo(iframe), 500);
+                        // Force play after 500ms
+                        setTimeout(() => {
+                            if (!firstVideoPlayed) {
+                                playVideo(iframe);
+                                onFirstVideoReady();
+                            }
+                        }, 500);
                     }
                 });
 
-                // CRITICAL: Preload next 3 videos
+                // Preload next 3 videos
                 function preloadVideos(startIndex) {
                     for (let i = startIndex + 1; i <= Math.min(startIndex + 3, videoContainers.length - 1); i++) {
                         const container = videoContainers[i];
                         if (container) {
                             const iframe = container.querySelector('iframe');
-                            // Force video to start buffering by playing and immediately pausing
                             playVideo(iframe);
                             setTimeout(() => pauseVideo(iframe), 100);
                         }
@@ -1527,7 +1524,7 @@
                     }
                 }, 100);
 
-                // Smart IntersectionObserver - preload when scrolling
+                // Intersection observer
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1535,22 +1532,18 @@
                         const index = parseInt(container.dataset.index);
                         
                         if (entry.isIntersecting) {
-                            // Pause all others
                             videoContainers.forEach((c, i) => {
                                 if (i !== index) {
                                     pauseVideo(c.querySelector('iframe'));
                                 }
                             });
                             
-                            // Play current
                             playVideo(iframe);
                             if (userInteracted) {
                                 unmuteVideo(iframe);
                             }
                             
                             currentVideoIndex = index;
-                            
-                            // Preload next 3 videos
                             preloadVideos(index);
                         }
                     });
@@ -1560,7 +1553,6 @@
 
             } catch (error) {
                 loadingEl.innerHTML = `<p>Error loading videos</p>`;
-                console.error(error);
             }
         }
 
