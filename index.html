@@ -1,1599 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Goa Social</title>
-    <!-- PWA Support -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1877f2" id="themeColor">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://www.youtube.com">
-    <link rel="preconnect" href="https://i.ytimg.com">
-    <link rel="preconnect" href="https://www.googlevideo.com">
-    
-    <!-- Preload logo during splash -->
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
-    
-    <style>
-        /* ===== FAST LOADING OPTIMIZED ===== */
-        html, body {
-            overscroll-behavior: none;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: var(--bg-primary);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        :root {
-            --light-bg-primary: #f0f2f5;
-            --light-bg-secondary: #e4e6eb;
-            --light-card-bg: #ffffff;
-            --light-text-primary: #1c1e21;
-            --light-text-secondary: #65676b;
-            --dark-bg-primary: #121212;
-            --dark-bg-secondary: #2d2d2d;
-            --dark-card-bg: #1e1e1e;
-            --dark-text-primary: #e4e6eb;
-            --dark-text-secondary: #b0b3b8;
-            --primary-color: #1877f2;
-            --primary-dark: #0a5cff;
-            --success: #42b72a;
-            --danger: #f23b5c;
-            --bg-primary: var(--light-bg-primary);
-            --bg-secondary: var(--light-bg-secondary);
-            --card-bg: var(--light-card-bg);
-            --text-primary: var(--light-text-primary);
-            --text-secondary: var(--light-text-secondary);
-            --nav-bg: var(--light-card-bg);
-            --border-color: #e4e6eb;
-        }
-
-        body.dark-theme {
-            --bg-primary: var(--dark-bg-primary);
-            --bg-secondary: var(--dark-bg-secondary);
-            --card-bg: var(--dark-card-bg);
-            --text-primary: var(--dark-text-primary);
-            --text-secondary: var(--dark-text-secondary);
-            --nav-bg: var(--dark-card-bg);
-            --border-color: #3a3a3a;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.4;
-            padding-bottom: 70px;
-            min-height: 100vh;
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* ===== SPLASH SCREEN ===== */
-        .splash-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .splash-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .splash-stage {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stage1 {
-            animation: welcomeZoom 2s forwards ease-out;
-        }
-
-        @keyframes welcomeZoom {
-            0% { transform: scale(3); opacity: 0; }
-            40% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .welcome-text {
-            font-size: 4rem;
-            font-weight: 800;
-            color: white;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        .stage2 {
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        .loading-content {
-            text-align: center;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .loading-message {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .loading-sub {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .stage3 {
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-            display: none;
-            cursor: pointer;
-        }
-
-        .tap-content {
-            text-align: center;
-        }
-
-        .tap-logo {
-            width: auto;
-            height: auto;
-            max-width: 200px;
-            max-height: 200px;
-            margin: 0 auto 20px;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-        }
-
-        .tap-logo img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
-
-        .tap-message {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .tap-hint {
-            color: #65676b;
-            font-size: 1rem;
-        }
-
-        .tap-hint i {
-            color: var(--primary-color);
-            margin-right: 8px;
-        }
-
-        /* ===== REST OF YOUR STYLES (UNCHANGED) ===== */
-        .offline-banner {
-            background: var(--danger);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: none;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-            width: 100%;
-        }
-        .offline-banner.show { display: block; }
-
-        .event-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 10001;
-            align-items: center;
-            justify-content: center;
-        }
-        .event-modal.show { display: flex; }
-        .event-card {
-            background: var(--card-bg);
-            border-radius: 36px;
-            padding: 35px 28px;
-            max-width: 360px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            animation: modalPop 0.3s ease;
-            color: var(--text-primary);
-        }
-        @keyframes modalPop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .event-icon { font-size: 4.5rem; margin-bottom: 15px; color: #ff8c42; }
-        .event-name { font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
-        .event-countdown { font-size: 2.5rem; font-weight: 800; color: #ff5e3a; margin: 15px 0 8px; }
-        .event-desc { color: var(--text-secondary); margin-bottom: 25px; font-size: 1rem; }
-        .event-close {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 16px 35px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .install-popup {
-            position: fixed;
-            bottom: 80px;
-            left: 16px;
-            right: 16px;
-            background: var(--card-bg);
-            border-radius: 30px;
-            padding: 25px;
-            z-index: 10002;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            border: 1px solid var(--border-color);
-            animation: slideUp 0.4s ease;
-            max-width: 420px;
-            margin: 0 auto;
-            display: none;
-            color: var(--text-primary);
-        }
-        .install-popup.show { display: block; }
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .install-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .install-icon {
-            width: 65px;
-            height: 65px;
-            border-radius: 18px;
-            overflow: hidden;
-        }
-        .install-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .install-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-        .install-sub { font-size: 0.95rem; color: var(--text-secondary); }
-        .install-buttons { display: flex; gap: 12px; }
-        .install-now {
-            flex: 2;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-        .install-later {
-            flex: 1;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: none;
-            padding: 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .app-header {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            padding: 12px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-            width: 100%;
-        }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-button {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-            padding: 8px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .back-button.hidden { display: none; }
-        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-crop {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 1px solid var(--border-color);
-        }
-        .logo-crop img { width: 100%; height: 100%; object-fit: cover; }
-        .logo-text {
-            font-size: 1.9rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--primary-color);
-        }
-        .header-actions { display: flex; gap: 22px; color: var(--text-secondary); }
-        .header-actions i { font-size: 1.4rem; }
-
-        .welcome-section {
-            background: linear-gradient(145deg, var(--primary-color), #0a5cff);
-            padding: 28px 18px 36px 18px;
-            margin-bottom: 12px;
-            color: white;
-        }
-        .welcome-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
-        .welcome-sub { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; }
-        .benefit-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .benefit-card {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(5px);
-            border-radius: 22px;
-            padding: 18px 8px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .benefit-card i { font-size: 2rem; margin-bottom: 8px; color: white; }
-        .benefit-card span { font-size: 0.85rem; font-weight: 600; display: block; color: white; }
-        .business-teaser {
-            background: rgba(255,255,255,0.1);
-            border-radius: 40px;
-            padding: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .business-teaser-text { font-size: 1rem; font-weight: 600; }
-        .business-teaser-number {
-            background: white;
-            color: var(--primary-color);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-        }
-
-        .stories-section {
-            padding: 18px 18px 14px 18px;
-            background: var(--card-bg);
-            margin: 10px 0;
-            width: 100%;
-        }
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-        .section-header h3 { font-size: 1.2rem; font-weight: 600; }
-        .section-header a { color: var(--primary-color); font-size: 0.95rem; text-decoration: none; font-weight: 500; }
-        .stories-scroll {
-            display: flex;
-            gap: 18px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 5px;
-        }
-        .stories-scroll::-webkit-scrollbar { display: none; }
-        .story-item { min-width: 75px; text-align: center; }
-        .story-avatar {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
-            margin: 0 auto 8px;
-            border: 3px solid #4da6ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: var(--primary-color);
-            box-shadow: 0 0 20px rgba(77, 166, 255, 0.9), 0 0 40px rgba(77, 166, 255, 0.6);
-            animation: strongGlowPulse 1.8s infinite ease-in-out;
-        }
-        @keyframes strongGlowPulse {
-            0% { box-shadow: 0 0 15px rgba(77, 166, 255, 0.8), 0 0 30px rgba(77, 166, 255, 0.5); }
-            50% { box-shadow: 0 0 30px rgba(77, 166, 255, 1), 0 0 60px rgba(77, 166, 255, 0.8); }
-            100% { box-shadow: 0 0 15px rgba(77, 166, 255, 0.8), 0 0 30px rgba(77, 166, 255, 0.5); }
-        }
-        .story-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .categories-section {
-            padding: 14px 18px;
-            background: var(--card-bg);
-            margin: 10px 0;
-            width: 100%;
-        }
-        .chips-scroll {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .chips-scroll::-webkit-scrollbar { display: none; }
-        .chip {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 10px 22px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            border: 1px solid var(--border-color);
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .chip.active { background: var(--primary-color); color: white; border: none; }
-
-        .feed-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 10px 0 25px 0;
-            width: 100%;
-        }
-
-        .feed-card {
-            background: var(--card-bg);
-            border-radius: 32px;
-            margin: 0 12px 60px 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            border: 1px solid var(--border-color);
-            width: calc(100% - 24px);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            gap: 12px;
-        }
-        .channel-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: var(--primary-color);
-        }
-        .channel-info { flex: 1; }
-        .channel-name { font-weight: 700; font-size: 1.1rem; }
-        .post-time { font-size: 0.75rem; color: var(--text-secondary); margin-top: 3px; }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            background: #000;
-            aspect-ratio: 9/16;
-            max-height: 600px;
-            cursor: pointer;
-        }
-
-        .video-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            pointer-events: none;
-        }
-
-        .trending-badge {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            background: #FF8C42;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            z-index: 2;
-        }
-
-        .card-footer {
-            padding: 16px;
-            display: flex;
-            gap: 28px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            cursor: pointer;
-        }
-        .footer-item i.fa-heart { color: var(--danger); }
-        .footer-item i.fa-comment { color: var(--primary-color); }
-        .footer-item i.fa-share { color: var(--success); }
-
-        .info-icon {
-            margin-left: 5px;
-            color: #aaa;
-            font-size: 0.85rem;
-            cursor: help;
-        }
-
-        .tooltip {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1c1e21;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 25px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            display: none;
-            z-index: 10;
-        }
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1c1e21 transparent transparent transparent;
-        }
-        .footer-item:hover .tooltip { display: block; }
-
-        .video-info-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 50px 16px 16px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white;
-            pointer-events: none;
-        }
-        .video-title-small {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.7);
-        }
-        .video-meta {
-            font-size: 0.8rem;
-            color: #ddd;
-            display: flex;
-            gap: 12px;
-        }
-
-        .loading-indicator {
-            text-align: center;
-            padding: 35px;
-            color: var(--primary-color);
-            width: 100%;
-        }
-        .loading-indicator i { font-size: 2.2rem; animation: spin 1s linear infinite; }
-
-        .business-card {
-            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            border-radius: 28px;
-            margin: 16px 12px 60px 12px;
-            padding: 24px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            width: calc(100% - 24px);
-        }
-        .business-card h3 { font-size: 1.4rem; margin-bottom: 10px; }
-        .business-card p { margin-bottom: 18px; opacity: 0.9; font-size: 1rem; }
-        .business-card button {
-            background: white;
-            color: var(--primary-color);
-            border: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--nav-bg);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 12px 14px 12px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            width: 100%;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            padding: 6px 14px;
-            border-radius: 40px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-        .nav-item i { font-size: 1.6rem; margin-bottom: 3px; }
-        .nav-item.active { color: var(--primary-color); }
-
-        .share-popup {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-radius: 30px 30px 0 0;
-            padding: 24px;
-            z-index: 10001;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.3);
-            border-top: 1px solid var(--border-color);
-        }
-        .share-popup.visible { transform: translateY(0); }
-        .share-popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
-        }
-        .share-popup-header h3 { font-size: 1.2rem; color: var(--text-primary); }
-        .close-share {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 8px;
-        }
-        .share-options {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            text-align: center;
-        }
-        .share-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-        }
-        .share-icon {
-            width: 65px;
-            height: 65px;
-            border-radius: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            transition: transform 0.2s;
-        }
-        .share-icon:active { transform: scale(0.9); }
-        .share-icon.whatsapp { background: #25D366; color: white; }
-        .share-icon.instagram { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); color: white; }
-        .share-icon.facebook { background: #1877f2; color: white; }
-        .share-icon.copy { background: var(--bg-secondary); color: var(--text-primary); }
-        .share-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 10000;
-            display: none;
-            backdrop-filter: blur(3px);
-        }
-        .share-overlay.visible { display: block; }
-
-        .youtube-player-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 10003;
-            align-items: center;
-            justify-content: center;
-        }
-        .youtube-player-container.active { display: flex; }
-        .player-wrapper {
-            width: 100%;
-            max-width: 420px;
-            position: relative;
-        }
-        .close-player {
-            position: absolute;
-            top: -45px;
-            right: 0;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 2.5rem;
-            cursor: pointer;
-            padding: 10px;
-        }
-        #youtubePlayer {
-            width: 100%;
-            aspect-ratio: 9/16;
-            border: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes,viewport-fit=cover">
+<title>Goa Social</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" id="themeColor" content="#1877f2">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="preconnect" href="https://www.youtube.com">
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://www.googlevideo.com">
+<link rel="preload" as="image" href="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+:root{--light-bg:#f0f2f5;--light-bg2:#e4e6eb;--light-card:#fff;--light-text:#1c1e21;--light-text2:#65676b;--dark-bg:#121212;--dark-bg2:#2d2d2d;--dark-card:#1e1e1e;--dark-text:#e4e6eb;--dark-text2:#b0b3b8;--primary:#1877f2;--primary-dark:#0a5cff;--success:#42b72a;--danger:#f23b5c;--bg:var(--light-bg);--bg2:var(--light-bg2);--card:var(--light-card);--text:var(--light-text);--text2:var(--light-text2);--nav-bg:var(--light-card);--border:#e4e6eb}
+body.dark-theme{--bg:var(--dark-bg);--bg2:var(--dark-bg2);--card:var(--dark-card);--text:var(--dark-text);--text2:var(--dark-text2);--nav-bg:var(--dark-card);--border:#3a3a3a}
+html,body{overscroll-behavior:none;margin:0;padding:0;height:100%;background:var(--bg)}
+body{background:var(--bg);color:var(--text);line-height:1.4;padding-bottom:70px;min-height:100vh;-webkit-overflow-scrolling:touch}
+.coconut-left,.coconut-right{position:fixed;bottom:80px;font-size:3.5rem;opacity:.1;z-index:0;pointer-events:none;color:var(--text2)}
+.coconut-left{left:5px;transform:rotate(-10deg)}.coconut-right{right:5px;transform:rotate(10deg) scaleX(-1)}
+.splash-overlay{position:fixed;inset:0;background:linear-gradient(145deg,var(--primary),var(--primary-dark));z-index:10000;display:flex;align-items:center;justify-content:center;transition:opacity .5s;cursor:pointer}
+.splash-overlay.hidden{opacity:0;pointer-events:none}
+.splash-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.stage1{animation:welcomeZoom 2s forwards ease-out}
+@keyframes welcomeZoom{0%{transform:scale(3);opacity:0}40%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
+.welcome-text{font-size:4rem;font-weight:800;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,.3)}
+.stage2,.stage3{opacity:0;animation:fadeIn .5s forwards;display:none}
+@keyframes fadeIn{to{opacity:1}}
+.loading-content{text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:25px}
+.loading-message{font-size:2rem;font-weight:700}.loading-sub{font-size:1.1rem;opacity:.9}
+.loading-spinner{width:60px;height:60px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tap-content{text-align:center}
+.tap-logo{max-width:200px;margin:0 auto 20px;background:0 0;border:none;box-shadow:none;padding:0}
+.tap-logo img{width:100%;height:auto;object-fit:contain;display:block}
+.tap-message{font-size:1.5rem;color:var(--primary);margin-bottom:10px;font-weight:600}
+.tap-hint{color:#65676b;font-size:1rem}
+.tap-hint i{color:var(--primary);margin-right:8px}
+.offline-banner,.browser-warning{background:var(--danger);color:#fff;text-align:center;padding:10px;font-size:.9rem;font-weight:600;display:none;position:sticky;top:0;z-index:99}
+.offline-banner.show,.browser-warning.show{display:block}
+.event-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);z-index:10001;align-items:center;justify-content:center}
+.event-modal.show{display:flex}
+.event-card{background:var(--card);border-radius:36px;padding:35px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:modalPop .3s;color:var(--text)}
+@keyframes modalPop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.event-icon{font-size:4.5rem;margin-bottom:15px;color:#ff8c42}
+.event-name{font-size:2rem;font-weight:700;margin-bottom:10px}
+.event-countdown{font-size:2.5rem;font-weight:800;color:#ff5e3a;margin:15px 0 8px}
+.event-desc{color:var(--text2);margin-bottom:25px}
+.event-close{background:var(--primary);color:#fff;border:none;padding:16px 35px;border-radius:50px;font-weight:700;font-size:1.1rem;cursor:pointer;width:100%}
+.install-popup{position:fixed;bottom:80px;left:16px;right:16px;background:var(--card);border-radius:30px;padding:25px;z-index:10002;box-shadow:0 25px 50px rgba(0,0,0,.4);border:1px solid var(--border);animation:slideUp .4s;max-width:420px;margin:0 auto;display:none;color:var(--text)}
+.install-popup.show{display:block}
+@keyframes slideUp{from{transform:translateY(100px);opacity:0}to{transform:translateY(0);opacity:1}}
+.install-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.install-icon{width:65px;height:65px;border-radius:18px;overflow:hidden}
+.install-icon img{width:100%;height:100%;object-fit:cover}
+.install-title{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.install-sub{font-size:.95rem;color:var(--text2)}
+.install-buttons{display:flex;gap:12px}
+.install-now{flex:2;background:var(--primary);color:#fff;border:none;padding:16px;border-radius:50px;font-weight:700;font-size:1.1rem;cursor:pointer}
+.install-later{flex:1;background:var(--bg2);color:var(--text);border:none;padding:16px;border-radius:50px;font-weight:600;font-size:1.1rem;cursor:pointer}
+.app-header{background:var(--card);backdrop-filter:blur(12px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-button{background:0 0;border:none;font-size:1.5rem;color:var(--primary);cursor:pointer;padding:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+.back-button.hidden{display:none}
+.logo-container{display:flex;align-items:center;gap:12px;cursor:pointer}
+.logo-crop{width:48px;height:48px;border-radius:16px;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.logo-crop img{width:100%;height:100%;object-fit:cover}
+.logo-text{font-size:1.9rem;font-weight:700;letter-spacing:-.5px;color:var(--primary)}
+.header-actions{display:flex;gap:22px;color:var(--text2)}
+.header-actions i{font-size:1.4rem}
+.welcome-section{background:linear-gradient(145deg,var(--primary),#0a5cff);padding:28px 18px 36px;margin-bottom:12px;color:#fff}
+.welcome-title{font-size:2.2rem;font-weight:700;margin-bottom:8px}
+.welcome-sub{font-size:1.1rem;opacity:.9;margin-bottom:28px}
+.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.benefit-card{background:rgba(255,255,255,.15);backdrop-filter:blur(5px);border-radius:22px;padding:18px 8px;text-align:center;border:1px solid rgba(255,255,255,.2)}
+.benefit-card i{font-size:2rem;margin-bottom:8px;color:#fff}
+.benefit-card span{font-size:.85rem;font-weight:600;display:block;color:#fff}
+.business-teaser{background:rgba(255,255,255,.1);border-radius:40px;padding:18px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,.2)}
+.business-teaser-text{font-size:1rem;font-weight:600}
+.business-teaser-number{background:#fff;color:var(--primary);padding:6px 16px;border-radius:50px;font-weight:700}
+.stories-section,.categories-section{padding:18px 18px 14px;background:var(--card);margin:10px 0}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.section-header h3{font-size:1.2rem;font-weight:600}
+.section-header a{color:var(--primary);font-size:.95rem;text-decoration:none;font-weight:500}
+.stories-scroll,.chips-scroll{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:5px}
+.stories-scroll::-webkit-scrollbar,.chips-scroll::-webkit-scrollbar{display:none}
+.story-item{min-width:75px;text-align:center}
+.story-avatar{width:75px;height:75px;border-radius:50%;background:linear-gradient(145deg,var(--bg2),var(--bg));margin:0 auto 8px;border:3px solid #4da6ff;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--primary);box-shadow:0 0 20px rgba(77,166,255,.9),0 0 40px rgba(77,166,255,.6);animation:glow 1.8s infinite ease-in-out}
+@keyframes glow{0%{box-shadow:0 0 15px #4da6ffcc,0 0 30px #4da6ff80}50%{box-shadow:0 0 30px #4da6ff,0 0 60px #4da6ffcc}100%{box-shadow:0 0 15px #4da6ffcc,0 0 30px #4da6ff80}}
+.story-label{font-size:.75rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.categories-section{padding:14px 18px}
+.chips-scroll{gap:12px}
+.chip{background:var(--bg2);color:var(--text);padding:10px 22px;border-radius:50px;font-size:.9rem;white-space:nowrap;border:1px solid var(--border);font-weight:500;cursor:pointer}
+.chip.active{background:var(--primary);color:#fff;border:none}
+.feed-container{max-width:600px;margin:0 auto;padding:10px 0 25px}
+.feed-card{background:var(--card);border-radius:32px;margin:0 12px 60px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15);border:1px solid var(--border)}
+.card-header{display:flex;align-items:center;padding:16px;gap:12px}
+.channel-icon{width:48px;height:48px;border-radius:14px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--primary)}
+.channel-info{flex:1}
+.channel-name{font-weight:700;font-size:1.1rem}
+.post-time{font-size:.75rem;color:var(--text2);margin-top:3px}
+.video-container{position:relative;width:100%;background:#000;aspect-ratio:9/16;max-height:600px;cursor:pointer}
+.video-container iframe{width:100%;height:100%;border:none;pointer-events:none}
+.trending-badge{position:absolute;top:14px;left:14px;background:#FF8C42;color:#fff;padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.3);z-index:2}
+.card-footer{padding:16px;display:flex;gap:28px;border-top:1px solid var(--border)}
+.footer-item{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:1rem;cursor:pointer;position:relative}
+.footer-item i.fa-heart{color:var(--danger)}.footer-item i.fa-comment{color:var(--primary)}.footer-item i.fa-share{color:var(--success)}
+.info-icon{margin-left:5px;color:#aaa;font-size:.85rem;cursor:help}
+.tooltip{position:absolute;bottom:35px;left:50%;transform:translateX(-50%);background:#1c1e21;color:#fff;padding:8px 14px;border-radius:25px;font-size:.8rem;white-space:nowrap;display:none;z-index:10}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:#1c1e21 transparent transparent}
+.footer-item:hover .tooltip{display:block}
+.video-info-overlay{position:absolute;bottom:0;left:0;right:0;padding:50px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);color:#fff;pointer-events:none}
+.video-title-small{font-size:1rem;font-weight:600;margin-bottom:4px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.video-meta{font-size:.8rem;color:#ddd;display:flex;gap:12px}
+.loading-indicator{text-align:center;padding:35px;color:var(--primary)}
+.loading-indicator i{font-size:2.2rem;animation:spin 1s linear infinite}
+.business-card{background:linear-gradient(145deg,var(--primary),var(--primary-dark));color:#fff;border-radius:28px;margin:16px 12px 60px;padding:24px;box-shadow:0 15px 30px rgba(0,0,0,.3)}
+.business-card h3{font-size:1.4rem;margin-bottom:10px}
+.business-card p{margin-bottom:18px;opacity:.9}
+.business-card button{background:#fff;color:var(--primary);border:none;padding:14px 28px;border-radius:50px;font-weight:700;cursor:pointer}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 12px 14px;z-index:1000;backdrop-filter:blur(10px)}
+.nav-item{display:flex;flex-direction:column;align-items:center;color:var(--text2);font-size:.75rem;padding:6px 14px;border-radius:40px;background:transparent;border:none;cursor:pointer}
+.nav-item i{font-size:1.6rem;margin-bottom:3px}
+.nav-item.active{color:var(--primary)}
+.share-popup{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:30px 30px 0 0;padding:24px;z-index:10001;transform:translateY(100%);transition:transform .3s cubic-bezier(0.2,0.9,0.3,1);box-shadow:0 -5px 25px rgba(0,0,0,.3);border-top:1px solid var(--border)}
+.share-popup.visible{transform:translateY(0)}
+.share-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.share-popup-header h3{font-size:1.2rem;color:var(--text)}
+.close-share{background:0 0;border:none;font-size:1.8rem;color:var(--text2);cursor:pointer;padding:8px}
+.share-options{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;text-align:center}
+.share-option{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-size:.85rem;color:var(--text)}
+.share-icon{width:65px;height:65px;border-radius:35px;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:transform .2s}
+.share-icon:active{transform:scale(.9)}
+.share-icon.whatsapp{background:#25D366;color:#fff}
+.share-icon.instagram{background:linear-gradient(45deg,#f09433,#d62976,#962fbf);color:#fff}
+.share-icon.facebook{background:#1877f2;color:#fff}
+.share-icon.copy{background:var(--bg2);color:var(--text)}
+.share-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:none;backdrop-filter:blur(3px)}
+.share-overlay.visible{display:block}
+#shareTooltip{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1e21;color:#fff;padding:20px 28px;border-radius:30px;z-index:10002;text-align:center;max-width:320px}
+#shareTooltip button{background:var(--primary);color:#fff;border:none;padding:10px 28px;border-radius:40px;cursor:pointer;margin-top:15px}
+.youtube-player-container{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:10003;align-items:center;justify-content:center}
+.youtube-player-container.active{display:flex}
+.player-wrapper{width:100%;max-width:420px;position:relative}
+.close-player{position:absolute;top:-45px;right:0;background:0 0;border:none;color:#fff;font-size:2.5rem;cursor:pointer;padding:10px}
+#youtubePlayer{width:100%;aspect-ratio:9/16;border:none}
+.page-content{max-width:600px;margin:0 auto;padding:22px 18px;min-height:calc(100vh - 150px)}
+.message-credits{background:var(--card);border-radius:28px;padding:18px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.credits-count{background:var(--primary);color:#fff;padding:10px 20px;border-radius:50px;font-weight:700}
+</style>
 </head>
 <body>
-    <!-- Offline Banner -->
-    <div class="offline-banner" id="offlineBanner">
-        <i class="fas fa-wifi-slash"></i> You're offline – watching cached videos
-    </div>
-
-    <!-- Splash Screen -->
-    <div class="splash-overlay" id="splashOverlay">
-        <!-- Stage 1: Welcome zoom (2 seconds) -->
-        <div class="splash-stage stage1" id="stage1">
-            <div class="welcome-text">Welcome</div>
-        </div>
-        
-        <!-- Stage 2: Loading screen (7 seconds) -->
-        <div class="splash-stage stage2" id="stage2">
-            <div class="loading-content">
-                <div class="loading-message">Goa Social is loading...</div>
-                <div class="loading-sub">Your video is playing</div>
-                <div class="loading-spinner"></div>
-            </div>
-        </div>
-        
-        <!-- Stage 3: Tap screen -->
-        <div class="splash-stage stage3" id="stage3">
-            <div class="tap-content">
-                <div class="tap-logo">
-                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" width="200" height="200">
-                </div>
-                <div class="tap-message">Ready to watch</div>
-                <div class="tap-hint">
-                    <i class="fas fa-hand-pointer"></i> Tap to unmute
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Event Modal -->
-    <div class="event-modal" id="eventModal">
-        <div class="event-card">
-            <div class="event-icon" id="eventIcon">🎉</div>
-            <div class="event-name" id="eventName">Test Event</div>
-            <div class="event-countdown" id="eventCountdown">0 days</div>
-            <div class="event-desc" id="eventDesc">Description</div>
-            <button class="event-close" id="closeEventBtn">Got it</button>
-        </div>
-    </div>
-
-    <!-- Install Popup -->
-    <div class="install-popup" id="installPopup">
-        <div class="install-header">
-            <div class="install-icon">
-                <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social">
-            </div>
-            <div>
-                <div class="install-title">Install Goa Social</div>
-                <div class="install-sub">Add to home screen for quick access</div>
-            </div>
-        </div>
-        <div class="install-buttons">
-            <button class="install-now" id="installNowBtn">Install</button>
-            <button class="install-later" id="installLaterBtn">Later</button>
-        </div>
-    </div>
-
-    <!-- Share Popup -->
-    <div class="share-overlay" id="shareOverlay"></div>
-    <div class="share-popup" id="sharePopup">
-        <div class="share-popup-header">
-            <h3>Share to earn 1 credit <i class="fas fa-info-circle info-icon" id="shareInfoIcon"></i></h3>
-            <button class="close-share" id="closeShare">&times;</button>
-        </div>
-        <div class="share-options">
-            <div class="share-option" data-share="whatsapp">
-                <div class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
-                <span>WhatsApp</span>
-            </div>
-            <div class="share-option" data-share="instagram">
-                <div class="share-icon instagram"><i class="fab fa-instagram"></i></div>
-                <span>Instagram</span>
-            </div>
-            <div class="share-option" data-share="facebook">
-                <div class="share-icon facebook"><i class="fab fa-facebook-f"></i></div>
-                <span>Facebook</span>
-            </div>
-            <div class="share-option" data-share="copy">
-                <div class="share-icon copy"><i class="fas fa-link"></i></div>
-                <span>Copy Link</span>
-            </div>
-        </div>
-        <div style="text-align:center; margin-top:18px; font-size:0.9rem; color:var(--text-secondary);">
-            Each share = 1 message credit
-        </div>
-    </div>
-
-    <!-- Share Info Tooltip -->
-    <div id="shareTooltip" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1e21; color: white; padding: 20px 28px; border-radius: 30px; z-index: 10002; text-align: center; max-width: 320px;">
-        <i class="fas fa-gift" style="font-size: 2.5rem; color: #FF8C42; margin-bottom: 15px;"></i>
-        <h4 style="margin-bottom: 10px;">Share to Earn</h4>
-        <p style="margin-bottom: 18px;">Each time you share a video, you get 1 message credit. Use credits to message anyone on Explore page!</p>
-        <button onclick="this.parentElement.style.display='none'" style="background: var(--primary-color); color: white; border: none; padding: 10px 28px; border-radius: 40px; cursor: pointer;">Got it</button>
-    </div>
-
-    <!-- YouTube Player Container -->
-    <div class="youtube-player-container" id="youtubePlayerContainer">
-        <div class="player-wrapper">
-            <button class="close-player" id="closePlayerBtn">&times;</button>
-            <iframe id="youtubePlayer" allow="autoplay; fullscreen"></iframe>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="app-header">
-        <div class="header-left">
-            <button class="back-button hidden" id="backButton" onclick="goBack()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="logo-container" onclick="navigateTo('home')">
-                <div class="logo-crop">
-                    <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social">
-                </div>
-                <span class="logo-text">Goa Social</span>
-            </div>
-        </div>
-        <div class="header-actions">
-            <i class="fas fa-search"></i>
-            <i class="fas fa-bell"></i>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <div id="content" style="width: 100%;">
-        <!-- Home Feed -->
-        <div id="home-feed">
-            <!-- Welcome Section -->
-            <div class="welcome-section">
-                <div class="welcome-title">Goa Social</div>
-                <div class="welcome-sub">Your complete Goan community</div>
-                
-                <div class="benefit-grid">
-                    <div class="benefit-card">
-                        <i class="fas fa-video"></i>
-                        <span>Goan Shorts</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-store"></i>
-                        <span>Local Business</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-tools"></i>
-                        <span>Services</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-utensils"></i>
-                        <span>Cafes</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-hotel"></i>
-                        <span>Hotels</span>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-bolt"></i>
-                        <span>Electricians</span>
-                    </div>
-                </div>
-
-                <div class="business-teaser">
-                    <div class="business-teaser-text">
-                        <i class="fas fa-database" style="margin-right: 8px;"></i>
-                        Coming soon: 10,000+ Goan businesses
-                    </div>
-                    <div class="business-teaser-number">🚀</div>
-                </div>
-            </div>
-
-            <!-- Stories -->
-            <div class="stories-section">
-                <div class="section-header">
-                    <h3>LIVE NOW</h3>
-                    <a href="#">View all <i class="fas fa-chevron-right"></i></a>
-                </div>
-                <div class="stories-scroll" id="liveStories"></div>
-            </div>
-
-            <!-- Categories -->
-            <div class="categories-section">
-                <div class="chips-scroll">
-                    <span class="chip active">All</span>
-                    <span class="chip">Trending</span>
-                    <span class="chip">Local</span>
-                    <span class="chip">News</span>
-                    <span class="chip">Shorts</span>
-                    <span class="chip">Events</span>
-                    <span class="chip">Food</span>
-                    <span class="chip">Travel</span>
-                </div>
-            </div>
-
-            <!-- Main Feed -->
-            <div class="feed-container" id="feedContainer">
-                <div class="loading-indicator" id="loading">
-                    <i class="fas fa-circle-notch"></i>
-                    <p>loading goa shorts...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Other pages -->
-        <div id="page-content" style="display: none; width: 100%;"></div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav" id="bottomNav">
-        <button class="nav-item active" onclick="navigateTo('home')"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item" onclick="navigateTo('explore')"><i class="fas fa-compass"></i><span>Explore</span></button>
-        <button class="nav-item" onclick="navigateTo('business')"><i class="fas fa-store"></i><span>Business</span></button>
-        <button class="nav-item" onclick="navigateTo('chats')"><i class="fas fa-comment-dots"></i><span>Chats</span></button>
-        <button class="nav-item" onclick="navigateTo('profile')"><i class="fas fa-user"></i><span>Profile</span></button>
-    </nav>
-
-    <script>
-        // === DOM Elements ===
-        const feedContainer = document.getElementById('feedContainer');
-        const liveStories = document.getElementById('liveStories');
-        const loadingEl = document.getElementById('loading');
-        const splashOverlay = document.getElementById('splashOverlay');
-        const stage1 = document.getElementById('stage1');
-        const stage2 = document.getElementById('stage2');
-        const stage3 = document.getElementById('stage3');
-        const eventModal = document.getElementById('eventModal');
-        const eventIcon = document.getElementById('eventIcon');
-        const eventName = document.getElementById('eventName');
-        const eventCountdown = document.getElementById('eventCountdown');
-        const eventDesc = document.getElementById('eventDesc');
-        const closeEventBtn = document.getElementById('closeEventBtn');
-        const installPopup = document.getElementById('installPopup');
-        const installNowBtn = document.getElementById('installNowBtn');
-        const installLaterBtn = document.getElementById('installLaterBtn');
-        const youtubePlayerContainer = document.getElementById('youtubePlayerContainer');
-        const youtubePlayer = document.getElementById('youtubePlayer');
-        const closePlayerBtn = document.getElementById('closePlayerBtn');
-        const sharePopup = document.getElementById('sharePopup');
-        const shareOverlay = document.getElementById('shareOverlay');
-        const closeShare = document.getElementById('closeShare');
-        const shareInfoIcon = document.getElementById('shareInfoIcon');
-        const shareTooltip = document.getElementById('shareTooltip');
-        const backButton = document.getElementById('backButton');
-        const bottomNav = document.getElementById('bottomNav');
-        const homeFeed = document.getElementById('home-feed');
-        const pageContent = document.getElementById('page-content');
-        const offlineBanner = document.getElementById('offlineBanner');
-        const themeColor = document.getElementById('themeColor');
-
-        // App state
-        let userInteracted = false;
-        let videoContainers = [];
-        let currentVideoIndex = 0;
-        let firstVideoReady = false;
-        let deferredPrompt = null;
-        let installShown = false;
-        let currentPage = 'home';
-        let pageHistory = ['home'];
-        let messageCredits = parseInt(localStorage.getItem('messageCredits') || '5');
-        let videoHearts = JSON.parse(localStorage.getItem('videoHearts') || '{}');
-        let videoViews = JSON.parse(localStorage.getItem('videoViews') || '{}');
-        let firstVideoPlayed = false;
-
-        // Business listings
-        const businesses = [
-            { name: 'Fisherman\'s Wharf', desc: 'Best seafood in Panjim', icon: '🦐' },
-            { name: 'Goa Surf School', desc: 'Learn to surf at Morjim', icon: '🏄' },
-            { name: 'Cafe Alchemia', desc: 'Artsy cafe in Assagao', icon: '☕' }
-        ];
-        let businessIndex = 0;
-
-        // ===== TIME-BASED THEME =====
-        function setThemeBasedOnTime() {
-            const hours = new Date().getHours();
-            if (hours >= 7 && hours < 20) {
-                document.body.classList.remove('dark-theme');
-                if(themeColor) themeColor.setAttribute('content', '#1877f2');
-            } else {
-                document.body.classList.add('dark-theme');
-                if(themeColor) themeColor.setAttribute('content', '#121212');
-            }
-        }
-        
-        setThemeBasedOnTime();
-        setInterval(setThemeBasedOnTime, 60000);
-
-        // ===== OFFLINE DETECTION =====
-        function updateOnlineStatus() {
-            offlineBanner.classList.toggle('show', !navigator.onLine);
-        }
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus();
-
-        // ===== EVENT MODAL =====
-        async function checkEvents() {
-            try {
-                const res = await fetch('events.json');
-                const events = await res.json();
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                for (let e of events) {
-                    const eventDate = new Date(e.date);
-                    eventDate.setHours(0, 0, 0, 0);
-                    const diffDays = Math.ceil((eventDate - today) / 86400000);
-                    if (diffDays >= 0 && diffDays <= 30) {
-                        eventIcon.innerHTML = `<i class="fas ${e.icon || 'fa-calendar-alt'}"></i>`;
-                        eventName.textContent = e.name;
-                        eventCountdown.textContent = diffDays === 0 ? 'TODAY!' : `${diffDays} day${diffDays > 1 ? 's' : ''}`;
-                        eventDesc.textContent = e.description || '';
-                        eventModal.classList.add('show');
-                        return;
-                    }
-                }
-            } catch (err) {}
-        }
-        closeEventBtn.addEventListener('click', () => eventModal.classList.remove('show'));
-
-        // ===== SPLASH SCREEN - PERFECT TIMING =====
-        const splashStartTime = Date.now();
-
-        // Stage 1: Welcome zoom (2 seconds)
-        setTimeout(() => {
-            stage1.style.display = 'none';
-            stage2.style.display = 'flex';
-        }, 2000);
-
-        function showTapScreen() {
-            if (splashOverlay.classList.contains('hidden')) return;
-            stage2.style.display = 'none';
-            stage3.style.display = 'flex';
-            splashOverlay.classList.add('tappable');
-        }
-
-        // Force show after 9 seconds max
-        setTimeout(showTapScreen, 9000);
-
-        // This will be called when first video is ready
-        function onFirstVideoReady() {
-            if (!firstVideoPlayed) {
-                firstVideoPlayed = true;
-                // If tap screen not yet shown, schedule it for the remaining time
-                const elapsed = Date.now() - splashStartTime;
-                if (elapsed < 9000 && !splashOverlay.classList.contains('tappable')) {
-                    const remaining = 9000 - elapsed;
-                    setTimeout(showTapScreen, remaining);
-                }
-            }
-        }
-
-        // Tap handler
-        splashOverlay.addEventListener('click', function startApp(e) {
-            if (!userInteracted && splashOverlay.classList.contains('tappable')) {
-                userInteracted = true;
-                splashOverlay.classList.add('hidden');
-                
-                if (videoContainers[currentVideoIndex]) {
-                    const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
-                    unmuteVideo(iframe);
-                }
-            }
-        });
-
-        // ===== NAVIGATION =====
-        window.navigateTo = function(page) {
-            if (page === currentPage) return;
-            
-            pageHistory.push(page);
-            currentPage = page;
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.querySelector('span').innerText.toLowerCase() === page) {
-                    item.classList.add('active');
-                }
-            });
-            
-            if (page === 'home') {
-                backButton.classList.add('hidden');
-                bottomNav.classList.remove('hidden');
-                homeFeed.style.display = 'block';
-                pageContent.style.display = 'none';
-            } else {
-                backButton.classList.remove('hidden');
-                bottomNav.classList.add('hidden');
-                homeFeed.style.display = 'none';
-                pageContent.style.display = 'block';
-                loadPageContent(page);
-            }
-        };
-
-        window.goBack = function() {
-            if (pageHistory.length > 1) {
-                pageHistory.pop();
-                navigateTo(pageHistory[pageHistory.length - 1]);
-            } else {
-                navigateTo('home');
-            }
-        };
-
-        async function loadPageContent(page) {
-            let html = '<div class="loading-indicator"><i class="fas fa-circle-notch"></i><p>Loading...</p></div>';
-            
-            if (page === 'explore') {
-                html = `
-                    <div class="page-content">
-                        <div class="message-credits">
-                            <span><i class="fas fa-coins" style="color: #FFD700;"></i> Your Message Credits</span>
-                            <span class="credits-count">${messageCredits}</span>
-                        </div>
-                        <h2 style="margin-bottom:20px;">Explore Goans</h2>
-                        <p style="color:var(--text-secondary);">Find and connect with Goan community members.</p>
-                    </div>
-                `;
-            } else if (page === 'business') {
-                html = `
-                    <div class="page-content">
-                        <h2 style="margin-bottom:20px;">Goa Business Directory</h2>
-                        <div style="background: linear-gradient(145deg, #1877f2, #0a5cff); color: white; border-radius: 24px; padding: 24px; margin-bottom: 20px;">
-                            <h3 style="margin-bottom:12px;">Coming Soon!</h3>
-                            <p style="opacity:0.9;">We're building the most complete directory of Goan businesses:</p>
-                            <ul style="margin-top:16px; list-style:none; padding:0;">
-                                <li style="margin-bottom:8px;">✓ 500+ Restaurants & Cafes</li>
-                                <li style="margin-bottom:8px;">✓ 200+ Hotels & Stays</li>
-                                <li style="margin-bottom:8px;">✓ 1000+ Electricians, Plumbers, Carpenters</li>
-                                <li style="margin-bottom:8px;">✓ Verified contact numbers</li>
-                                <li style="margin-bottom:8px;">✓ User reviews & ratings</li>
-                            </ul>
-                        </div>
-                        <div style="background: var(--card-bg); border-radius: 24px; padding: 20px;">
-                            <p style="color: var(--text-secondary);">Know a Goan business? Help us grow!</p>
-                            <button style="background: var(--success); color: white; border: none; padding: 14px; border-radius: 40px; width: 100%; margin-top:12px; font-weight:600;">Add Business</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                html = `
-                    <div class="page-content">
-                        <h2 style="margin-bottom:16px;">${page.charAt(0).toUpperCase() + page.slice(1)}</h2>
-                        <p style="color:var(--text-secondary);">Coming soon...</p>
-                    </div>
-                `;
-            }
-            pageContent.innerHTML = html;
-        }
-
-        // ===== PWA INSTALL =====
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-
-            setTimeout(() => {
-                if (deferredPrompt && !installShown && !window.matchMedia('(display-mode: standalone)').matches) {
-                    installPopup.classList.add('show');
-                    installShown = true;
-                }
-            }, 10000);
-
-            setTimeout(() => {
-                if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-                    installPopup.classList.add('show');
-                }
-            }, 30000);
-        });
-
-        installNowBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            await deferredPrompt.prompt();
-            deferredPrompt = null;
-            installPopup.classList.remove('show');
-        });
-
-        installLaterBtn.addEventListener('click', () => {
-            installPopup.classList.remove('show');
-        });
-
-        // ===== LOAD STORIES =====
-        function loadStories() {
-            const stories = ['Goa News', 'Beach Party', 'Foodies', 'Travel', 'Sunset', 'DJ Night'];
-            liveStories.innerHTML = stories.map(s => `
-                <div class="story-item">
-                    <div class="story-avatar">📺</div>
-                    <div class="story-label">${s}</div>
-                </div>
-            `).join('');
-        }
-        loadStories();
-
-        // ===== VIDEO CONTROLS =====
-        function pauseVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }
-        }
-        
-        function playVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
-        
-        function unmuteVideo(iframe) {
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-            }
-        }
-
-        // ===== HEART FUNCTIONS =====
-        function getHeartCount(id) { return videoHearts[id] || 100; }
-        function incrementHeart(id) {
-            videoHearts[id] = (videoHearts[id] || 100) + 1;
-            localStorage.setItem('videoHearts', JSON.stringify(videoHearts));
-            return videoHearts[id];
-        }
-        function trackView(id) {
-            videoViews[id] = (videoViews[id] || 0) + 1;
-            localStorage.setItem('videoViews', JSON.stringify(videoViews));
-        }
-        function isTrending(id) {
-            const views = videoViews[id] || 0;
-            const avg = Object.values(videoViews).reduce((a,b) => a+b, 0) / (Object.keys(videoViews).length || 1);
-            return views > avg * 1.5;
-        }
-
-        // ===== SHARE FUNCTIONS =====
-        let currentShareVideoId = null;
-        function showSharePopup(id) {
-            currentShareVideoId = id;
-            shareOverlay.classList.add('visible');
-            sharePopup.classList.add('visible');
-        }
-        function hideSharePopup() {
-            shareOverlay.classList.remove('visible');
-            sharePopup.classList.remove('visible');
-            currentShareVideoId = null;
-        }
-        
-        shareInfoIcon?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            shareTooltip.style.display = 'block';
-        });
-
-        document.querySelectorAll('.share-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                if (!currentShareVideoId) return;
-                messageCredits++;
-                localStorage.setItem('messageCredits', messageCredits);
-                const url = `${location.origin}${location.pathname}?v=${currentShareVideoId}`;
-                if (opt.dataset.share === 'copy') {
-                    navigator.clipboard.writeText(url);
-                    alert('+1 credit');
-                } else {
-                    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
-                }
-                hideSharePopup();
-            });
-        });
-        closeShare.addEventListener('click', hideSharePopup);
-        shareOverlay.addEventListener('click', hideSharePopup);
-
-        // ===== LOAD FEED - ULTRA FAST 144p =====
-        async function loadFeed() {
-            try {
-                const response = await fetch('videos.json');
-                const videos = await response.json();
-                
-                loadingEl.style.display = 'none';
-                
-                videos.forEach((item, index) => {
-                    if (index > 0 && index % 5 === 0) {
-                        const b = businesses[businessIndex++ % businesses.length];
-                        const bizCard = document.createElement('div');
-                        bizCard.className = 'business-card';
-                        bizCard.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                                <span style="font-size:2rem;">${b.icon}</span>
-                                <h3>${b.name}</h3>
-                            </div>
-                            <p>${b.desc}</p>
-                            <button onclick="alert('Business page coming soon!')">Visit Business</button>
-                        `;
-                        feedContainer.appendChild(bizCard);
-                    }
-                    
-                    const heartCount = getHeartCount(item.videoId);
-                    const trending = isTrending(item.videoId);
-                    
-                    const card = document.createElement('div');
-                    card.className = 'feed-card';
-                    
-                    // First video autoplays (muted), others load but don't play
-                    const autoplay = index === 0 ? 1 : 0;
-                    
-                    // FIXED: Use &vq=tiny for true 144p
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <div class="channel-icon">📺</div>
-                            <div class="channel-info">
-                                <div class="channel-name">Goa Shorts</div>
-                                <div class="post-time">Shorts</div>
-                            </div>
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                        <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
-                            ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
-                            <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
-                                allow="autoplay; fullscreen"
-                                loading="eager">
-                            </iframe>
-                            <div class="video-info-overlay">
-                                <div class="video-title-small">Goa Short</div>
-                                <div class="video-meta"><span>#Shorts</span></div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="footer-item heart-btn" data-video-id="${item.videoId}">
-                                <i class="fas fa-heart"></i> <span class="heart-count">${heartCount}</span>
-                            </span>
-                            <span class="footer-item"><i class="fas fa-comment"></i> 89</span>
-                            <span class="footer-item share-btn" data-video-id="${item.videoId}">
-                                <i class="fas fa-share"></i> Share
-                                <span class="tooltip">Share to earn 1 credit</span>
-                            </span>
-                        </div>
-                    `;
-
-                    feedContainer.appendChild(card);
-                });
-
-                videoContainers = [];
-                document.querySelectorAll('.video-container').forEach((container, idx) => {
-                    videoContainers.push(container);
-                    const iframe = container.querySelector('iframe');
-                    const videoId = container.dataset.videoId;
-                    const card = container.closest('.feed-card');
-                    
-                    let lastTap = 0;
-                    container.addEventListener('click', (e) => {
-                        const now = Date.now();
-                        if (now - lastTap < 300) {
-                            const btn = card.querySelector('.heart-btn');
-                            const newCount = incrementHeart(videoId);
-                            btn.querySelector('.heart-count').textContent = newCount;
-                            
-                            const heartIcon = btn.querySelector('i');
-                            heartIcon.style.transform = 'scale(1.3)';
-                            setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
-                        }
-                        lastTap = now;
-                        trackView(videoId);
-                    });
-
-                    card.querySelector('.heart-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const newCount = incrementHeart(videoId);
-                        e.currentTarget.querySelector('.heart-count').textContent = newCount;
-                        
-                        const heartIcon = e.currentTarget.querySelector('i');
-                        heartIcon.style.transform = 'scale(1.3)';
-                        setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
-                    });
-
-                    card.querySelector('.share-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showSharePopup(videoId);
-                    });
-
-                    if (idx === 0) {
-                        iframe.addEventListener('load', () => {
-                            firstVideoReady = true;
-                            playVideo(iframe);
-                            onFirstVideoReady();
-                        });
-                        
-                        // Force play after 500ms if not already playing
-                        setTimeout(() => {
-                            if (!firstVideoPlayed) {
-                                playVideo(iframe);
-                                onFirstVideoReady();
-                            }
-                        }, 500);
-                    }
-                });
-
-                // Preload next 3 videos (force buffer)
-                function preloadVideos(startIndex) {
-                    for (let i = startIndex + 1; i <= Math.min(startIndex + 3, videoContainers.length - 1); i++) {
-                        const container = videoContainers[i];
-                        if (container) {
-                            const iframe = container.querySelector('iframe');
-                            // Briefly play then pause to trigger buffering
-                            playVideo(iframe);
-                            setTimeout(() => pauseVideo(iframe), 100);
-                        }
-                    }
-                }
-
-                // Start preloading after first video is ready
-                const checkFirstAndPreload = setInterval(() => {
-                    if (firstVideoReady) {
-                        clearInterval(checkFirstAndPreload);
-                        preloadVideos(0);
-                    }
-                }, 100);
-
-                // Intersection observer - only one video plays at a time
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        const container = entry.target;
-                        const iframe = container.querySelector('iframe');
-                        const index = parseInt(container.dataset.index);
-                        
-                        if (entry.isIntersecting) {
-                            // Pause all others
-                            videoContainers.forEach((c, i) => {
-                                if (i !== index) {
-                                    pauseVideo(c.querySelector('iframe'));
-                                }
-                            });
-                            
-                            // Play current
-                            playVideo(iframe);
-                            if (userInteracted) {
-                                unmuteVideo(iframe);
-                            }
-                            
-                            currentVideoIndex = index;
-                            // Preload next videos
-                            preloadVideos(index);
-                        } else {
-                            // Pause when not visible
-                            pauseVideo(iframe);
-                        }
-                    });
-                }, { threshold: 0.3, rootMargin: '200px 0px' });
-
-                videoContainers.forEach(c => observer.observe(c));
-
-            } catch (error) {
-                loadingEl.innerHTML = `<p>Error loading videos</p>`;
-                console.error(error);
-            }
-        }
-
-        loadFeed();
-        checkEvents();
-
-        // ===== SHARED VIDEO =====
-        function loadVideoFromUrl() {
-            const videoId = new URLSearchParams(location.search).get('v');
-            if (videoId) {
-                youtubePlayerContainer.classList.add('active');
-                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-            }
-        }
-        closePlayerBtn.addEventListener('click', () => {
-            youtubePlayerContainer.classList.remove('active');
-            youtubePlayer.src = '';
-        });
-        loadVideoFromUrl();
-
-        // ===== SERVICE WORKER =====
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
-
-        window.addEventListener('popstate', function() {
-            if (pageHistory.length > 1) {
-                pageHistory.pop();
-                navigateTo(pageHistory[pageHistory.length - 1]);
-            } else {
-                navigateTo('home');
-            }
-        });
-    </script>
+<div class="offline-banner" id="offlineBanner"><i class="fas fa-wifi-slash"></i> You're offline – watching cached videos</div>
+<div class="splash-overlay" id="splashOverlay">
+ <div class="splash-stage stage1" id="stage1"><div class="welcome-text">Welcome</div></div>
+ <div class="splash-stage stage2" id="stage2">
+  <div class="loading-content"><div class="loading-message">Goa Social is loading...</div><div class="loading-sub">Your video is playing</div><div class="loading-spinner"></div></div>
+ </div>
+ <div class="splash-stage stage3" id="stage3">
+  <div class="tap-content"><div class="tap-logo"><img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" width="200" height="200" alt="Goa Social"></div><div class="tap-message">Ready to watch</div><div class="tap-hint"><i class="fas fa-hand-pointer"></i> Tap to unmute</div></div>
+ </div>
+</div>
+<div class="event-modal" id="eventModal"><div class="event-card"><div class="event-icon" id="eventIcon">🎉</div><div class="event-name" id="eventName">Test Event</div><div class="event-countdown" id="eventCountdown">0 days</div><div class="event-desc" id="eventDesc">Description</div><button class="event-close" id="closeEventBtn">Got it</button></div></div>
+<div class="install-popup" id="installPopup"><div class="install-header"><div class="install-icon"><img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social"></div><div><div class="install-title">Install Goa Social</div><div class="install-sub">Add to home screen</div></div></div><div class="install-buttons"><button class="install-now" id="installNowBtn">Install</button><button class="install-later" id="installLaterBtn">Later</button></div></div>
+<div class="share-overlay" id="shareOverlay"></div>
+<div class="share-popup" id="sharePopup"><div class="share-popup-header"><h3>Share to earn 1 credit <i class="fas fa-info-circle info-icon" id="shareInfoIcon"></i></h3><button class="close-share" id="closeShare">&times;</button></div><div class="share-options"><div class="share-option" data-share="whatsapp"><div class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span></div><div class="share-option" data-share="instagram"><div class="share-icon instagram"><i class="fab fa-instagram"></i></div><span>Instagram</span></div><div class="share-option" data-share="facebook"><div class="share-icon facebook"><i class="fab fa-facebook-f"></i></div><span>Facebook</span></div><div class="share-option" data-share="copy"><div class="share-icon copy"><i class="fas fa-link"></i></div><span>Copy Link</span></div></div><div style="text-align:center;margin-top:18px;font-size:.9rem;color:var(--text2)">Each share = 1 message credit</div></div>
+<div id="shareTooltip"><i class="fas fa-gift" style="font-size:2.5rem;color:#FF8C42;margin-bottom:15px"></i><h4 style="margin-bottom:10px">Share to Earn</h4><p style="margin-bottom:18px">Each share = 1 credit. Use on Explore page!</p><button onclick="this.parentElement.style.display='none'" style="background:var(--primary);color:#fff;border:none;padding:10px 28px;border-radius:40px;cursor:pointer">Got it</button></div>
+<div class="youtube-player-container" id="youtubePlayerContainer"><div class="player-wrapper"><button class="close-player" id="closePlayerBtn">&times;</button><iframe id="youtubePlayer" allow="autoplay; fullscreen"></iframe></div></div>
+<header class="app-header"><div class="header-left"><button class="back-button hidden" id="backButton" onclick="goBack()"><i class="fas fa-arrow-left"></i></button><div class="logo-container" onclick="navigateTo('home')"><div class="logo-crop"><img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social"></div><span class="logo-text">Goa Social</span></div></div><div class="header-actions"><i class="fas fa-search"></i><i class="fas fa-bell"></i></div></header>
+<div id="content" style="width:100%"><div id="home-feed"><div class="welcome-section"><div class="welcome-title">Goa Social</div><div class="welcome-sub">Your complete Goan community</div><div class="benefit-grid"><div class="benefit-card"><i class="fas fa-video"></i><span>Goan Shorts</span></div><div class="benefit-card"><i class="fas fa-store"></i><span>Local Business</span></div><div class="benefit-card"><i class="fas fa-tools"></i><span>Services</span></div><div class="benefit-card"><i class="fas fa-utensils"></i><span>Cafes</span></div><div class="benefit-card"><i class="fas fa-hotel"></i><span>Hotels</span></div><div class="benefit-card"><i class="fas fa-bolt"></i><span>Electricians</span></div></div><div class="business-teaser"><div class="business-teaser-text"><i class="fas fa-database" style="margin-right:8px"></i> Coming soon: 10,000+ Goan businesses</div><div class="business-teaser-number">🚀</div></div></div><div class="stories-section"><div class="section-header"><h3>LIVE NOW</h3><a href="#">View all <i class="fas fa-chevron-right"></i></a></div><div class="stories-scroll" id="liveStories"></div></div><div class="categories-section"><div class="chips-scroll"><span class="chip active">All</span><span class="chip">Trending</span><span class="chip">Local</span><span class="chip">News</span><span class="chip">Shorts</span><span class="chip">Events</span><span class="chip">Food</span><span class="chip">Travel</span></div></div><div class="feed-container" id="feedContainer"><div class="loading-indicator" id="loading"><i class="fas fa-circle-notch"></i><p>loading goa shorts...</p></div></div></div><div id="page-content" style="display:none;width:100%"></div></div>
+<nav class="bottom-nav" id="bottomNav"><button class="nav-item active" onclick="navigateTo('home')"><i class="fas fa-home"></i><span>Home</span></button><button class="nav-item" onclick="navigateTo('explore')"><i class="fas fa-compass"></i><span>Explore</span></button><button class="nav-item" onclick="navigateTo('business')"><i class="fas fa-store"></i><span>Business</span></button><button class="nav-item" onclick="navigateTo('chats')"><i class="fas fa-comment-dots"></i><span>Chats</span></button><button class="nav-item" onclick="navigateTo('profile')"><i class="fas fa-user"></i><span>Profile</span></button></nav>
+<script>
+// === DOM Elements ===
+const fC=document.getElementById('feedContainer'),lS=document.getElementById('liveStories'),lE=document.getElementById('loading'),sO=document.getElementById('splashOverlay'),s1=document.getElementById('stage1'),s2=document.getElementById('stage2'),s3=document.getElementById('stage3'),eM=document.getElementById('eventModal'),eI=document.getElementById('eventIcon'),eN=document.getElementById('eventName'),eC=document.getElementById('eventCountdown'),eD=document.getElementById('eventDesc'),cEB=document.getElementById('closeEventBtn'),iP=document.getElementById('installPopup'),iNB=document.getElementById('installNowBtn'),iLB=document.getElementById('installLaterBtn'),yPC=document.getElementById('youtubePlayerContainer'),yP=document.getElementById('youtubePlayer'),cPB=document.getElementById('closePlayerBtn'),sP=document.getElementById('sharePopup'),sO2=document.getElementById('shareOverlay'),cS=document.getElementById('closeShare'),sII=document.getElementById('shareInfoIcon'),sT=document.getElementById('shareTooltip'),bB=document.getElementById('backButton'),bN=document.getElementById('bottomNav'),hF=document.getElementById('home-feed'),pC=document.getElementById('page-content'),oB=document.getElementById('offlineBanner'),tC=document.getElementById('themeColor');
+let uI=!1,vC=[],cVI=0,fVR=!1,dP=null,iS=!1,cP='home',pH=['home'],mC=parseInt(localStorage.getItem('messageCredits')||'5'),vH=JSON.parse(localStorage.getItem('videoHearts')||'{}'),vV=JSON.parse(localStorage.getItem('videoViews')||'{}'),fVP=!1;
+const businesses=[{name:"Fisherman's Wharf",desc:'Best seafood in Panjim',icon:'🦐'},{name:'Goa Surf School',desc:'Learn to surf at Morjim',icon:'🏄'},{name:'Cafe Alchemia',desc:'Artsy cafe in Assagao',icon:'☕'}];let bI=0;
+function setTheme(){const h=new Date().getHours();if(h>=7&&h<20){document.body.classList.remove('dark-theme');if(tC)tC.setAttribute('content','#1877f2')}else{document.body.classList.add('dark-theme');if(tC)tC.setAttribute('content','#121212')}}setTheme();setInterval(setTheme,6e4);
+function updateOnline(){oB.classList.toggle('show',!navigator.onLine)}window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
+async function checkEvents(){try{const r=await fetch('events.json'),e=await r.json(),t=new Date();t.setHours(0,0,0,0);for(let o of e){const n=new Date(o.date);n.setHours(0,0,0,0);const d=Math.ceil((n-t)/864e5);if(d>=0&&d<=30){eI.innerHTML=`<i class="fas ${o.icon||'fa-calendar-alt'}"></i>`;eN.textContent=o.name;eC.textContent=d===0?'TODAY!':`${d} day${d>1?'s':''}`;eD.textContent=o.description||'';eM.classList.add('show');return}}}catch(e){}}cEB.addEventListener('click',()=>eM.classList.remove('show'));
+const sST=Date.now();setTimeout(()=>{s1.style.display='none';s2.style.display='flex'},2e3);function showTap(){if(sO.classList.contains('hidden'))return;s2.style.display='none';s3.style.display='flex';sO.classList.add('tappable')}setTimeout(showTap,9e3);function onFirstReady(){if(!fVP){fVP=1;const e=Date.now()-sST;if(e<9e3&&!sO.classList.contains('tappable')){const r=9e3-e;setTimeout(showTap,r)}}}sO.addEventListener('click',function(e){if(!uI&&sO.classList.contains('tappable')){uI=!0;sO.classList.add('hidden');if(vC[cVI]){const t=vC[cVI].querySelector('iframe');unmuteVideo(t)}}});
+window.navigateTo=function(p){if(p===cP)return;pH.push(p);cP=p;document.querySelectorAll('.nav-item').forEach(i=>{i.classList.remove('active');if(i.querySelector('span').innerText.toLowerCase()===p)i.classList.add('active')});if(p==='home'){bB.classList.add('hidden');bN.classList.remove('hidden');hF.style.display='block';pC.style.display='none'}else{bB.classList.remove('hidden');bN.classList.add('hidden');hF.style.display='none';pC.style.display='block';loadPageContent(p)}};
+window.goBack=function(){pH.pop();navigateTo(pH[pH.length-1]||'home')};
+async function loadPageContent(p){let h='<div class="loading-indicator"><i class="fas fa-circle-notch"></i><p>Loading...</p></div>';if(p==='explore')h=`<div class="page-content"><div class="message-credits"><span><i class="fas fa-coins" style="color:#FFD700"></i> Your Message Credits</span><span class="credits-count">${mC}</span></div><h2 style="margin-bottom:20px">Explore Goans</h2><p style="color:var(--text2)">Find and connect with Goan community members.</p></div>`;else if(p==='business')h=`<div class="page-content"><h2 style="margin-bottom:20px">Goa Business Directory</h2><div style="background:linear-gradient(145deg,#1877f2,#0a5cff);color:#fff;border-radius:24px;padding:24px;margin-bottom:20px"><h3 style="margin-bottom:12px">Coming Soon!</h3><p style="opacity:.9">We're building the most complete directory of Goan businesses:</p><ul style="margin-top:16px;list-style:none;padding:0"><li style="margin-bottom:8px">✓ 500+ Restaurants & Cafes</li><li style="margin-bottom:8px">✓ 200+ Hotels & Stays</li><li style="margin-bottom:8px">✓ 1000+ Electricians, Plumbers, Carpenters</li><li style="margin-bottom:8px">✓ Verified contact numbers</li><li style="margin-bottom:8px">✓ User reviews & ratings</li></ul></div><div style="background:var(--card);border-radius:24px;padding:20px"><p style="color:var(--text2)">Know a Goan business? Help us grow!</p><button style="background:var(--success);color:#fff;border:none;padding:14px;border-radius:40px;width:100%;margin-top:12px;font-weight:600">Add Business</button></div></div>`;else h=`<div class="page-content"><h2 style="margin-bottom:16px">${p[0].toUpperCase()+p.slice(1)}</h2><p style="color:var(--text2)">Coming soon...</p></div>`;pC.innerHTML=h}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dP=e;setTimeout(()=>{if(dP&&!iS&&!window.matchMedia('(display-mode: standalone)').matches){iP.classList.add('show');iS=!0}},1e4);setTimeout(()=>{if(dP&&!window.matchMedia('(display-mode: standalone)').matches)iP.classList.add('show')},3e4)});
+iNB.addEventListener('click',async()=>{if(!dP)return;await dP.prompt();dP=null;iP.classList.remove('show')});iLB.addEventListener('click',()=>iP.classList.remove('show'));
+function loadStories(){const s=['Goa News','Beach Party','Foodies','Travel','Sunset','DJ Night'];lS.innerHTML=s.map(s=>`<div class="story-item"><div class="story-avatar">📺</div><div class="story-label">${s}</div></div>`).join('')}loadStories();
+function pauseVideo(i){i?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}','*')}
+function playVideo(i){i?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}','*')}
+function unmuteVideo(i){i?.contentWindow?.postMessage('{"event":"command","func":"unMute","args":""}','*')}
+function getHeart(id){return vH[id]||100}
+function incHeart(id){vH[id]=(vH[id]||100)+1;localStorage.setItem('videoHearts',JSON.stringify(vH));return vH[id]}
+function trackView(id){vV[id]=(vV[id]||0)+1;localStorage.setItem('videoViews',JSON.stringify(vV))}
+function isTrending(id){const v=vV[id]||0,a=Object.values(vV).reduce((a,b)=>a+b,0)/(Object.keys(vV).length||1);return v>a*1.5}
+let curShareId=null;
+function showShare(id){curShareId=id;sO2.classList.add('visible');sP.classList.add('visible')}
+function hideShare(){sO2.classList.remove('visible');sP.classList.remove('visible');curShareId=null}
+sII?.addEventListener('click',e=>{e.stopPropagation();sT.style.display='block'});
+document.querySelectorAll('.share-option').forEach(o=>o.addEventListener('click',()=>{if(!curShareId)return;mC++;localStorage.setItem('messageCredits',mC);const u=`${location.origin}${location.pathname}?v=${curShareId}`;if(o.dataset.share==='copy'){navigator.clipboard.writeText(u);alert('+1 credit')}else window.open(`https://wa.me/?text=${encodeURIComponent(u)}`,'_blank');hideShare()}));
+cS.addEventListener('click',hideShare);sO2.addEventListener('click',hideShare);
+async function loadFeed(){try{const r=await fetch('videos.json'),v=await r.json();lE.style.display='none';v.forEach((i,idx)=>{if(idx>0&&idx%5===0){const b=businesses[bI++%businesses.length],c=document.createElement('div');c.className='business-card';c.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:2rem">${b.icon}</span><h3>${b.name}</h3></div><p>${b.desc}</p><button onclick="alert('Business page coming soon!')">Visit Business</button>`;fC.appendChild(c)}const h=getHeart(i.videoId),tr=isTrending(i.videoId),card=document.createElement('div');card.className='feed-card';card.innerHTML=`<div class="card-header"><div class="channel-icon">📺</div><div class="channel-info"><div class="channel-name">Goa Shorts</div><div class="post-time">Shorts</div></div><i class="fas fa-ellipsis-h"></i></div><div class="video-container" data-video-id="${i.videoId}" data-index="${idx}">${tr?'<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>':''}<iframe src="https://www.youtube.com/embed/${i.videoId}?enablejsapi=1&autoplay=${idx===0?1:0}&mute=1&controls=0&playsinline=1&loop=1&playlist=${i.videoId}&modestbranding=1&rel=0&vq=tiny" allow="autoplay; fullscreen" loading="eager"></iframe><div class="video-info-overlay"><div class="video-title-small">Goa Short</div><div class="video-meta"><span>#Shorts</span></div></div></div><div class="card-footer"><span class="footer-item heart-btn" data-video-id="${i.videoId}"><i class="fas fa-heart"></i> <span class="heart-count">${h}</span></span><span class="footer-item"><i class="fas fa-comment"></i> 89</span><span class="footer-item share-btn" data-video-id="${i.videoId}"><i class="fas fa-share"></i> Share<span class="tooltip">Share to earn 1 credit</span></span></div>`;fC.appendChild(card)});vC=[];document.querySelectorAll('.video-container').forEach((c,i)=>{vC.push(c);const f=c.querySelector('iframe'),vid=c.dataset.videoId,card=c.closest('.feed-card');let lt=0;c.addEventListener('click',e=>{const n=Date.now();if(n-lt<300){const btn=card.querySelector('.heart-btn'),nc=incHeart(vid);btn.querySelector('.heart-count').textContent=nc;const hi=btn.querySelector('i');hi.style.transform='scale(1.3)';setTimeout(()=>hi.style.transform='scale(1)',200)}lt=n;trackView(vid)});card.querySelector('.heart-btn').addEventListener('click',e=>{e.stopPropagation();const nc=incHeart(vid);e.currentTarget.querySelector('.heart-count').textContent=nc;const hi=e.currentTarget.querySelector('i');hi.style.transform='scale(1.3)';setTimeout(()=>hi.style.transform='scale(1)',200)});card.querySelector('.share-btn').addEventListener('click',e=>{e.stopPropagation();showShare(vid)});if(i===0){f.addEventListener('load',()=>{fVR=!0;playVideo(f);onFirstReady()});setTimeout(()=>{if(!fVP){playVideo(f);onFirstReady()}},500)}});function preload(start){for(let i=start+1;i<=Math.min(start+3,vC.length-1);i++){const c=vC[i];if(c){const f=c.querySelector('iframe');playVideo(f);setTimeout(()=>pauseVideo(f),100)}}}const chk=setInterval(()=>{if(fVR){clearInterval(chk);preload(0)}},100);const obs=new IntersectionObserver(e=>{e.forEach(e=>{const c=e.target,f=c.querySelector('iframe'),idx=parseInt(c.dataset.index);if(e.isIntersecting){vC.forEach((x,i)=>{if(i!==idx)pauseVideo(x.querySelector('iframe'))});playVideo(f);if(uI)unmuteVideo(f);cVI=idx;preload(idx)}else pauseVideo(f)})},{threshold:.3,rootMargin:'200px 0px'});vC.forEach(c=>obs.observe(c))}catch(e){lE.innerHTML='<p>Error loading videos</p>';console.error(e)}}loadFeed();checkEvents();
+function loadVideoFromUrl(){const v=new URLSearchParams(location.search).get('v');if(v){yPC.classList.add('active');yP.src=`https://www.youtube.com/embed/${v}?autoplay=1&rel=0`}}cPB.addEventListener('click',()=>{yPC.classList.remove('active');yP.src=''});loadVideoFromUrl();
+if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+window.addEventListener('popstate',function(){pH.pop();navigateTo(pH[pH.length-1]||'home')});
+</script>
 </body>
 </html>
