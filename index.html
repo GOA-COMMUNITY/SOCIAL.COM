@@ -58,7 +58,6 @@
             --border-color: #e4e6eb;
         }
 
-        /* Dark theme - ONLY active between 8pm-7am */
         body.dark-theme {
             --bg-primary: var(--dark-bg-primary);
             --bg-secondary: var(--dark-bg-secondary);
@@ -107,7 +106,6 @@
             justify-content: center;
         }
 
-        /* Stage 1: Welcome zoom (2 seconds) */
         .stage1 {
             animation: welcomeZoom 2s forwards ease-out;
         }
@@ -125,7 +123,6 @@
             text-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        /* Stage 2: Loading screen */
         .stage2 {
             opacity: 0;
             animation: fadeIn 0.5s forwards;
@@ -168,7 +165,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Stage 3: Tap screen - LOGO ONLY */
         .stage3 {
             opacity: 0;
             animation: fadeIn 0.5s forwards;
@@ -216,7 +212,7 @@
             margin-right: 8px;
         }
 
-        /* ===== REST OF YOUR STYLES (COMPLETELY UNCHANGED) ===== */
+        /* ===== REST OF YOUR STYLES (UNCHANGED) ===== */
         .offline-banner {
             background: var(--danger);
             color: white;
@@ -1157,18 +1153,21 @@
             splashOverlay.classList.add('tappable');
         }
 
+        // Force show after 9 seconds max
+        setTimeout(showTapScreen, 9000);
+
+        // This will be called when first video is ready
         function onFirstVideoReady() {
             if (!firstVideoPlayed) {
                 firstVideoPlayed = true;
-                // Show tap screen after total 9 seconds (2 welcome + 7 loading)
+                // If tap screen not yet shown, schedule it for the remaining time
                 const elapsed = Date.now() - splashStartTime;
-                const remainingTime = Math.max(0, 9000 - elapsed);
-                setTimeout(showTapScreen, remainingTime);
+                if (elapsed < 9000 && !splashOverlay.classList.contains('tappable')) {
+                    const remaining = 9000 - elapsed;
+                    setTimeout(showTapScreen, remaining);
+                }
             }
         }
-
-        // Force show after 9 seconds max
-        setTimeout(showTapScreen, 9000);
 
         // Tap handler
         splashOverlay.addEventListener('click', function startApp(e) {
@@ -1413,6 +1412,7 @@
                     // First video autoplays (muted), others load but don't play
                     const autoplay = index === 0 ? 1 : 0;
                     
+                    // FIXED: Use &vq=tiny for true 144p
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="channel-icon">📺</div>
@@ -1425,7 +1425,7 @@
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=144"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
                                 allow="autoplay; fullscreen"
                                 loading="eager">
                             </iframe>
@@ -1494,7 +1494,7 @@
                             onFirstVideoReady();
                         });
                         
-                        // Force play after 500ms
+                        // Force play after 500ms if not already playing
                         setTimeout(() => {
                             if (!firstVideoPlayed) {
                                 playVideo(iframe);
@@ -1504,12 +1504,13 @@
                     }
                 });
 
-                // Preload next 3 videos
+                // Preload next 3 videos (force buffer)
                 function preloadVideos(startIndex) {
                     for (let i = startIndex + 1; i <= Math.min(startIndex + 3, videoContainers.length - 1); i++) {
                         const container = videoContainers[i];
                         if (container) {
                             const iframe = container.querySelector('iframe');
+                            // Briefly play then pause to trigger buffering
                             playVideo(iframe);
                             setTimeout(() => pauseVideo(iframe), 100);
                         }
@@ -1524,7 +1525,7 @@
                     }
                 }, 100);
 
-                // Intersection observer
+                // Intersection observer - only one video plays at a time
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1532,27 +1533,34 @@
                         const index = parseInt(container.dataset.index);
                         
                         if (entry.isIntersecting) {
+                            // Pause all others
                             videoContainers.forEach((c, i) => {
                                 if (i !== index) {
                                     pauseVideo(c.querySelector('iframe'));
                                 }
                             });
                             
+                            // Play current
                             playVideo(iframe);
                             if (userInteracted) {
                                 unmuteVideo(iframe);
                             }
                             
                             currentVideoIndex = index;
+                            // Preload next videos
                             preloadVideos(index);
+                        } else {
+                            // Pause when not visible
+                            pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.3 });
+                }, { threshold: 0.3, rootMargin: '200px 0px' });
 
                 videoContainers.forEach(c => observer.observe(c));
 
             } catch (error) {
                 loadingEl.innerHTML = `<p>Error loading videos</p>`;
+                console.error(error);
             }
         }
 
