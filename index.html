@@ -571,7 +571,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            pointer-events: none; /* CRITICAL: Prevents YouTube logo/play button */
+            pointer-events: none; /* Prevents YouTube logo/play button */
         }
 
         .trending-badge {
@@ -1383,7 +1383,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - OPTIMIZED FOR INSTANT PLAYBACK =====
+        // ===== LOAD FEED - ULTRA FAST PRELOADING =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1391,6 +1391,7 @@
                 
                 loadingEl.style.display = 'none';
                 
+                // Create all video cards and set src for ALL immediately
                 videos.forEach((item, index) => {
                     if (index > 0 && index % 5 === 0) {
                         const b = businesses[businessIndex++ % businesses.length];
@@ -1413,7 +1414,7 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     
-                    // Only first video autoplays, others load muted but don't autoplay
+                    // Only first video autoplays, others load but stay paused
                     const autoplay = index === 0 ? 1 : 0;
                     
                     card.innerHTML = `
@@ -1452,7 +1453,7 @@
                     feedContainer.appendChild(card);
                 });
 
-                // Set up video containers and event listeners
+                // Get all video containers
                 videoContainers = [];
                 document.querySelectorAll('.video-container').forEach((container, idx) => {
                     videoContainers.push(container);
@@ -1460,6 +1461,7 @@
                     const videoId = container.dataset.videoId;
                     const card = container.closest('.feed-card');
                     
+                    // Heart double-tap
                     let lastTap = 0;
                     container.addEventListener('click', (e) => {
                         const now = Date.now();
@@ -1476,6 +1478,7 @@
                         trackView(videoId);
                     });
 
+                    // Heart button click
                     card.querySelector('.heart-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const newCount = incrementHeart(videoId);
@@ -1486,11 +1489,13 @@
                         setTimeout(() => heartIcon.style.transform = 'scale(1)', 200);
                     });
 
+                    // Share button
                     card.querySelector('.share-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         showSharePopup(videoId);
                     });
 
+                    // First video ready
                     if (idx === 0) {
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
@@ -1504,21 +1509,17 @@
                     }
                 });
 
-                // Preload next videos (but don't force autoplay)
-                setTimeout(() => {
-                    for (let i = 1; i <= 3; i++) {
-                        if (videoContainers[i]) {
-                            const iframe = videoContainers[i].querySelector('iframe');
-                            // If src is empty (should not happen), set it
-                            if (!iframe.src) {
-                                const videoId = videoContainers[i].dataset.videoId;
-                                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
-                            }
-                        }
+                // Force all videos to start buffering by ensuring src is set (they already are, but just in case)
+                // This also helps on some browsers
+                videoContainers.forEach(container => {
+                    const iframe = container.querySelector('iframe');
+                    if (!iframe.src) {
+                        const videoId = container.dataset.videoId;
+                        iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
                     }
-                }, 1000);
+                });
 
-                // Intersection Observer - play only visible video
+                // Aggressive IntersectionObserver: start loading well before visible
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1526,14 +1527,14 @@
                         const index = parseInt(container.dataset.index);
                         
                         if (entry.isIntersecting) {
-                            // Pause ALL other videos
+                            // Pause all others
                             videoContainers.forEach((c, i) => {
                                 if (i !== index) {
                                     pauseVideo(c.querySelector('iframe'));
                                 }
                             });
                             
-                            // Play current video
+                            // Play current
                             playVideo(iframe);
                             if (userInteracted) {
                                 unmuteVideo(iframe);
@@ -1544,12 +1545,13 @@
                             pauseVideo(iframe);
                         }
                     });
-                }, { threshold: 0.3, rootMargin: '200px 0px' });
+                }, { threshold: 0.1, rootMargin: '400px 0px' }); // Start loading when 400px away
 
                 videoContainers.forEach(c => observer.observe(c));
 
             } catch (error) {
                 loadingEl.innerHTML = `<p>Error loading videos</p>`;
+                console.error(error);
             }
         }
 
