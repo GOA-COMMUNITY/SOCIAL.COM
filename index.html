@@ -79,6 +79,20 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Browser warning */
+        .browser-warning {
+            background: #ff9800;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.85rem;
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .browser-warning.show { display: block; }
+
         /* ===== SPLASH SCREEN ===== */
         .splash-overlay {
             position: fixed;
@@ -574,6 +588,11 @@
             pointer-events: none; /* Prevents YouTube logo/play button */
         }
 
+        /* Fallback for browsers that don't support pointer-events: none */
+        .video-container.simple-mode iframe {
+            pointer-events: auto;
+        }
+
         .trending-badge {
             position: absolute;
             top: 14px;
@@ -832,6 +851,12 @@
     </style>
 </head>
 <body>
+    <!-- Browser Warning (shown only for UC/Old browsers) -->
+    <div class="browser-warning" id="browserWarning">
+        <i class="fas fa-info-circle"></i> 
+        <span id="warningMessage">For best experience, use Chrome</span>
+    </div>
+
     <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
         <i class="fas fa-wifi-slash"></i> You're offline – watching cached videos
@@ -1051,6 +1076,28 @@
     </nav>
 
     <script>
+        // === BROWSER DETECTION & FALLBACK ===
+        const ua = navigator.userAgent;
+        const isUCBrowser = /UCBrowser/.test(ua);
+        const isOperaMini = /Opera Mini/.test(ua);
+        const isOldBrowser = /MSIE|Trident/.test(ua);
+        const isSlowBrowser = isUCBrowser || isOperaMini || isOldBrowser;
+        
+        const browserWarning = document.getElementById('browserWarning');
+        const warningMessage = document.getElementById('warningMessage');
+        
+        if (isUCBrowser) {
+            browserWarning.classList.add('show');
+            warningMessage.innerHTML = '⚠️ UC Browser detected: Tap videos to play';
+            document.body.classList.add('simple-mode');
+        } else if (isOperaMini) {
+            browserWarning.classList.add('show');
+            warningMessage.innerHTML = '⚠️ Opera Mini: Videos may load slower';
+        } else if (isOldBrowser) {
+            browserWarning.classList.add('show');
+            warningMessage.innerHTML = '⚠️ Update your browser for best experience';
+        }
+
         // === DOM Elements ===
         const feedContainer = document.getElementById('feedContainer');
         const liveStories = document.getElementById('liveStories');
@@ -1383,7 +1430,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - ULTRA FAST PRELOADING =====
+        // ===== LOAD FEED - SIMPLE & FAST =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1391,7 +1438,13 @@
                 
                 loadingEl.style.display = 'none';
                 
-                // Create all video cards and set src for ALL immediately
+                // Apply fallback for slow browsers
+                if (isSlowBrowser) {
+                    document.querySelectorAll('.video-container').forEach(c => {
+                        c.classList.add('simple-mode');
+                    });
+                }
+                
                 videos.forEach((item, index) => {
                     if (index > 0 && index % 5 === 0) {
                         const b = businesses[businessIndex++ % businesses.length];
@@ -1414,9 +1467,8 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     
-                    // Only first video autoplays, others load but stay paused
-                    const autoplay = index === 0 ? 1 : 0;
-                    
+                    // SIMPLE: Always load with autoplay=1 for all videos (they'll be muted)
+                    // This ensures they buffer immediately
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="channel-icon">📺</div>
@@ -1429,7 +1481,7 @@
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
                                 allow="autoplay; fullscreen"
                                 loading="eager">
                             </iframe>
@@ -1499,7 +1551,7 @@
                     if (idx === 0) {
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
-                            playVideo(iframe);
+                            // All videos are already playing (muted)
                             
                             if (userInteracted || unmutePending) {
                                 unmuteVideo(iframe);
@@ -1509,17 +1561,7 @@
                     }
                 });
 
-                // Force all videos to start buffering by ensuring src is set (they already are, but just in case)
-                // This also helps on some browsers
-                videoContainers.forEach(container => {
-                    const iframe = container.querySelector('iframe');
-                    if (!iframe.src) {
-                        const videoId = container.dataset.videoId;
-                        iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&controls=0&playsinline=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&vq=tiny`;
-                    }
-                });
-
-                // Aggressive IntersectionObserver: start loading well before visible
+                // SIMPLE: Just pause non-visible videos, no complex loading
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1534,18 +1576,16 @@
                                 }
                             });
                             
-                            // Play current
-                            playVideo(iframe);
+                            // Current video already playing from autoplay
                             if (userInteracted) {
                                 unmuteVideo(iframe);
                             }
                             
                             currentVideoIndex = index;
-                        } else {
-                            pauseVideo(iframe);
                         }
+                        // Don't pause when leaving - let YouTube handle it
                     });
-                }, { threshold: 0.1, rootMargin: '400px 0px' }); // Start loading when 400px away
+                }, { threshold: 0.3 });
 
                 videoContainers.forEach(c => observer.observe(c));
 
