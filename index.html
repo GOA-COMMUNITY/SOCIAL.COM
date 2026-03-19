@@ -79,20 +79,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Browser warning */
-        .browser-warning {
-            background: #ff9800;
-            color: white;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.85rem;
-            display: none;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .browser-warning.show { display: block; }
-
         /* ===== SPLASH SCREEN ===== */
         .splash-overlay {
             position: fixed;
@@ -585,12 +571,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            pointer-events: none; /* Prevents YouTube logo/play button */
-        }
-
-        /* Fallback for browsers that don't support pointer-events: none */
-        .video-container.simple-mode iframe {
-            pointer-events: auto;
+            pointer-events: none;
         }
 
         .trending-badge {
@@ -851,12 +832,6 @@
     </style>
 </head>
 <body>
-    <!-- Browser Warning (shown only for UC/Old browsers) -->
-    <div class="browser-warning" id="browserWarning">
-        <i class="fas fa-info-circle"></i> 
-        <span id="warningMessage">For best experience, use Chrome</span>
-    </div>
-
     <!-- Offline Banner -->
     <div class="offline-banner" id="offlineBanner">
         <i class="fas fa-wifi-slash"></i> You're offline – watching cached videos
@@ -869,24 +844,24 @@
             <div class="welcome-text">Welcome</div>
         </div>
         
-        <!-- Stage 2: Loading screen (7 seconds) - logo loads in background -->
+        <!-- Stage 2: Loading screen (7 seconds) - first video loads here -->
         <div class="splash-stage stage2" id="stage2">
             <div class="loading-content">
                 <div class="loading-message">Goa Social is loading...</div>
-                <div class="loading-sub">Preparing your feed</div>
+                <div class="loading-sub">Buffering your first short</div>
                 <div class="loading-spinner"></div>
             </div>
         </div>
         
-        <!-- Stage 3: Tap screen - LOGO ONLY (no box, preloaded) -->
+        <!-- Stage 3: Tap screen - appears after 7 seconds or when first video ready -->
         <div class="splash-stage stage3" id="stage3">
             <div class="tap-content">
                 <div class="tap-logo">
                     <img src="https://raw.githubusercontent.com/GOA-COMMUNITY/SOCIAL.COM/main/logo.png" alt="Goa Social" width="200" height="200">
                 </div>
-                <div class="tap-message">Welcome to Goa Social</div>
+                <div class="tap-message">Ready to watch</div>
                 <div class="tap-hint">
-                    <i class="fas fa-hand-pointer"></i> Tap anywhere to begin
+                    <i class="fas fa-hand-pointer"></i> Tap to unmute
                 </div>
             </div>
         </div>
@@ -1076,28 +1051,6 @@
     </nav>
 
     <script>
-        // === BROWSER DETECTION & FALLBACK ===
-        const ua = navigator.userAgent;
-        const isUCBrowser = /UCBrowser/.test(ua);
-        const isOperaMini = /Opera Mini/.test(ua);
-        const isOldBrowser = /MSIE|Trident/.test(ua);
-        const isSlowBrowser = isUCBrowser || isOperaMini || isOldBrowser;
-        
-        const browserWarning = document.getElementById('browserWarning');
-        const warningMessage = document.getElementById('warningMessage');
-        
-        if (isUCBrowser) {
-            browserWarning.classList.add('show');
-            warningMessage.innerHTML = '⚠️ UC Browser detected: Tap videos to play';
-            document.body.classList.add('simple-mode');
-        } else if (isOperaMini) {
-            browserWarning.classList.add('show');
-            warningMessage.innerHTML = '⚠️ Opera Mini: Videos may load slower';
-        } else if (isOldBrowser) {
-            browserWarning.classList.add('show');
-            warningMessage.innerHTML = '⚠️ Update your browser for best experience';
-        }
-
         // === DOM Elements ===
         const feedContainer = document.getElementById('feedContainer');
         const liveStories = document.getElementById('liveStories');
@@ -1142,7 +1095,7 @@
         let messageCredits = parseInt(localStorage.getItem('messageCredits') || '5');
         let videoHearts = JSON.parse(localStorage.getItem('videoHearts') || '{}');
         let videoViews = JSON.parse(localStorage.getItem('videoViews') || '{}');
-        let unmutePending = false;
+        let splashEndTime = Date.now() + 7000; // 7 seconds from now
 
         // Business listings
         const businesses = [
@@ -1155,8 +1108,6 @@
         // ===== TIME-BASED THEME =====
         function setThemeBasedOnTime() {
             const hours = new Date().getHours();
-            // 7 AM to 8 PM = Light theme (white/blue)
-            // 8 PM to 7 AM = Dark theme (black/blue)
             if (hours >= 7 && hours < 20) {
                 document.body.classList.remove('dark-theme');
                 if(themeColor) themeColor.setAttribute('content', '#1877f2');
@@ -1209,16 +1160,16 @@
             stage2.style.display = 'flex';
         }, 1500);
 
-        // Stage 2: Loading screen for 7 seconds - logo already preloaded
-        setTimeout(() => {
+        // Function to show tap screen
+        function showTapScreen() {
+            if (splashOverlay.classList.contains('hidden')) return;
             stage2.style.display = 'none';
             stage3.style.display = 'flex';
             splashOverlay.classList.add('tappable');
-            
-            if (!firstVideoReady) {
-                unmutePending = true;
-            }
-        }, 8500);
+        }
+
+        // Force show after 7 seconds regardless of video
+        setTimeout(showTapScreen, 7000);
 
         // Tap handler
         splashOverlay.addEventListener('click', function startApp(e) {
@@ -1226,6 +1177,7 @@
                 userInteracted = true;
                 splashOverlay.classList.add('hidden');
                 
+                // Unmute current video
                 if (videoContainers[currentVideoIndex]) {
                     const iframe = videoContainers[currentVideoIndex].querySelector('iframe');
                     unmuteVideo(iframe);
@@ -1430,7 +1382,7 @@
         closeShare.addEventListener('click', hideSharePopup);
         shareOverlay.addEventListener('click', hideSharePopup);
 
-        // ===== LOAD FEED - SIMPLE & FAST =====
+        // ===== LOAD FEED - SMART PRELOADING =====
         async function loadFeed() {
             try {
                 const response = await fetch('videos.json');
@@ -1438,13 +1390,7 @@
                 
                 loadingEl.style.display = 'none';
                 
-                // Apply fallback for slow browsers
-                if (isSlowBrowser) {
-                    document.querySelectorAll('.video-container').forEach(c => {
-                        c.classList.add('simple-mode');
-                    });
-                }
-                
+                // Create ALL video cards immediately
                 videos.forEach((item, index) => {
                     if (index > 0 && index % 5 === 0) {
                         const b = businesses[businessIndex++ % businesses.length];
@@ -1467,8 +1413,9 @@
                     const card = document.createElement('div');
                     card.className = 'feed-card';
                     
-                    // SIMPLE: Always load with autoplay=1 for all videos (they'll be muted)
-                    // This ensures they buffer immediately
+                    // CRITICAL: First video MUST autoplay, others load but don't play
+                    const autoplay = index === 0 ? 1 : 0;
+                    
                     card.innerHTML = `
                         <div class="card-header">
                             <div class="channel-icon">📺</div>
@@ -1481,7 +1428,7 @@
                         <div class="video-container" data-video-id="${item.videoId}" data-index="${index}">
                             ${trending ? '<span class="trending-badge"><i class="fas fa-fire"></i> Trending</span>' : ''}
                             <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
+                                src="https://www.youtube.com/embed/${item.videoId}?enablejsapi=1&autoplay=${autoplay}&mute=1&controls=0&playsinline=1&loop=1&playlist=${item.videoId}&modestbranding=1&rel=0&vq=tiny"
                                 allow="autoplay; fullscreen"
                                 loading="eager">
                             </iframe>
@@ -1547,21 +1494,40 @@
                         showSharePopup(videoId);
                     });
 
-                    // First video ready
+                    // First video ready - mark it and ensure it's playing
                     if (idx === 0) {
                         iframe.addEventListener('load', () => {
                             firstVideoReady = true;
-                            // All videos are already playing (muted)
-                            
-                            if (userInteracted || unmutePending) {
-                                unmuteVideo(iframe);
-                                unmutePending = false;
-                            }
+                            playVideo(iframe);
                         });
+                        
+                        // Force play after a short delay
+                        setTimeout(() => playVideo(iframe), 500);
                     }
                 });
 
-                // SIMPLE: Just pause non-visible videos, no complex loading
+                // CRITICAL: Preload next 3 videos
+                function preloadVideos(startIndex) {
+                    for (let i = startIndex + 1; i <= Math.min(startIndex + 3, videoContainers.length - 1); i++) {
+                        const container = videoContainers[i];
+                        if (container) {
+                            const iframe = container.querySelector('iframe');
+                            // Force video to start buffering by playing and immediately pausing
+                            playVideo(iframe);
+                            setTimeout(() => pauseVideo(iframe), 100);
+                        }
+                    }
+                }
+
+                // Start preloading after first video is ready
+                const checkFirstAndPreload = setInterval(() => {
+                    if (firstVideoReady) {
+                        clearInterval(checkFirstAndPreload);
+                        preloadVideos(0);
+                    }
+                }, 100);
+
+                // Smart IntersectionObserver - preload when scrolling
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const container = entry.target;
@@ -1576,14 +1542,17 @@
                                 }
                             });
                             
-                            // Current video already playing from autoplay
+                            // Play current
+                            playVideo(iframe);
                             if (userInteracted) {
                                 unmuteVideo(iframe);
                             }
                             
                             currentVideoIndex = index;
+                            
+                            // Preload next 3 videos
+                            preloadVideos(index);
                         }
-                        // Don't pause when leaving - let YouTube handle it
                     });
                 }, { threshold: 0.3 });
 
